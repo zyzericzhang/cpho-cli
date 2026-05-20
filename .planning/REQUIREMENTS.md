@@ -59,30 +59,30 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| CORE-01 | Pending | Pending |
-| CORE-02 | Pending | Pending |
-| CORE-03 | Pending | Pending |
-| CORE-04 | Pending | Pending |
-| CORE-05 | Pending | Pending |
-| IDX-01 | Pending | Pending |
-| IDX-02 | Pending | Pending |
-| IDX-03 | Pending | Pending |
-| SKILL-01 | Pending | Pending |
-| SKILL-02 | Pending | Pending |
-| SKILL-03 | Pending | Pending |
-| SKILL-04 | Pending | Pending |
-| PLUGIN-01 | Pending | Pending |
-| PLUGIN-02 | Pending | Pending |
-| PLUGIN-03 | Pending | Pending |
-| PLUGIN-04 | Pending | Pending |
-| KNOW-01 | Pending | Pending |
-| KNOW-02 | Pending | Pending |
+| CORE-01 | Phase 1 | Pending |
+| CORE-02 | Phase 1 | Pending |
+| CORE-03 | Phase 1 | Pending |
+| CORE-04 | Phase 1 | Pending |
+| CORE-05 | Phase 1 | Pending |
+| IDX-01 | Phase 2 | Pending |
+| IDX-02 | Phase 2 | Pending |
+| IDX-03 | Phase 2 | Pending |
+| SKILL-01 | Phase 3 | Pending |
+| SKILL-02 | Phase 3 | Pending |
+| SKILL-03 | Phase 4 | Pending |
+| SKILL-04 | Phase 4 | Pending |
+| PLUGIN-01 | Phase 3 | Pending |
+| PLUGIN-02 | Phase 4 | Pending |
+| PLUGIN-03 | Phase 4 | Pending |
+| PLUGIN-04 | Phase 4 | Pending |
+| KNOW-01 | Phase 4 | Pending |
+| KNOW-02 | Phase 4 | Pending |
 
 **Coverage:**
 - v1 requirements: 18 total
-- Mapped to phases: 0 (pending roadmap)
-- Unmapped: 18
+- Mapped to phases: 18 (100%)
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-05-20*
-*Last updated: 2026-05-20 after initial definition*
+*Last updated: 2026-05-21 after roadmap creation*

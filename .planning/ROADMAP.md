@@ -1,0 +1,78 @@
+# Roadmap: CPHO CLI
+
+## Overview
+
+CPHO CLI builds from a quality-first core pipeline through four phases: first establishing trustworthy physics derivations with answer-key grounding and OCR validation (Phase 1), then building the tag index as the retrieval backbone for all downstream features (Phase 2), layering on built-in Explanation and Quiz skills with a YAML skill loader extracted from real usage (Phase 3), and finally completing the knowledge network with cross-problem comparative analysis, exam PDF generation, Skill Creator, and community plugin ecosystem (Phase 4). Each phase delivers a coherent, verifiable capability that builds on the previous phase's foundation.
+
+## Phases
+
+**Phase Numbering:**
+- Integer phases (1, 2, 3, 4): Planned milestone work
+- Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
+
+Decimal phases appear between their surrounding integers in numeric order.
+
+- [ ] **Phase 1: Core Foundation** — End-to-end analysis pipeline with verifiable output quality
+- [ ] **Phase 2: Tag Indexing** — Fast, consistent tag-based problem indexing and retrieval
+- [ ] **Phase 3: Skill System + Core Skills** — Explanation mode, Quiz mode, and YAML skill extensibility
+- [ ] **Phase 4: Knowledge Network + Ecosystem** — Comparative analysis, exam generation, knowledge graph, and community plugins
+
+## Phase Details
+
+### Phase 1: Core Foundation
+**Goal**: Users can run `cpho solve <problem.pdf>` and receive trustworthy, step-by-step physics derivations cross-referenced against provided answer keys, with OCR errors detected and flagged rather than silently propagated.
+**Depends on**: Nothing (first phase)
+**Requirements**: CORE-01, CORE-02, CORE-03, CORE-04, CORE-05
+**Success Criteria** (what must be TRUE):
+  1. User configures OpenRouter API key once via environment variable or local config file and runs any command without inline key prompts; the key is never hardcoded or committed to git.
+  2. User points `cpho` at a folder containing PDF problem files and answer keys; the tool auto-discovers all problems with correct problem-to-answer pairings based on naming heuristics.
+  3. User runs `cpho solve <problem.pdf>` and receives structured LLM analysis where each derivation step is explicitly cross-referenced against the provided answer key; discrepancies are flagged.
+  4. OCR-extracted text from Chinese-language physics PDFs preserves core mathematical notation (subscripts, Greek letters, fractions); low-confidence OCR regions are surfaced in output rather than silently fed to the LLM.
+  5. Developer runs the golden test suite (20-30 physics problems with known correct derivations) with a single command and receives a per-problem pass/fail report; all problems pass before Phase 1 is declared complete.
+**Plans**: TBD
+
+### Phase 2: Tag Indexing
+**Goal**: All problems in the workspace are indexed with consistent, controlled-vocabulary physics tags, enabling fast tag-based retrieval without re-reading or re-OCRing source files.
+**Depends on**: Phase 1
+**Requirements**: IDX-01, IDX-02, IDX-03
+**Success Criteria** (what must be TRUE):
+  1. User runs `cpho index` on a workspace and receives a JSONL index file where every problem has structured tags (physics model, insight/heuristic, difficulty, math technique) generated via LLM against a controlled vocabulary.
+  2. User modifies, adds, or removes PDF files and re-runs `cpho index`; only files with content-hash changes are re-indexed, while unchanged files are skipped with a visible count of skipped vs. re-indexed problems.
+  3. User queries problems by tag expressions (e.g., `--tags "newton AND conservation" --not "electrostatics"`) and receives a matching problem list with zero OCR or LLM re-processing — all results served from the JSONL index.
+  4. The same problem re-indexed produces identical tag values; tags across all problems use a consistent controlled vocabulary with no synonymous or variant labels.
+**Plans**: TBD
+
+### Phase 3: Skill System + Core Skills
+**Goal**: Users can run Explanation and Quiz analysis modes on indexed problems, and extend the system with custom YAML-defined skills that are auto-discovered from a skills directory.
+**Depends on**: Phase 2
+**Requirements**: SKILL-01, SKILL-02, PLUGIN-01
+**Success Criteria** (what must be TRUE):
+  1. User runs explanation mode on a problem and receives a complete derivation where every step explicitly states the reasoning logic for the transition (为什么想到这一步), not just the mathematical calculation.
+  2. User runs quiz mode and engages in a REPL-based Socratic dialogue; the tool asks scaffolded questions (concept hint → method hint → equation hint) before revealing any solution step, and adapts follow-up questions based on user responses.
+  3. User creates a custom skill by writing a single YAML file (defining inputs, DAG step sequence, prompt template references, and output format), placing it in the skills directory; the skill is auto-discovered and immediately executable without restarting the CLI.
+  4. All CLI output — error messages, help text, skill descriptions, and prompt instructions to the LLM — is in Chinese by default, matching the target audience's primary language.
+**Plans**: TBD
+
+### Phase 4: Knowledge Network + Ecosystem
+**Goal**: Users can compare problems, generate exam PDFs, explore knowledge-graph connections, install community skills via pip, and create new skills from natural language descriptions.
+**Depends on**: Phase 3
+**Requirements**: SKILL-03, SKILL-04, PLUGIN-02, PLUGIN-03, PLUGIN-04, KNOW-01, KNOW-02
+**Success Criteria** (what must be TRUE):
+  1. User selects two or more problems for comparative analysis; output identifies shared physics models and common solution strategies, and automatically pulls additional related problems from the tag-based knowledge graph for extended comparison.
+  2. User queries problems by tags and generates two PDF files (problem sheet + answer sheet) where pages are extracted and stitched directly from source PDFs — no LaTeX re-rendering, preserving original formatting.
+  3. User describes a desired analysis workflow in natural Chinese language; Skill Creator produces a complete, functional YAML skill configuration with prompt templates that executes correctly on first run.
+  4. User runs `pip install <some-cpho-skill-package>` and the installed skill is automatically discovered via Python entry points and available for execution without any manual registration step.
+  5. When analyzing any problem with any skill, related-problem context from the knowledge graph (tag-similar problems from the workspace) is automatically injected into the analysis pipeline as supplementary context.
+**Plans**: TBD
+
+## Progress
+
+**Execution Order:**
+Phases execute in numeric order: 1 → 2 → 3 → 4
+
+| Phase | Plans Complete | Status | Completed |
+|-------|----------------|--------|-----------|
+| 1. Core Foundation | 0/TBD | Not started | - |
+| 2. Tag Indexing | 0/TBD | Not started | - |
+| 3. Skill System + Core Skills | 0/TBD | Not started | - |
+| 4. Knowledge Network + Ecosystem | 0/TBD | Not started | - |
