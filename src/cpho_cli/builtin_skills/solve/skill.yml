@@ -1,0 +1,43 @@
+name: solve
+inputs:
+  - problem_text
+  - answer_text
+  - ocr_warnings
+outputs:
+  - solve_report
+steps:
+  - id: extract_problem_answer
+    kind: python_tool
+    input_keys: [problem_text, answer_text]
+    output_keys: [raw_problem, raw_answer]
+  - id: normalize_problem
+    kind: llm
+    input_keys: [raw_problem]
+    output_keys: [normalized_problem]
+    prompt_template: normalize.md.j2
+  - id: validate_answer_structure
+    kind: llm
+    input_keys: [raw_answer]
+    output_keys: [answer_structure]
+    prompt_template: normalize.md.j2
+  - id: derive_subproblems
+    kind: llm
+    input_keys: [normalized_problem, answer_structure]
+    output_keys: [subproblem_derivations]
+    prompt_template: derive.md.j2
+  - id: cross_check_official_answer
+    kind: llm
+    input_keys: [subproblem_derivations, answer_structure]
+    output_keys: [answer_cross_check]
+    prompt_template: cross_check.md.j2
+  - id: mark_discrepancies
+    kind: llm
+    input_keys: [answer_cross_check, ocr_warnings]
+    output_keys: [discrepancies]
+    prompt_template: cross_check.md.j2
+  - id: assemble_final_report
+    kind: llm
+    input_keys: [normalized_problem, subproblem_derivations, answer_cross_check, discrepancies, ocr_warnings]
+    output_keys: [solve_report]
+    prompt_template: final_report.md.j2
+

@@ -1,3 +1,18 @@
+Metadata-Version: 2.4
+Name: cpho-cli
+Version: 0.1.0
+Summary: Local CLI for physics olympiad problem analysis
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+Requires-Dist: httpx>=0.27
+Requires-Dist: jinja2>=3.1
+Requires-Dist: onnxruntime>=1.18
+Requires-Dist: pydantic>=2.7
+Requires-Dist: pymupdf>=1.24
+Requires-Dist: pyyaml>=6.0
+Requires-Dist: rapidocr>=3.0
+Requires-Dist: typer>=0.12
+
 # CPHO CLI
 
 一个开源的本地命令行工具，帮助物理竞赛教练和学生批量解析竞赛题目。
@@ -22,18 +37,6 @@ CLI 把所有和解析无关的东西全部剥离，只留下一个最干净的�
 
 ## 当前状态
 
-项目处于 Phase 1 核心管线实现阶段。当前仓库已采用 `uv` + `src/` 布局，并提供基础 CLI、配置加载、workspace 发现、OCR 抽象、skill runtime、solve/eval 入口。
-
-## 开发命令
-
-```bash
-uv sync
-uv run cpho --help
-uv run ruff check .
-uv run mypy .
-uv run pytest
-```
-
-本地 OpenRouter API key 通过 `OPENROUTER_API_KEY` 或 gitignored local YAML config 提供，不能硬编码或提交到 git。
+项目处于早期探索阶段。核心假设待验证：更多的题目上下文 + 更灵活的 agent 编排 = 显著更好的解析质量。
 
 详细产品说明见 [docs/product-spec.md](docs/product-spec.md)。

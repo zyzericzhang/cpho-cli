@@ -1,0 +1,2 @@
+[console_scripts]
+cpho = cpho_cli.cli.app:app
