@@ -7,10 +7,10 @@
 
 ### 核心管线 (Core)
 
-- [ ] **CORE-01**: 用户可通过环境变量或本地配置文件设置 OpenRouter API key，工具启动时自动读取，密钥不硬编码不提交 git
-- [ ] **CORE-02**: 用户可指定本地文件夹作为工作空间，工具自动发现其中所有 PDF 和图片文件作为待分析题目
-- [ ] **CORE-03**: 用户可通过抽象 OCR 接口提取 PDF/图片中的文本（含中文+LaTeX 混合内容），默认使用 RapidOCR，接口支持切换其他 OCR 引擎
-- [ ] **CORE-04**: 用户可运行 `cpho solve <题目>` 命令，通过 DAG 管线引擎分步执行 LLM 调用，每步裁剪上下文聚焦单任务，步骤间通过 blackboard 传递中间结果
+- [x] **CORE-01**: 用户可通过环境变量或本地配置文件设置 OpenRouter API key，工具启动时自动读取，密钥不硬编码不提交 git
+- [x] **CORE-02**: 用户可指定本地文件夹作为工作空间，工具自动发现其中所有 PDF 和图片文件作为待分析题目
+- [x] **CORE-03**: 用户可通过抽象 OCR 接口提取 PDF/图片中的文本（含中文+LaTeX 混合内容），默认使用 RapidOCR，接口支持切换其他 OCR 引擎
+- [x] **CORE-04**: 用户可运行 `cpho solve <题目>` 命令，通过 DAG 管线引擎分步执行 LLM 调用，每步裁剪上下文聚焦单任务，步骤间通过 blackboard 传递中间结果
 - [ ] **CORE-05**: 项目包含 20-30 道精选物理竞赛题的黄金测试集，用于每次 prompt 或模型变更后的回归验证，确保解析质量不退化
 
 ### 索引层 (Index)
@@ -59,11 +59,11 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| CORE-01 | Phase 1 | Pending |
-| CORE-02 | Phase 1 | Pending |
-| CORE-03 | Phase 1 | Pending |
-| CORE-04 | Phase 1 | Pending |
-| CORE-05 | Phase 1 | Pending |
+| CORE-01 | Phase 1 | Complete |
+| CORE-02 | Phase 1 | Complete |
+| CORE-03 | Phase 1 | Complete |
+| CORE-04 | Phase 1 | Complete |
+| CORE-05 | Phase 1 | Needs Review |
 | IDX-01 | Phase 2 | Pending |
 | IDX-02 | Phase 2 | Pending |
 | IDX-03 | Phase 2 | Pending |

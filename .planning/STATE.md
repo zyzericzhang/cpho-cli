@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: executing
-stopped_at: Phase 1 context gathered
-last_updated: "2026-05-22T13:54:20.748Z"
-last_activity: 2026-05-22 -- Phase 01 planning complete
+status: needs_review
+stopped_at: Phase 1 verification gaps found
+last_updated: "2026-05-22T14:04:21.720Z"
+last_activity: 2026-05-22
 progress:
   total_phases: 4
   completed_phases: 0
   total_plans: 5
-  completed_plans: 0
+  completed_plans: 5
   percent: 0
 ---
 
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-05-20)
 ## Current Position
 
 Phase: 1 of 4 (Core Foundation)
-Plan: 0 of 5 in current phase
-Status: Ready to execute
-Last activity: 2026-05-22 -- Phase 01 planning complete
+Plan: 5 of 5 in current phase
+Status: Needs Review
+Last activity: 2026-05-22
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [██████████] 100%
 
 ## Performance Metrics
 
@@ -44,7 +44,7 @@ Progress: [░░░░░░░░░░] 0%
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 1. Core Foundation | 0/5 | - | - |
+| 1. Core Foundation | 5/5 | - | - |
 | 2. Tag Indexing | 0/TBD | - | - |
 | 3. Skill System + Core Skills | 0/TBD | - | - |
 | 4. Knowledge Network + Ecosystem | 0/TBD | - | - |
@@ -70,7 +70,9 @@ Recent decisions affecting current work:
 
 ### Pending Todos
 
-None yet.
+- [Phase 1] Add user-provided 20-30 real golden physics problems with answer keys before declaring Phase 1 complete.
+- [Phase 1] Run `cpho eval golden_tests/` against real files and review pass/fail output.
+- [Phase 1] Validate RapidOCR quality on Chinese+LaTeX scans and tune/fallback if needed.
 
 ### Blockers/Concerns
 
@@ -89,5 +91,5 @@ Items acknowledged and carried forward from previous milestone close:
 ## Session Continuity
 
 Last session: 2026-05-21T15:23:57.606Z
-Stopped at: Phase 1 context gathered
-Resume file: .planning/phases/01-core-foundation/01-CONTEXT.md
+Stopped at: Phase 1 verification gaps found
+Resume file: .planning/phases/01-core-foundation/01-VERIFICATION.md

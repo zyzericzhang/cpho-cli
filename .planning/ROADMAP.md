@@ -12,7 +12,7 @@ CPHO CLI builds from a quality-first core pipeline through four phases: first es
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Core Foundation** — End-to-end analysis pipeline with verifiable output quality
+- [ ] **Phase 1: Core Foundation** — End-to-end analysis pipeline with verifiable output quality (Needs Review: verification gaps)
 - [ ] **Phase 2: Tag Indexing** — Fast, consistent tag-based problem indexing and retrieval
 - [ ] **Phase 3: Skill System + Core Skills** — Explanation mode, Quiz mode, and YAML skill extensibility
 - [ ] **Phase 4: Knowledge Network + Ecosystem** — Comparative analysis, exam generation, knowledge graph, and community plugins
@@ -77,7 +77,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Core Foundation | 0/TBD | Not started | - |
+| 1. Core Foundation | 5/5 | Needs Review | - |
 | 2. Tag Indexing | 0/TBD | Not started | - |
 | 3. Skill System + Core Skills | 0/TBD | Not started | - |
 | 4. Knowledge Network + Ecosystem | 0/TBD | Not started | - |
