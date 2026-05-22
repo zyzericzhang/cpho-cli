@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-05-20)
 
 **Core value:** 生成质量 — truly find problem difficulty points and insights, explain the "why" behind every derivation step, link related problems into a knowledge network.
-**Current focus:** Phase 1 — Core Foundation
+**Current focus:** Phase 2 — Tag Indexing
 
 ## Current Position
 
-Phase: 1 of 4 (Core Foundation)
-Plan: 5 of 5 in current phase
-Status: Needs Review
-Last activity: 2026-05-22
+Phase: 2 of 4 (Tag Indexing)
+Plan: 0/TBD in current phase
+Status: Context gathered, ready for planning
+Last activity: 2026-05-23
 
-Progress: [██████████] 100%
+Progress: [███·········] 25% (Phase 1 complete, needs review)
 
 ## Performance Metrics
 
@@ -79,6 +79,12 @@ Recent decisions affecting current work:
 - [Phase 1] Add user-provided 20-30 real golden physics problems with answer keys before declaring Phase 1 complete.
 - [Phase 1] Run `cpho eval golden_tests/` against real files and review pass/fail output.
 - [Phase 1] Validate RapidOCR quality on Chinese+LaTeX scans and tune/fallback if needed.
+- [Phase 2] 构建内置基础词表（30-50 个物理竞赛模型/数学技巧/推理过程标签，中文展示名 + 英文内部 ID + aliases）
+- [Phase 2] 用户笔记存储数据模型预留（get/set API stub，不含编辑交互和 UI）
+- [Phase 2] vocabulary visibility 字段预留（private / team / public 枚举，不含 commit/export workflow）
+- [Phase 3] 用户错题本编辑交互（CLI/TUI/外部编辑器）
+- [Phase 3] Review/refinement skill：user-note → canonical-tag mapping + pending review 流程
+- [Phase 3] Q&A 历史作为标签来源接入
 
 ### Blockers/Concerns
 

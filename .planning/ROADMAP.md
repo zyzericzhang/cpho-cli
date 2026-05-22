@@ -2,7 +2,7 @@
 
 ## Overview
 
-CPHO CLI builds from a quality-first core pipeline through four phases: first establishing trustworthy physics derivations with answer-key grounding and OCR validation (Phase 1), then building the tag index as the retrieval backbone for all downstream features (Phase 2), layering on built-in Explanation and Quiz skills with a YAML skill loader extracted from real usage (Phase 3), and finally completing the knowledge network with cross-problem comparative analysis, exam PDF generation, Skill Creator, and community plugin ecosystem (Phase 4). Each phase delivers a coherent, verifiable capability that builds on the previous phase's foundation.
+CPHO CLI builds from a quality-first core pipeline through four phases: first establishing trustworthy physics derivations with answer-key grounding and OCR validation (Phase 1), then building the problem knowledge index infrastructure — the retrieval backbone and learning-memory foundation for all downstream skills (Phase 2), layering on built-in Explanation and Quiz skills with a YAML skill loader extracted from real usage (Phase 3), and finally completing the knowledge network with cross-problem comparative analysis, exam PDF generation, Skill Creator, and community plugin ecosystem (Phase 4). Each phase delivers a coherent, verifiable capability that builds on the previous phase's foundation.
 
 ## Phases
 
@@ -13,7 +13,7 @@ CPHO CLI builds from a quality-first core pipeline through four phases: first es
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [ ] **Phase 1: Core Foundation** — End-to-end analysis pipeline with verifiable output quality (Needs Review: verification gaps)
-- [ ] **Phase 2: Tag Indexing** — Fast, consistent tag-based problem indexing and retrieval
+- [ ] **Phase 2: Tag Indexing** — Problem knowledge index infrastructure: retrieval backbone + learning-memory foundation for all downstream skills
 - [ ] **Phase 3: Skill System + Core Skills** — Explanation mode, Quiz mode, and YAML skill extensibility
 - [ ] **Phase 4: Knowledge Network + Ecosystem** — Comparative analysis, exam generation, knowledge graph, and community plugins
 
@@ -37,14 +37,14 @@ Decimal phases appear between their surrounding integers in numeric order.
 - Wave 4: `01-05` — golden evaluation runner, `cpho eval golden_tests/`, and Phase 1 E2E regression
 
 ### Phase 2: Tag Indexing
-**Goal**: All problems in the workspace are indexed with consistent, controlled-vocabulary physics tags, enabling fast tag-based retrieval without re-reading or re-OCRing source files.
+**Goal**: 构建题目知识索引基础设施——将 workspace 中的题目文件、OCR 缓存、SolveReport 等整理成结构化索引，后续 skill 通过 Python API 检索而非重复读取原始文件。索引使用受控词表保证标签一致性，支持分层增量更新，并为用户错题本/学习记忆层预留数据边界。
 **Depends on**: Phase 1
 **Requirements**: IDX-01, IDX-02, IDX-03
 **Success Criteria** (what must be TRUE):
-  1. User runs `cpho index` on a workspace and receives a JSONL index file where every problem has structured tags (physics model, insight/heuristic, difficulty, math technique) generated via LLM against a controlled vocabulary.
-  2. User modifies, adds, or removes PDF files and re-runs `cpho index`; only files with content-hash changes are re-indexed, while unchanged files are skipped with a visible count of skipped vs. re-indexed problems.
-  3. User queries problems by tag expressions (e.g., `--tags "newton AND conservation" --not "electrostatics"`) and receives a matching problem list with zero OCR or LLM re-processing — all results served from the JSONL index.
-  4. The same problem re-indexed produces identical tag values; tags across all problems use a consistent controlled vocabulary with no synonymous or variant labels.
+  1. User runs `cpho index` on a workspace and receives a JSONL index file where every problem has canonical tags (physics model, insight/heuristic, math technique) with Chinese display names and stable internal IDs, generated via a controlled vocabulary.
+  2. User modifies, adds, or removes PDF files and re-runs `cpho index`; only files with content-hash changes are re-indexed. Output shows layered statistics: file changes, OCR cache reuse/regeneration, and tag regeneration counts.
+  3. User queries problems by tag via Python API (`query_index`, `get_problem_entry`, `find_related_problems`) and receives results with zero OCR or LLM re-processing — all served from the JSONL index.
+  4. The same problem re-indexed produces identical canonical tag values; tags across all problems use a consistent controlled vocabulary with no synonymous or variant labels.
 **Plans**: TBD
 
 ### Phase 3: Skill System + Core Skills

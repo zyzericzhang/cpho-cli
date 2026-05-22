@@ -97,9 +97,53 @@ Phase 2 交付题目标签索引系统——将本地 workspace 整理成后续 
 - `{problem_id}` 机制：用户可能自己命名题目（如"2019-IPhO-P1"），也可能自动生成（文件路径 hash）
 - 参考 Obsidian 的笔记链接/反向链接思路——index 存储题目之间的关联关系，后续 phase 可视化或导航
 
+## Phase 2 Scope Boundary
+
+Phase 2 交付索引**基础设施**，不交付完整的错题本用户体验。具体边界：
+
+### Phase 2 必做
+- system-readable index：JSONL 主索引，canonical tags（中文展示名 + 英文内部 ID + aliases）
+- LLM tagging pipeline：复用 `llm.py` provider，消费 SolveReport + OCR cache 产生 canonical tags
+- 受控词表基础结构：内置基础词表（30-50 个标签，随项目发布）+ workspace 词表文件
+- 半开放词表机制：LLM 复用已有 → 新 tag 标记 candidate → 数据模型预留确认流程（不含交互 UI）
+- OCR cache 复用：OCR 输出缓存到 `.cpho/cache/`，solve 和 index 共享
+- 分层哈希：文件层 + 语义层（第三层用户学习层预留字段但不完整实现）
+- 增量索引：基于哈希跳过未变更文件
+- OCR 引擎升级检测：OCR engine/version/config 进入 fingerprint，变更时提示用户（不静默重建）
+- 分层输出统计：文件变化 / OCR 复用 / 标签重建 / 跳过
+- 用户笔记存储数据模型：`problem_id → notes[]` 存储边界 + API stub（`get_problem_notes`、`set_problem_notes`），不做编辑器和交互
+- vocabulary visibility 字段：`private / team / public` 枚举预留，不做 commit/export workflow
+- Python API：`query_index`、`get_problem_entry`、`find_related_problems`（基于标签匹配，不做 embedding 或图算法）
+
+### Deferred 到 Phase 3
+- 用户错题本编辑交互（CLI / TUI / 外部编辑器）
+- Review/refinement skill：user-note → canonical-tag mapping + pending review 流程
+- Pending review CLI/UI
+- 用户笔记变化触发 refinement 的完整链路
+- Q&A 历史作为标签来源接入（Quiz 模式在 Phase 3 才存在）
+
+### Deferred 到 Phase 4
+- commit/export 可见性选择 workflow
+- 知识图谱关联（KNOW-01）——Phase 2 的 `find_related_problems` 仅做相同标签匹配
+- 相关题目上下文自动注入分析管线（KNOW-02）
+
+### 数据源现实
+Phase 2 实际运行时，可用数据源为 SolveReport + OCR cache。用户笔记和 Q&A 历史的数据模型和 API 在 Phase 2 预留，但完整消费链路依赖 Phase 3。
+
 ## Deferred Ideas
 
-无——讨论全程在 Phase 2 范围内。
+### 错题本完整体验 → Phase 3
+- 用户可编辑的错题本笔记（支持长文本，不限于短 tag）
+- 笔记与 canonical tag 的映射建议和确认流程
+- 用户笔记变更触发的增量 refinement
+
+### 复杂查询语法 → 后续 phase
+- 布尔表达式查询（AND/OR/NOT）暂不在 Phase 2 实现
+- Phase 2 提供简单标签匹配查询，复杂查询按需在 Phase 3/4 添加
+
+### 完整物理学 taxonomy → 迭代构建
+- Phase 2 内置词表以 30-50 个常见标签起步
+- 不在 Phase 2 试图构建完整物理学分类体系
 
 ---
 
