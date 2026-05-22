@@ -29,7 +29,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. User runs `cpho solve <problem.pdf>` and receives structured LLM analysis where each derivation step is explicitly cross-referenced against the provided answer key; discrepancies are flagged.
   4. OCR-extracted text from Chinese-language physics PDFs preserves core mathematical notation (subscripts, Greek letters, fractions); low-confidence OCR regions are surfaced in output rather than silently fed to the LLM.
   5. Developer runs the golden test suite (20-30 physics problems with known correct derivations) with a single command and receives a per-problem pass/fail report; all problems pass before Phase 1 is declared complete.
-**Plans**: TBD
+**Plans**:
+- Wave 1: `01-01` — uv project scaffold, CLI shell, config/API-key foundation, and quality gates
+- Wave 2: `01-02` — workspace discovery, answer pairing, document loading, and RapidOCR abstraction
+- Wave 2: `01-03` — skill folder loader, blackboard DAG runtime, trace/checkpoint/resume contracts
+- Wave 3: `01-04` — OpenRouter provider, built-in solve skill, answer cross-check, and `cpho solve`
+- Wave 4: `01-05` — golden evaluation runner, `cpho eval golden_tests/`, and Phase 1 E2E regression
 
 ### Phase 2: Tag Indexing
 **Goal**: All problems in the workspace are indexed with consistent, controlled-vocabulary physics tags, enabling fast tag-based retrieval without re-reading or re-OCRing source files.
