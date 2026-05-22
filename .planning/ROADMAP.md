@@ -45,7 +45,13 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. User modifies, adds, or removes PDF files and re-runs `cpho index`; only files with content-hash changes are re-indexed. Output shows layered statistics: file changes, OCR cache reuse/regeneration, and tag regeneration counts.
   3. User queries problems by tag via Python API (`query_index`, `get_problem_entry`, `find_related_problems`) and receives results with zero OCR or LLM re-processing — all served from the JSONL index.
   4. The same problem re-indexed produces identical canonical tag values; tags across all problems use a consistent controlled vocabulary with no synonymous or variant labels.
-**Plans**: TBD
+**Plans**: 6 plans
+- Wave 1: `02-01` — Index data models (Pydantic StrictModel), JSONL atomic storage, three-layer vocabulary loader + alias normalization
+- Wave 1: `02-02` — Three-tier hashing (file/semantic/user-learning), fingerprint composition, decide_action dispatcher
+- Wave 1: `02-06` — Starter vocabulary content (42 canonical tags in builtin.yml), pyproject package-data, R8 review checkpoint
+- Wave 2: `02-03` — OCR cache wrapper (CachedOCRProvider) + engine-upgrade detection (D-16); solve.py untouched (R4)
+- Wave 2: `02-04` — LLM tagging pipeline via core/llm.py (D-02), Jinja2 prompt template, canonical-mapping pass (M3 determinism), trace JSONL
+- Wave 3: `02-05` — build_index orchestration, `cpho index` CLI with layered stats (D-17), Python API (query_index/get_problem_entry/find_related_problems), notebook stubs, golden determinism test
 
 ### Phase 3: Skill System + Core Skills
 **Goal**: Users can run Explanation and Quiz analysis modes on indexed problems, and extend the system with custom YAML-defined skills that are auto-discovered from a skills directory.
@@ -78,6 +84,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Core Foundation | 5/5 | Needs Review | - |
-| 2. Tag Indexing | 0/TBD | Not started | - |
+| 2. Tag Indexing | 0/6 | Not started | - |
 | 3. Skill System + Core Skills | 0/TBD | Not started | - |
 | 4. Knowledge Network + Ecosystem | 0/TBD | Not started | - |
