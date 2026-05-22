@@ -1,13 +1,17 @@
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 
-from cpho_cli.core.config import load_config, resolve_api_key
+from pydantic import ValidationError
+
+from cpho_cli.core.config import load_config, resolve_api_key, resolve_model_params
 from cpho_cli.core.documents import load_document
-from cpho_cli.core.ocr import RapidOCRProvider
+from cpho_cli.core.llm import LLMProvider, OpenRouterProvider
+from cpho_cli.core.ocr import OCRProvider, RapidOCRProvider
 from cpho_cli.core.skills import load_skill
-from cpho_cli.models.solve import DerivationStep, SolveReport, SolveRunResult
+from cpho_cli.models.solve import SolveReport, SolveRunResult
 
 
 class SolveError(RuntimeError):
@@ -46,6 +50,8 @@ def solve_problem(
     config_path: Path | None = None,
     output_dir: Path = Path("output"),
     dry_run: bool = False,
+    ocr_provider: OCRProvider | None = None,
+    llm_provider: LLMProvider | None = None,
 ) -> SolveRunResult:
     if not problem_path.exists():
         raise SolveError(f"Problem file not found: {problem_path}")
@@ -57,10 +63,10 @@ def solve_problem(
         return SolveRunResult(report_json=None, warnings=[])
 
     config = load_config(config_path)
-    resolve_api_key(config, {})
+    api_key = resolve_api_key(config, os.environ)
     problem_doc = load_document(problem_path)
     answer_doc = load_document(answer_path)
-    ocr = RapidOCRProvider()
+    ocr = ocr_provider or RapidOCRProvider()
     problem_ocr = ocr.extract(problem_doc)
     answer_ocr = ocr.extract(answer_doc)
     warnings = [
@@ -69,25 +75,41 @@ def solve_problem(
         for block in page.blocks
         if block.low_confidence
     ]
-    report = SolveReport(
-        problem_id=problem_path.stem,
-        derivation_steps=[
-            DerivationStep(
-                reasoning="Generated derivation requires OpenRouter integration.",
-                expression=(problem_ocr.text or problem_path.stem)[:120],
-                official_answer_refs=[answer_ocr.text[:40] or "answer:1"],
-            )
-        ],
-        discrepancies=[],
-        ocr_warnings=warnings,
-        physics_model_tags=[],
-        heuristic_insight_tags=[],
-        math_technique_tags=[],
+    provider = llm_provider or OpenRouterProvider(
+        api_key=api_key,
+        base_url=config.provider.base_url,
     )
+    params = resolve_model_params(config, "solve")
+    response = provider.complete(
+        messages=[
+            {
+                "role": "system",
+                "content": (
+                    "Return strict JSON for SolveReport. Every derivation step must cite "
+                    "official_answer_refs from the supplied answer key."
+                ),
+            },
+            {
+                "role": "user",
+                "content": (
+                    f"Problem OCR text:\n{problem_ocr.text}\n\n"
+                    f"Answer OCR text:\n{answer_ocr.text}\n\n"
+                    f"OCR warnings:\n{warnings}"
+                ),
+            },
+        ],
+        params=params,
+        response_model=SolveReport,
+    )
+    try:
+        report = SolveReport.model_validate_json(response.content)
+    except ValidationError as exc:
+        raise SolveError(f"LLM response failed SolveReport validation: {exc}") from exc
+    if warnings:
+        report.ocr_warnings = sorted(set(report.ocr_warnings + warnings))
     return _write_report(report, output_dir)
 
 
 def report_has_assertion(report_path: Path, assertion: str) -> bool:
     data = json.loads(report_path.read_text(encoding="utf-8"))
     return assertion in json.dumps(data, ensure_ascii=False)
-
