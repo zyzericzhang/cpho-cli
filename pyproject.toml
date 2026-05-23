@@ -36,6 +36,7 @@ cpho_cli = [
   "builtin_skills/**/*",
   "vocabulary/*.yml",
   "vocabulary/builtin/*.yml",
+  "vocabulary/topics/*.yml",
   "core/index/prompts/*",
 ]
 
