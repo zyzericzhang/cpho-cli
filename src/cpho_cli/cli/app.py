@@ -5,10 +5,19 @@ import typer
 
 from cpho_cli.core.config import ConfigError
 from cpho_cli.core.eval import EvalConfigError, run_eval
-from cpho_cli.core.index import IndexBuildError, OcrUpgradeDecisionRequired, build_index, list_pending_candidates
+from cpho_cli.core.index import (
+    IndexBuildError,
+    IndexNotFoundError,
+    OcrUpgradeDecisionRequired,
+    VocabularyError,
+    build_index,
+    list_pending_candidates,
+)
 from cpho_cli.core.solve import SolveError, solve_problem
 
 app = typer.Typer(help="CPHO local physics analysis CLI.")
+topic_app = typer.Typer(help="主题分类浏览。")
+app.add_typer(topic_app, name="topic")
 
 _OCR_STRATEGY_CHOICES = ("prompt", "reuse", "rebuild", "new-only")
 
@@ -165,3 +174,73 @@ def index_command(
         typer.echo(f"  累计待审:        {stats.pending_review_items}  (运行 `cpho index --list-candidates` 查看)")
         typer.echo("")
         typer.echo(f"完成. 索引: {workspace}/.cpho/index.jsonl")
+
+
+def _print_tree(nodes: list, level: int = 0) -> None:  # type: ignore[type-arg]
+    for node in nodes:
+        indent = "  " * level
+        typer.echo(f"{indent}{node.display_zh} ({node.id})")
+        _print_tree(node.children, level + 1)
+
+
+@topic_app.command(name="list")
+def topic_list(
+    workspace: Path = typer.Argument(Path.cwd(), help="Workspace 目录."),
+) -> None:
+    """显示完整主题分类树。"""
+    from cpho_cli.core.index.topic_vocabulary import load_merged_topic_taxonomy
+
+    try:
+        taxonomy = load_merged_topic_taxonomy(workspace)
+    except VocabularyError as exc:
+        raise typer.BadParameter(str(exc)) from exc
+    _print_tree(taxonomy.roots)
+
+
+@topic_app.command(name="browse")
+def topic_browse(
+    path: str = typer.Argument(..., help="主题路径 (如 力学/天体运动)."),
+    workspace: Path = typer.Argument(Path.cwd(), help="Workspace 目录."),
+) -> None:
+    """按主题路径浏览题目。"""
+    from cpho_cli.core.index import find_problems_by_topic
+
+    try:
+        results = find_problems_by_topic(workspace, path)
+    except IndexNotFoundError as exc:
+        raise typer.BadParameter(str(exc)) from exc
+    for result in results:
+        typer.echo(f"  {result.problem_id}: {result.topic_path}")
+    typer.echo(f"\n共 {len(results)} 道题目")
+
+
+@app.command(name="compose")
+def compose_command(
+    topic: Optional[str] = typer.Option(None, "--topic", "-t", help="主题路径前缀 (如 力学/天体运动)."),
+    tags: Optional[str] = typer.Option(None, "--tags", help="标签 ID 列表, 逗号分隔."),
+    workspace: Path = typer.Argument(Path.cwd(), help="Workspace 目录."),
+) -> None:
+    """按主题和标签组合筛选题目（组卷）。"""
+    from cpho_cli.core.index.compose import compose_problem_list
+
+    tag_list = [t.strip() for t in tags.split(",")] if tags else None
+    try:
+        results = compose_problem_list(workspace, topic_path=topic, tag_ids=tag_list)
+    except (IndexNotFoundError, VocabularyError) as exc:
+        raise typer.BadParameter(str(exc)) from exc
+
+    if not results:
+        typer.echo("未找到匹配题目。")
+        return
+
+    typer.echo(f"组卷结果 ({len(results)} 道题目):")
+    for result in results:
+        all_tags = ", ".join(
+            ref.internal_id
+            for ref in result.physics_model_tags
+            + result.math_technique_tags
+            + result.heuristic_tags
+        )
+        typer.echo(
+            f"  [{result.problem_id}] {result.topic_path or '未分类'} | tags: {all_tags}"
+        )
