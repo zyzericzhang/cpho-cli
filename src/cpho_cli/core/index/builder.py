@@ -1,8 +1,9 @@
-"""build_index orchestrator: discover -> fingerprint -> decide -> OCR -> tag -> write."""
+"""build_index orchestrator: discover -> fingerprint -> decide -> OCR -> tag -> topic -> write."""
 
 from __future__ import annotations
 
 import hashlib
+import logging
 import os
 import re
 from datetime import datetime, timezone
@@ -32,6 +33,8 @@ from cpho_cli.core.index.ocr_cache import (
 )
 from cpho_cli.core.index.storage import load_index, write_index
 from cpho_cli.core.index.tagging import CanonicalMappingResult, load_tag_prompt_version, refine_tags
+from cpho_cli.core.index.topic_assignment import assign_topic
+from cpho_cli.core.index.topic_vocabulary import load_merged_topic_taxonomy
 from cpho_cli.core.index.vocabulary import (
     list_pending_candidates,
     load_merged_vocabulary,
@@ -158,6 +161,15 @@ def build_index(
     provider_config = resolve_provider_config(config, os.environ, provider_name)
     vocabulary = load_merged_vocabulary(workspace_root)
 
+    # Load topic taxonomy (non-blocking: failure disables topic assignment)
+    topic_taxonomy = None
+    try:
+        topic_taxonomy = load_merged_topic_taxonomy(workspace_root)
+    except Exception:
+        logging.getLogger(__name__).warning(
+            "Topic taxonomy failed to load; topic assignment disabled for this run."
+        )
+
     ocr_engine_version = _rapidocr_version()
     oc_hash = ocr_config_hash(_ocr_config())
 
@@ -283,6 +295,25 @@ def build_index(
 
         all_candidates.extend(mapping.candidates)
 
+        # Topic assignment (non-blocking: failure sets topic_path to None)
+        topic_path: str | None = None
+        if topic_taxonomy is not None:
+            try:
+                topic_result = assign_topic(
+                    problem_id,
+                    ocr_text,
+                    topic_taxonomy,
+                    config,
+                    provider_config,
+                    llm_provider=llm_provider,
+                    trace_path=trace_path,
+                )
+                topic_path = topic_result.topic_path
+            except Exception:
+                logging.getLogger(__name__).warning(
+                    "Topic assignment failed for %s; continuing without topic.", problem_id
+                )
+
         entry = IndexEntry(
             problem_id=problem_id,
             problem_path=problem_path.relative_to(workspace_root),
@@ -298,6 +329,7 @@ def build_index(
             solve_report_path=Path("output") / f"{problem_id}-report.json" if report else None,
             ocr_text_length=len(ocr_text),
             tag_prompt_version=tag_prompt_version,
+            topic_path=topic_path,
         )
         result_entries[problem_id] = entry
 
