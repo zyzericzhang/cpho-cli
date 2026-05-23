@@ -1,0 +1,12 @@
+{
+  "problem_a": {
+    "physics_model_tags": ["energy_conservation"],
+    "math_technique_tags": ["calculus_integral"],
+    "heuristic_tags": ["free_body_diagram"]
+  },
+  "problem_b": {
+    "physics_model_tags": ["momentum_conservation"],
+    "math_technique_tags": ["vector_decomposition"],
+    "heuristic_tags": ["system_selection"]
+  }
+}

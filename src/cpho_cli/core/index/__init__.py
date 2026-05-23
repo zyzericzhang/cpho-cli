@@ -19,6 +19,7 @@ class VocabularyError(IndexBuildError):
 
 # --- Re-exports (populated by 02-05 T1/T2) ---
 
+from cpho_cli.core.index.builder import build_index  # noqa: E402
 from cpho_cli.core.index.api import (  # noqa: E402
     find_related_problems,
     get_problem_entry,
@@ -48,6 +49,8 @@ from cpho_cli.models.index import (  # noqa: E402
 )
 
 __all__ = [
+    # Builder
+    "build_index",
     # Exceptions
     "IndexBuildError",
     "IndexNotFoundError",
