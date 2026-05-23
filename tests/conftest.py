@@ -2,15 +2,12 @@
 
 from __future__ import annotations
 
-import json
 from pathlib import Path
 from typing import Any
 
 from cpho_cli.core.index.tagging import TagRefinementOutput
-from cpho_cli.core.llm import LLMProvider
-from cpho_cli.core.ocr import OCRProvider
 from cpho_cli.models.config import ModelParams
-from cpho_cli.models.documents import DocumentInput, DocumentPage
+from cpho_cli.models.documents import DocumentInput
 from cpho_cli.models.llm import LLMResponse, LLMUsage
 from cpho_cli.models.ocr import OCRBlock, OCRPageResult, OCRResult
 
