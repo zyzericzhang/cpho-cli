@@ -10,10 +10,10 @@ from cpho_cli.models.config import StrictModel
 
 
 class TagCategory(str, Enum):
+    PHYSICS_LAW = "physics_law"
     PHYSICS_MODEL = "physics_model"
     MATH_TECHNIQUE = "math_technique"
     HEURISTIC = "heuristic"
-    SYSTEM_SELECTION = "system_selection"
     APPROXIMATION = "approximation"
 
 

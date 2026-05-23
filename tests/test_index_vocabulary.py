@@ -28,7 +28,7 @@ version: "v0.1"
 tags:
   - internal_id: newton_second_law
     display_zh: {display_zh}
-    category: physics_model
+    category: heuristic
     aliases: ["F=ma", "Newton 第二"]
     layer: {layer}
 """,
@@ -51,7 +51,7 @@ def test_alias_index_maps_aliases_to_internal_id() -> None:
             "newton_second_law": CanonicalTag(
                 internal_id="newton_second_law",
                 display_zh="牛顿第二定律",
-                category=TagCategory.PHYSICS_MODEL,
+                category=TagCategory.HEURISTIC,
                 aliases=["F=ma", "Newton 第二"],
             )
         },
@@ -117,7 +117,7 @@ version: "v0.1"
 tags:
   - internal_id: newton_second_law
     display_zh: 牛顿第二定律
-    category: physics_model
+    category: heuristic
     foobar: 1
 """,
         encoding="utf-8",

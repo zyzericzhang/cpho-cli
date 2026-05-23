@@ -32,7 +32,7 @@ package = true
 where = ["src"]
 
 [tool.setuptools.package-data]
-cpho_cli = ["builtin_skills/**/*"]
+cpho_cli = ["builtin_skills/**/*", "vocabulary/*.yml", "vocabulary/builtin/*.yml"]
 
 [tool.ruff]
 line-length = 100
@@ -45,4 +45,3 @@ ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-
