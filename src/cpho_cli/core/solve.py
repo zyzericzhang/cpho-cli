@@ -6,7 +6,7 @@ from pathlib import Path
 
 from pydantic import ValidationError
 
-from cpho_cli.core.config import load_config, resolve_api_key, resolve_model_params
+from cpho_cli.core.config import load_config, resolve_model_params, resolve_provider_config
 from cpho_cli.core.documents import load_document
 from cpho_cli.core.llm import LLMProvider, OpenRouterProvider
 from cpho_cli.core.ocr import OCRProvider, RapidOCRProvider
@@ -48,6 +48,7 @@ def solve_problem(
     problem_path: Path,
     answer_path: Path | None = None,
     config_path: Path | None = None,
+    provider_name: str | None = None,
     output_dir: Path = Path("output"),
     dry_run: bool = False,
     ocr_provider: OCRProvider | None = None,
@@ -63,7 +64,7 @@ def solve_problem(
         return SolveRunResult(report_json=None, warnings=[])
 
     config = load_config(config_path)
-    api_key = resolve_api_key(config, os.environ)
+    provider_config = resolve_provider_config(config, os.environ, provider_name)
     problem_doc = load_document(problem_path)
     answer_doc = load_document(answer_path)
     ocr = ocr_provider or RapidOCRProvider()
@@ -76,8 +77,8 @@ def solve_problem(
         if block.low_confidence
     ]
     provider = llm_provider or OpenRouterProvider(
-        api_key=api_key,
-        base_url=config.provider.base_url,
+        api_key=provider_config.api_key,
+        base_url=provider_config.base_url,
     )
     params = resolve_model_params(config, "solve")
     response = provider.complete(

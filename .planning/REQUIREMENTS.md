@@ -7,7 +7,7 @@
 
 ### 核心管线 (Core)
 
-- [x] **CORE-01**: 用户可通过环境变量或本地配置文件设置 OpenRouter API key，工具启动时自动读取，密钥不硬编码不提交 git
+- [x] **CORE-01**: 用户可通过默认 `config.local.yml`、显式 `--config` 或环境变量设置 LLM API key；同一配置文件可保存多个 provider/key profile，并通过 `--provider` 选择，密钥不硬编码不提交 git
 - [x] **CORE-02**: 用户可指定本地文件夹作为工作空间，工具自动发现其中所有 PDF 和图片文件作为待分析题目
 - [x] **CORE-03**: 用户可通过抽象 OCR 接口提取 PDF/图片中的文本（含中文+LaTeX 混合内容），默认使用 RapidOCR，接口支持切换其他 OCR 引擎
 - [x] **CORE-04**: 用户可运行 `cpho solve <题目>` 命令，通过 DAG 管线引擎分步执行 LLM 调用，每步裁剪上下文聚焦单任务，步骤间通过 blackboard 传递中间结果

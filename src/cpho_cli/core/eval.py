@@ -33,6 +33,7 @@ def load_eval_cases(root: Path) -> list[EvalCase]:
 def run_eval(
     root: Path,
     config_path: Path | None = None,
+    provider_name: str | None = None,
     output_dir: Path = Path("eval-output"),
     dry_run: bool = False,
 ) -> EvalRunResult:
@@ -49,6 +50,7 @@ def run_eval(
             case.problem,
             answer_path=case.answer,
             config_path=config_path,
+            provider_name=provider_name,
             output_dir=output_dir / case.id,
         )
         if result.report_json is None:
@@ -77,4 +79,3 @@ def run_eval(
         report_json=report_json,
         report_markdown=report_markdown,
     )
-

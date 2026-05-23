@@ -24,7 +24,7 @@ CPHO CLI 是一个本地命令行工具，帮助物理竞赛教练和深度学�
 - [ ] 内置 skill — 对比分析模式：用户选择两道或多道题目，找出共同模型、共同思路，或基于标签关联其他题目进行联合分析
 - [ ] 内置 skill — 组卷输出：将关联题目及其答案分别拼接为两份 PDF（题目卷 + 答案卷）
 - [ ] DAG 分步管线：长题按步骤/小问拆分，每步仅注入裁剪过的上下文，避免注意力稀释导致跳步
-- [ ] 本地 OpenRouter API key 支持：用户通过环境变量或本地配置文件接入自己的 key
+- [ ] 本地 LLM API key 支持：默认读取 gitignored `config.local.yml`，支持多 provider/key profile，并可通过 `--provider` 选择本次运行的 key
 - [ ] 题目文件夹即工作空间：无需导入流程，文件夹内的 PDF/图片直接可被索引和分析
 
 ### Out of Scope
@@ -43,14 +43,14 @@ CPHO CLI 是一个本地命令行工具，帮助物理竞赛教练和深度学�
 - Python 生态（AI/LLM 工具链最成熟）
 - 芯-壳分离架构：core 纯库无界面依赖，CLI 是薄适配层
 - OCR 通过抽象接口隔离
-- LLM 调用走 OpenRouter API
+- LLM 调用先支持 OpenRouter API；配置层支持多 provider/key profile，后续 provider 复用同一选择机制
 - 基于现有开源 agent 框架定制，不做 greenfield 开发
 
 ## Constraints
 
 - **技术栈**: Python only，不引入 Node.js/TypeScript 依赖
 - **本地优先**: 除 LLM API 调用外，所有处理在本地完成，不上传题目文件到任何远程服务
-- **安全**: API Key 只能从环境变量或本地配置文件读取，严禁硬编码或提交到 git
+- **安全**: API Key 只能从环境变量或 gitignored 本地配置文件读取，严禁硬编码或提交到 git
 - **开源协议**: MIT License，面向物理竞赛社区
 - **解析质量**: 严谨防幻觉，解析结果必须基于题目原文和标准答案
 

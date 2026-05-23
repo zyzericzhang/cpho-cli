@@ -34,6 +34,35 @@ uv run mypy .
 uv run pytest
 ```
 
-本地 OpenRouter API key 通过 `OPENROUTER_API_KEY` 或 gitignored local YAML config 提供，不能硬编码或提交到 git。
+本地 API key 默认从仓库根目录的 `config.local.yml` 读取；也可以继续使用
+`OPENROUTER_API_KEY` 或显式传入 `--config`。本地配置文件已被 git ignore，不能硬编码或提交真实 key。
+
+最简单配置仍兼容旧格式：
+
+```yaml
+provider:
+  openrouter_api_key: sk-...
+```
+
+如果要在同一个文件里保存多组 key 或后续接入更多 provider，使用 profile 格式：
+
+```yaml
+active_provider: openrouter
+providers:
+  openrouter:
+    kind: openrouter
+    api_key: sk-primary
+  backup:
+    kind: openrouter
+    api_key: sk-backup
+    base_url: https://openrouter.ai/api/v1
+```
+
+默认使用 `active_provider`。临时选择另一组 key：
+
+```bash
+uv run cpho solve problem.pdf --answer answer.pdf --provider backup
+uv run cpho eval golden_tests/ --provider backup
+```
 
 详细产品说明见 [docs/product-spec.md](docs/product-spec.md)。

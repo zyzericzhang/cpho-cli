@@ -18,12 +18,28 @@ class ProviderConfig(StrictModel):
     base_url: str = "https://openrouter.ai/api/v1"
 
 
+class ProviderProfile(StrictModel):
+    kind: str = "openrouter"
+    api_key: str | None = None
+    api_key_env: str | None = None
+    base_url: str | None = None
+
+
+class ResolvedProviderConfig(StrictModel):
+    name: str
+    kind: str
+    api_key: str
+    base_url: str
+
+
 class SkillConfig(StrictModel):
     model: ModelParams | None = None
 
 
 class AppConfig(StrictModel):
+    active_provider: str = "openrouter"
     provider: ProviderConfig = Field(default_factory=ProviderConfig)
+    providers: dict[str, ProviderProfile] = Field(default_factory=dict)
     model: ModelParams = Field(
         default_factory=lambda: ModelParams(name="openai/gpt-4o-mini", temperature=0.2)
     )

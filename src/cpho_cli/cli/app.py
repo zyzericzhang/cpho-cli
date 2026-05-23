@@ -15,6 +15,9 @@ def solve(
     problem: Path = typer.Argument(..., help="Problem PDF or image path."),
     answer: Optional[Path] = typer.Option(None, "--answer", "-a", help="Answer key path."),
     config: Optional[Path] = typer.Option(None, "--config", "-c", help="Local YAML config path."),
+    provider: Optional[str] = typer.Option(
+        None, "--provider", "-p", help="Provider profile name from config."
+    ),
     output_dir: Path = typer.Option(Path("output"), "--output-dir", "-o", help="Output directory."),
     dry_run: bool = typer.Option(False, "--dry-run", help="Validate inputs without LLM calls."),
 ) -> None:
@@ -24,6 +27,7 @@ def solve(
             problem,
             answer_path=answer,
             config_path=config,
+            provider_name=provider,
             output_dir=output_dir,
             dry_run=dry_run,
         )
@@ -42,6 +46,9 @@ def solve(
 def eval_command(
     golden_root: Path = typer.Argument(..., help="Golden tests root directory."),
     config: Optional[Path] = typer.Option(None, "--config", "-c", help="Local YAML config path."),
+    provider: Optional[str] = typer.Option(
+        None, "--provider", "-p", help="Provider profile name from config."
+    ),
     output_dir: Path = typer.Option(
         Path("eval-output"), "--output-dir", "-o", help="Evaluation output directory."
     ),
@@ -49,7 +56,13 @@ def eval_command(
 ) -> None:
     """Run golden evaluation cases."""
     try:
-        result = run_eval(golden_root, config_path=config, output_dir=output_dir, dry_run=dry_run)
+        result = run_eval(
+            golden_root,
+            config_path=config,
+            provider_name=provider,
+            output_dir=output_dir,
+            dry_run=dry_run,
+        )
     except EvalConfigError as exc:
         raise typer.BadParameter(str(exc)) from exc
 
@@ -57,4 +70,3 @@ def eval_command(
         f"Evaluation complete: total={result.total} passed={result.passed} "
         f"failed={result.failed} skipped={result.skipped}"
     )
-

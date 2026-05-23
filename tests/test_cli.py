@@ -17,6 +17,7 @@ def test_solve_help_lists_options() -> None:
     assert result.exit_code == 0
     assert "--answer" in result.output
     assert "--config" in result.output
+    assert "--provider" in result.output
     assert "--output-dir" in result.output
     assert "--dry-run" in result.output
 
@@ -26,4 +27,4 @@ def test_eval_help_lists_root_argument() -> None:
 
     assert result.exit_code == 0
     assert "golden" in result.output.lower()
-
+    assert "--provider" in result.output

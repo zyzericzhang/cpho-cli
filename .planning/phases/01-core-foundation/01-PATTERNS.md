@@ -5,7 +5,7 @@
 
 ## Codebase Inventory
 
-The repository currently has no `src/`, `tests/`, `pyproject.toml`, or implementation files. Phase 1 is greenfield. The closest authoritative patterns are therefore the locked architecture decisions in:
+The repository now has a `uv` src-layout implementation under `src/cpho_cli/`, tests under `tests/`, and Phase 1 core plumbing in place. Earlier Phase 1 started greenfield; future work should prefer the implementation patterns in code first, then the locked architecture decisions in:
 
 - `.planning/phases/01-core-foundation/01-CONTEXT.md`
 - `docs/architecture-decisions.md`
@@ -18,7 +18,7 @@ The repository currently has no `src/`, `tests/`, `pyproject.toml`, or implement
 |--------------|---------------|-------------------------|-------------------|
 | Project scaffold | `pyproject.toml`, `README.md`, `.gitignore` | None | uv src-layout, Python >=3.11, ruff + mypy + pytest commands |
 | CLI shell | `src/cpho_cli/cli/app.py` | None | Thin adapter only; core returns values, CLI renders output |
-| Config | `src/cpho_cli/core/config.py`, `src/cpho_cli/models/config.py` | `.planning/config.json` only conceptually | YAML config, env overrides, no secrets in git |
+| Config | `src/cpho_cli/core/config.py`, `src/cpho_cli/models/config.py` | `.planning/config.json` only conceptually | Default `config.local.yml`, optional `--config`, provider profiles, env fallback, no secrets in git |
 | Workspace discovery | `src/cpho_cli/core/workspace.py` | None | Deterministic file system scan with ambiguity diagnostics |
 | Document/OCR | `src/cpho_cli/core/documents.py`, `src/cpho_cli/core/ocr.py` | None | Project-owned DTOs wrapping external library outputs |
 | Skill runtime | `src/cpho_cli/core/skills.py`, `src/cpho_cli/core/runtime.py` | GSD skill files conceptually | Skill folder with `SKILL.md`, YAML metadata, prompts, optional tools |
@@ -31,7 +31,7 @@ The repository currently has no `src/`, `tests/`, `pyproject.toml`, or implement
 `cpho solve <problem.pdf>` should flow through:
 
 1. CLI parses args and config overrides.
-2. Core config resolves OpenRouter key and model parameters.
+2. Core config loads `config.local.yml` by default unless `--config` is supplied, resolves the selected provider profile/API key, and resolves model parameters.
 3. Workspace discovery pairs problem and answer key.
 4. Document loader extracts/rasterizes pages.
 5. OCR adapter returns normalized `OCRBlock` objects with confidence.
@@ -42,7 +42,6 @@ The repository currently has no `src/`, `tests/`, `pyproject.toml`, or implement
 
 ## Notes for Planner
 
-- No plan should reference prior implementation files because none exist.
-- Every implementation task must create its own tests alongside new production files.
+- Prefer existing implementation files as the source of local style and contracts.
+- Every implementation task must create or update focused tests alongside production changes.
 - Use the locked src-layout and core-shell split as the local pattern.
-

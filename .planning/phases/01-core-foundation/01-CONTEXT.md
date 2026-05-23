@@ -28,10 +28,10 @@ Phase 1 交付端到端的分析管线——从 API key 配置和 workspace 发�
 
 ### LLM & Prompt 管理
 
-- **D-10:** **轻量 provider 抽象**：base class + OpenRouter 实现，从第一天就抽象，后续加新 provider 只需实现同一接口
+- **D-10:** **轻量 provider 抽象**：base class + OpenRouter 实现，从第一天就抽象，后续加新 provider 只需实现同一接口。配置层支持 `providers.<name>` profile，默认读取 gitignored `config.local.yml`，CLI 通过 `--provider <name>` 选择本次运行使用哪组 provider/key
 - **D-11:** 模板引擎 **Jinja2**：模板文件 `prompts/*.md.j2`，支持变量插入、条件、循环、可选上下文块。不用简单字符串替换（未来 prompt 需要条件和循环），不把长 prompt inline 到 YAML
 - **D-12:** 结构化输出用 **JSON mode + Pydantic 验证**。解析失败时：原始输出 + parse error + validation error 写入 trace，必要时显式运行 JSON repair step。**不静默正则兜底**——中间结构化结果优先 JSON + schema，Markdown 仅用于最终报告
-- **D-13:** 模型参数 **三层优先级**：`config.yml` 全局默认 → per-skill YAML 覆盖 → CLI flag 最高。不同 skill 对模型需求不同（答案检查低 temperature、完整讲解长输出、题目比较长上下文）
+- **D-13:** 模型参数 **三层优先级**：`config.local.yml` / 显式 `--config` 全局默认 → per-skill YAML 覆盖 → CLI flag 最高。不同 skill 对模型需求不同（答案检查低 temperature、完整讲解长输出、题目比较长上下文）
 
 ### Golden Test Suite
 
@@ -65,13 +65,15 @@ Phase 1 交付端到端的分析管线——从 API key 配置和 workspace 发�
 
 ### Reusable Assets
 
-无——项目为 greenfield，无现有代码。
+- `src/cpho_cli/core/config.py` and `src/cpho_cli/models/config.py` are the canonical config and provider profile resolution path.
+- `src/cpho_cli/core/llm.py` defines the provider protocol and current OpenRouter implementation.
+- `src/cpho_cli/cli/app.py` is the thin Typer shell; provider selection belongs in CLI options and is passed into core as plain values.
 
 ### Established Patterns
 
 以下模式由架构决策文档锁定，Phase 1 实现必须遵循：
 - **芯-壳分离**：`src/cpho_cli/core/` 纯库无界面依赖，`src/cpho_cli/cli/` 薄适配层。core 不 import CLI 框架，不直接 print/input
-- **YAML 配置驱动**：所有可调参数通过 YAML 文件控制，实验记录存 JSONL
+- **YAML 配置驱动**：所有可调参数通过 YAML 文件控制，默认读取 gitignored `config.local.yml`，实验记录存 JSONL
 - **确定性 DAG 管线**：不使用自主 ReAct-style agent，确保每一步可控可审计
 
 ### Integration Points
