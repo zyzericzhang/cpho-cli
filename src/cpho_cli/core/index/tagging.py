@@ -1,11 +1,19 @@
 from __future__ import annotations
 
 from datetime import datetime, timezone
+from pathlib import Path
+from typing import Any
 
-from pydantic import Field
+import yaml
+import jinja2
+from pydantic import Field, ValidationError
 
+from cpho_cli.core.config import resolve_model_params
+from cpho_cli.core.index import IndexBuildError
 from cpho_cli.core.index.vocabulary import normalize_alias
-from cpho_cli.models.config import StrictModel
+from cpho_cli.core.llm import LLMProvider, OpenRouterProvider
+from cpho_cli.core.runtime import redact_secrets
+from cpho_cli.models.config import AppConfig, ResolvedProviderConfig, StrictModel
 from cpho_cli.models.index import (
     CandidateTag,
     CanonicalTag,
@@ -14,6 +22,15 @@ from cpho_cli.models.index import (
     TagSource,
     TagStatus,
     Vocabulary,
+)
+from cpho_cli.models.runtime import TraceRecord
+
+
+SYSTEM_PROMPT = (
+    "你是物理竞赛题目标签归一化助手。给定题目 OCR 文本和 SolveReport 的自由格式标签，"
+    "从受控词表中选出最匹配的 canonical tag internal_id。"
+    "严格仅从提供的 internal_id 列表中选择。"
+    "如果发现需要的概念不在列表里，仅在 candidates 数组里提议新 tag，不要编造词表外的 id 放入 selected_* 字段。"
 )
 
 
@@ -39,6 +56,61 @@ class CanonicalMappingResult(StrictModel):
     heuristic_tags: list[TaggedReference] = Field(default_factory=list)
     difficulty_aspects: list[str] = Field(default_factory=list)
     candidates: list[CandidateTag] = Field(default_factory=list)
+
+
+def _prompts_dir() -> Path:
+    return Path(__file__).parent / "prompts"
+
+
+def load_tag_prompt_version() -> str:
+    data = yaml.safe_load((_prompts_dir() / "MANIFEST.yml").read_text(encoding="utf-8"))
+    if not isinstance(data, dict):
+        raise IndexBuildError("Tag prompt manifest must be a YAML mapping.")
+    version = data.get("version")
+    if not isinstance(version, str):
+        raise IndexBuildError("Tag prompt manifest is missing a string version.")
+    return version
+
+
+def _build_jinja_env() -> jinja2.Environment:
+    return jinja2.Environment(
+        loader=jinja2.FileSystemLoader(str(_prompts_dir())),
+        undefined=jinja2.StrictUndefined,
+        autoescape=False,
+    )
+
+
+def append_trace(trace_path: Path, record: TraceRecord, secrets: list[str]) -> None:
+    trace_path.parent.mkdir(parents=True, exist_ok=True)
+    text = record.model_dump_json()
+    text = redact_secrets(text, secrets)
+    with trace_path.open("a", encoding="utf-8") as handle:
+        handle.write(text + "\n")
+
+
+def _render_user_prompt(
+    problem_id: str,
+    problem_text: str,
+    solve_report_tags: dict[str, list[str]],
+    vocabulary: Vocabulary,
+) -> str:
+    env = _build_jinja_env()
+    template = env.get_template("tag_refinement.md.j2")
+    controlled_vocabulary: list[dict[str, Any]] = [
+        {
+            "internal_id": tag.internal_id,
+            "category": tag.category.value,
+            "display_zh": tag.display_zh,
+            "aliases": tag.aliases,
+        }
+        for tag in vocabulary.tags.values()
+    ]
+    return template.render(
+        problem_id=problem_id,
+        problem_text=problem_text[:3000],
+        solve_report_tags=solve_report_tags,
+        controlled_vocabulary=controlled_vocabulary,
+    )
 
 
 def _candidate_from_suggestion(
@@ -188,3 +260,75 @@ def canonical_mapping_pass(
             *suggested_candidates,
         ],
     )
+
+
+def refine_tags(
+    problem_id: str,
+    ocr_text: str,
+    solve_report_tags: dict[str, list[str]],
+    vocabulary: Vocabulary,
+    config: AppConfig,
+    provider_config: ResolvedProviderConfig,
+    llm_provider: LLMProvider | None = None,
+    trace_path: Path | None = None,
+    source: TagSource = TagSource.SOLVE_REPORT,
+) -> CanonicalMappingResult:
+    started = datetime.now(timezone.utc)
+    provider = llm_provider or OpenRouterProvider(
+        api_key=provider_config.api_key,
+        base_url=provider_config.base_url,
+    )
+    params = resolve_model_params(config, "index")
+    user_prompt = _render_user_prompt(problem_id, ocr_text, solve_report_tags, vocabulary)
+    input_keys = ["ocr_text", "solve_report_tags", f"vocabulary_{vocabulary.version}"]
+    output_keys = ["tag_refinement"]
+
+    try:
+        response = provider.complete(
+            messages=[
+                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "user", "content": user_prompt},
+            ],
+            params=params,
+            response_model=TagRefinementOutput,
+        )
+        try:
+            llm_output = TagRefinementOutput.model_validate_json(response.content)
+        except ValidationError as exc:
+            raise IndexBuildError(
+                f"LLM response failed TagRefinementOutput validation: {exc}"
+            ) from exc
+        result = canonical_mapping_pass(llm_output, vocabulary, problem_id, source)
+        if trace_path is not None:
+            append_trace(
+                trace_path,
+                TraceRecord(
+                    step_id=f"tag_{problem_id}",
+                    status="passed",
+                    input_keys=input_keys,
+                    output_keys=output_keys,
+                    retry_count=0,
+                    started_at=started,
+                    finished_at=datetime.now(timezone.utc),
+                    error=None,
+                ),
+                [provider_config.api_key],
+            )
+        return result
+    except Exception as exc:
+        if trace_path is not None:
+            append_trace(
+                trace_path,
+                TraceRecord(
+                    step_id=f"tag_{problem_id}",
+                    status="failed",
+                    input_keys=input_keys,
+                    output_keys=output_keys,
+                    retry_count=0,
+                    started_at=started,
+                    finished_at=datetime.now(timezone.utc),
+                    error=redact_secrets(str(exc), [provider_config.api_key]),
+                ),
+                [provider_config.api_key],
+            )
+        raise
