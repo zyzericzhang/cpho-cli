@@ -1,3 +1,4 @@
 version: "v1"
 templates:
   tag_refinement: tag_refinement.md.j2
+  topic_assignment: topic_assignment.md.j2

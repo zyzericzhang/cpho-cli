@@ -134,6 +134,7 @@ class IndexEntry(StrictModel):
     ocr_cache_path: Path | None = None
     ocr_text_length: int
     tag_prompt_version: str
+    topic_path: str | None = None
 
 
 class IndexRunStats(StrictModel):
