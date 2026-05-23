@@ -147,5 +147,77 @@ Phase 2 实际运行时，可用数据源为 SolveReport + OCR cache。用户笔
 
 ---
 
+## Phase 2 Extension: Topic Hierarchy Classification (02-07)
+
+*Added: 2026-05-23. Design session with gsd-explore.*
+
+### Motivation
+
+Phase 2 currently builds a flat tag system — tags describe what knowledge/techniques a problem uses. But for retrieval and exam composition, the user also needs a **hierarchical topic classification** — what subject area a problem belongs to.
+
+### Two-System Model
+
+Phase 2 now has two independent indexing dimensions:
+
+| Dimension | Tags | Topics |
+|-----------|------|--------|
+| Structure | Flat | Hierarchical tree |
+| Cardinality per problem | Multiple | Exactly one |
+| Semantic | "What knowledge/techniques does this use?" | "What subject area is this?" |
+| Example | `angular_momentum_conservation`, `binnet_equation` | 力学/天体运动/轨道理论 |
+| Primary use | Knowledge search, cross-problem insight | Browsing, exam composition |
+
+### Category System Redesign
+
+The `TagCategory` enum has been redesigned (see `.planning/notes/topic-hierarchy-design.md` for full details):
+
+| Old → New | Description |
+|-----------|-------------|
+| `physics_model` → `physics_law` | Specific physics laws (partition function, effective potential). Excludes textbook basics. |
+| (new) `physics_model` | Concrete models from papers (e.g., rainbow scattering model) |
+| `math_technique` | Kept. Exact differentials, series expansion, integration techniques. |
+| `heuristic` | Kept + absorbs `system_selection`. Phase diagrams, optical-mechanical analogy. |
+| `approximation` | Kept. Concrete approximation methods, not generic ones. |
+
+Action required: sync `TagCategory` enum and `builtin.yml` to new values.
+
+### Exam Paper Splitting
+
+Source materials are exam papers (7-8 problems each). Per-problem tagging requires splitting:
+
+- **Method:** LLM auto-split — read exam PDF, output problem boundaries
+- **Atomic unit:** Individual problem = one `IndexEntry`
+- **Splitting happens before indexing:** exam → split → per-problem files → normal index pipeline
+
+### What 02-07 Covers
+
+- `TopicNode` data model (tree, parent-child)
+- Topic taxonomy YAML (builtin, shipped with project)
+- `IndexEntry.topic_path` field (string path, e.g., "力学/天体运动/轨道理论")
+- LLM-based topic assignment (classifies problem into single topic path)
+- Query API: `find_problems_by_topic()`, `get_topic_tree()`
+- CLI: `cpho topic list`, `cpho topic browse`
+- MVP exam composition: `cpho compose --topic <path> --tags <tag1,tag2>`
+
+### Scope Boundary
+
+In scope for 02-07:
+- Data model + taxonomy file + LLM assignment + query API + basic CLI
+- MVP exam composition (output problem list, not full PDF generation)
+
+Deferred beyond 02-07:
+- Full exam PDF generation
+- Topic conflict resolution UI
+- Topic taxonomy editor/browser
+- Auto-generation of taxonomy from corpus
+
+### Related Documents
+
+- `.planning/notes/topic-hierarchy-design.md` — Full design decisions and handoff notes for plan-writing agent
+- `docs/vocabulary-extraction-prompt.md` — Agent prompt with new category values
+
+---
+
 *Phase: 2-Tag Indexing*
 *Context gathered: 2026-05-23*
+*Topic hierarchy supplement: 2026-05-23*

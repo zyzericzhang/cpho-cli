@@ -1,0 +1,597 @@
+version: v0.1
+tags:
+- internal_id: boltzmann_distribution
+  display_zh: 玻尔兹曼分布
+  category: physics_law
+  aliases:
+  - Boltzmann分布
+  - 指数分布
+  description: 用能量指数权重描述热平衡态概率分布。
+- internal_id: maxwell_velocity_distribution
+  display_zh: 麦克斯韦分布
+  category: physics_law
+  aliases:
+  - Maxwell分布
+  - 速度分布律
+  description: 描述理想气体分子速度分量和速率分布。
+- internal_id: equipartition_theorem
+  display_zh: 能均分定理
+  category: physics_law
+  aliases:
+  - 能量均分
+  - equipartition
+  description: 每个二次型自由度平均贡献相同热能。
+- internal_id: ideal_gas_equation
+  display_zh: 理想气体方程
+  category: physics_law
+  aliases:
+  - PV=nRT
+  - 状态方程
+  description: 联系理想气体压强、体积、温度和物质的量。
+- internal_id: first_law_thermodynamics
+  display_zh: 热力学第一定律
+  category: physics_law
+  aliases:
+  - 能量守恒
+  - dQ=dU+dW
+  description: 用内能变化、吸热和做功建立能量账本。
+- internal_id: carnot_efficiency
+  display_zh: 卡诺效率
+  category: physics_law
+  aliases:
+  - Carnot效率
+  - 可逆热机效率
+  description: 给出两热源间可逆热机的极限效率。
+- internal_id: clausius_entropy
+  display_zh: 克劳修斯熵
+  category: physics_law
+  aliases:
+  - Clausius熵
+  - dS=dQ/T
+  description: 通过可逆热量积分定义宏观熵变。
+- internal_id: boltzmann_entropy
+  display_zh: 玻尔兹曼熵
+  category: physics_law
+  aliases:
+  - S=klnW
+  - 微观态熵
+  description: 用微观态数刻画热力学熵。
+- internal_id: gibbs_mixing_entropy
+  display_zh: 混合熵
+  category: physics_law
+  aliases:
+  - Gibbs熵
+  - 气体混合熵
+  description: 描述不同气体混合导致的熵增加。
+- internal_id: maxwell_relation
+  display_zh: 麦克斯韦关系
+  category: physics_law
+  aliases:
+  - 热力学关系
+  - Maxwell关系
+  description: 由热力学势的全微分导出偏导关系。
+- internal_id: fourier_heat_conduction
+  display_zh: 傅里叶定律
+  category: physics_law
+  aliases:
+  - Fourier定律
+  - 热传导定律
+  description: 热流密度与温度梯度成正比。
+- internal_id: newton_cooling_law
+  display_zh: 牛顿冷却
+  category: physics_law
+  aliases:
+  - 对流换热
+  - Newton冷却
+  description: 描述物体与环境间的线性对流换热。
+- internal_id: stefan_boltzmann_law
+  display_zh: 斯特藩定律
+  category: physics_law
+  aliases:
+  - Stefan-Boltzmann
+  - 黑体辐射定律
+  description: 黑体辐射功率与热力学温度四次方成正比。
+- internal_id: radiation_pressure
+  display_zh: 辐射压
+  category: physics_law
+  aliases:
+  - 光压
+  - radiation pressure
+  description: 电磁辐射携带动量并对物体产生压强。
+- internal_id: photon_gas_equation
+  display_zh: 光子气方程
+  category: physics_law
+  aliases:
+  - 光子气压强
+  - p=u/3
+  description: 用能量密度关系描述光子气压强。
+- internal_id: laplace_pressure
+  display_zh: 拉普拉斯压强
+  category: physics_law
+  aliases:
+  - Laplace压强
+  - 曲面压强差
+  description: 表面张力导致曲面内外出现压强差。
+- internal_id: surface_tension_balance
+  display_zh: 表面张力平衡
+  category: physics_law
+  aliases:
+  - 液面张力
+  - 界面张力
+  description: 用界面张力与外力建立液体表面平衡。
+- internal_id: capillary_rise
+  display_zh: 毛细现象
+  category: physics_law
+  aliases:
+  - 毛细上升
+  - 毛细管效应
+  description: 表面张力与液柱重力共同决定液面高度。
+- internal_id: clapeyron_equation
+  display_zh: 克拉珀龙方程
+  category: physics_law
+  aliases:
+  - Clapeyron方程
+  - 相变曲线方程
+  description: 联系相变潜热与相平衡曲线斜率。
+- internal_id: latent_heat_relation
+  display_zh: 潜热关系
+  category: physics_law
+  aliases:
+  - 相变潜热
+  - 汽化热
+  description: 描述物态变化过程中吸放热与质量关系。
+- internal_id: saturated_vapor_pressure
+  display_zh: 饱和蒸气压
+  category: physics_law
+  aliases:
+  - 饱和汽压
+  - 蒸气压
+  description: 描述液汽平衡时蒸气压随温度变化。
+- internal_id: thermal_expansion_law
+  display_zh: 热膨胀规律
+  category: physics_law
+  aliases:
+  - 线膨胀
+  - 体膨胀
+  description: 描述物体尺寸随温度变化的线性近似关系。
+- internal_id: virial_theorem
+  display_zh: 维里定理
+  category: physics_law
+  aliases:
+  - 位力定理
+  - virial theorem
+  description: 联系束缚体系平均动能与势能。
+- internal_id: fluid_hydrostatic_equilibrium
+  display_zh: 流体静平衡
+  category: physics_law
+  aliases:
+  - 静力平衡
+  - 压强梯度平衡
+  description: 用压强梯度平衡体力或引力作用。
+- internal_id: brownian_diffusion
+  display_zh: 布朗扩散
+  category: physics_law
+  aliases:
+  - 扩散方程
+  - 随机游走扩散
+  description: 用随机运动导致的均方位移描述扩散。
+- internal_id: einstein_relation
+  display_zh: 爱因斯坦关系
+  category: physics_law
+  aliases:
+  - 迁移率扩散关系
+  - Einstein关系
+  description: 联系扩散系数、迁移率与温度。
+- internal_id: displacement_polarization
+  display_zh: 位移极化
+  category: physics_model
+  aliases:
+  - 诱导极化
+  - 电子位移极化
+  description: 用束缚电荷相对位移建立介质极化模型。
+- internal_id: orientational_polarization
+  display_zh: 取向极化
+  category: physics_model
+  aliases:
+  - 偶极取向
+  - 极性分子极化
+  description: 用偶极矩在外场中的统计取向描述极化。
+- internal_id: debye_relaxation
+  display_zh: 德拜弛豫
+  category: physics_model
+  aliases:
+  - Debye驰豫
+  - 极化弛豫
+  description: 描述交变场中偶极取向滞后和损耗。
+- internal_id: lorentz_oscillator
+  display_zh: 洛伦兹振子
+  category: physics_model
+  aliases:
+  - 束缚电子振子
+  - Lorentz模型
+  description: 用受迫振动电子模型解释介质色散。
+- internal_id: einstein_solid
+  display_zh: 爱因斯坦固体
+  category: physics_model
+  aliases:
+  - Einstein热容模型
+  - 量子谐振子固体
+  description: 把固体原子视为独立量子谐振子。
+- internal_id: gas_spring_model
+  display_zh: 气体弹簧
+  category: physics_model
+  aliases:
+  - 气弹簧
+  - 气体回复力
+  description: 用气体压强变化产生等效弹性回复力。
+- internal_id: piston_gas_model
+  display_zh: 活塞气体
+  category: physics_model
+  aliases:
+  - 活塞模型
+  - 气缸模型
+  description: 用活塞位置约束两侧气体状态变化。
+- internal_id: rotating_cylinder_gas
+  display_zh: 旋转气缸
+  category: physics_model
+  aliases:
+  - 转动气缸
+  - 环形气缸
+  description: 结合旋转运动、活塞约束与气体准静态过程。
+- internal_id: polarized_gas_capacitor
+  display_zh: 极化气体
+  category: physics_model
+  aliases:
+  - 介质气体
+  - 电场极化气体
+  description: 将气体分子极化能并入统计平衡分布。
+- internal_id: self_gravitating_gas
+  display_zh: 自引力气体
+  category: physics_model
+  aliases:
+  - 气态星球
+  - 引力气体球
+  description: 描述气体在自身引力和热压强下的平衡。
+- internal_id: jeans_instability
+  display_zh: 金斯判据
+  category: physics_model
+  aliases:
+  - Jeans判据
+  - 恒星形成判据
+  description: 判断气体云能否在引力下塌缩成星。
+- internal_id: photon_gas_model
+  display_zh: 光子气模型
+  category: physics_model
+  aliases:
+  - 辐射气体
+  - 黑体腔模型
+  description: 把热辐射视作满足统计规律的光子体系。
+- internal_id: blackbody_cavity
+  display_zh: 黑体腔
+  category: physics_model
+  aliases:
+  - 空腔辐射
+  - 黑体辐射腔
+  description: 用封闭空腔模型处理平衡热辐射。
+- internal_id: soap_film_model
+  display_zh: 泡膜模型
+  category: physics_model
+  aliases:
+  - 肥皂膜
+  - 液膜振动
+  description: 用双液面表面张力分析薄膜平衡与振动。
+- internal_id: capillary_column_model
+  display_zh: 毛细管液柱
+  category: physics_model
+  aliases:
+  - 液柱模型
+  - 毛细管模型
+  description: 用液柱重力与曲面压强差分析毛细现象。
+- internal_id: heat_conduction_rod
+  display_zh: 导热细杆
+  category: physics_model
+  aliases:
+  - 热传导杆
+  - 一维导热杆
+  description: 将温度场简化为一维杆上的热传导问题。
+- internal_id: spherical_star_model
+  display_zh: 球形恒星
+  category: physics_model
+  aliases:
+  - 恒星结构
+  - 球对称星体
+  description: 用球对称平衡方程分析恒星内部结构。
+- internal_id: kinetic_transport_model
+  display_zh: 输运模型
+  category: physics_model
+  aliases:
+  - 分子输运
+  - 平均自由程模型
+  description: 从分子碰撞和自由程估算热量或动量输运。
+- internal_id: quasi_static_process
+  display_zh: 准静态过程
+  category: heuristic
+  aliases:
+  - 缓慢过程
+  - 平衡态路径
+  description: 把过程分解为连续平衡态以使用状态方程。
+- internal_id: energy_accounting
+  display_zh: 能量账本
+  category: heuristic
+  aliases:
+  - 能量清算
+  - 热功内能分解
+  description: 系统区分内能、做功、热量和势能贡献。
+- internal_id: entropy_accounting
+  display_zh: 熵变账本
+  category: heuristic
+  aliases:
+  - 熵清算
+  - 熵产生分析
+  description: 分别计算系统、环境和总熵变化。
+- internal_id: micro_to_macro_average
+  display_zh: 微宏平均
+  category: heuristic
+  aliases:
+  - 统计平均
+  - 微观到宏观
+  description: 通过微观分布平均得到宏观物理量。
+- internal_id: flux_balance
+  display_zh: 通量平衡
+  category: heuristic
+  aliases:
+  - 流量守恒
+  - 通量差分
+  description: 用进入与流出通量差建立局域变化方程。
+- internal_id: steady_state_balance
+  display_zh: 稳态平衡
+  category: heuristic
+  aliases:
+  - 定常平衡
+  - 稳恒条件
+  description: 在时间不变条件下令净流量或净功率为零。
+- internal_id: symmetry_reduction
+  display_zh: 对称降维
+  category: heuristic
+  aliases:
+  - 球对称化
+  - 柱对称化
+  description: 利用几何对称性减少变量和方程维数。
+- internal_id: trial_solution_ansatz
+  display_zh: 试探解
+  category: heuristic
+  aliases:
+  - ansatz
+  - 猜解
+  description: 代入特定函数形式简化难解微分方程。
+- internal_id: phase_diagram_reading
+  display_zh: 相图判断
+  category: heuristic
+  aliases:
+  - 相变图像
+  - 相平衡图
+  description: 用相图确定相态、相变方向和临界条件。
+- internal_id: effective_spring
+  display_zh: 等效弹簧
+  category: heuristic
+  aliases:
+  - 等效回复力
+  - 有效劲度系数
+  description: 将压强或表面张力效应转化为线性回复力。
+- internal_id: small_element_balance
+  display_zh: 微元平衡
+  category: heuristic
+  aliases:
+  - 微元受力
+  - 微元守恒
+  description: 对微小体元列平衡或守恒方程。
+- internal_id: limiting_case_check
+  display_zh: 极限检验
+  category: heuristic
+  aliases:
+  - 高低温极限
+  - 边界检验
+  description: 用特殊极限检查结果合理性和物理意义。
+- internal_id: gaussian_integral
+  display_zh: 高斯积分
+  category: math_technique
+  aliases:
+  - 正态积分
+  - Gaussian integral
+  description: 计算含二次指数分布的归一化和矩。
+- internal_id: gamma_function_integral
+  display_zh: 伽马积分
+  category: math_technique
+  aliases:
+  - Gamma函数
+  - Γ函数
+  description: 处理幂函数乘指数函数的定积分。
+- internal_id: probability_normalization
+  display_zh: 概率归一化
+  category: math_technique
+  aliases:
+  - 归一化常数
+  - normalization
+  description: 通过总概率为一确定分布函数系数。
+- internal_id: coordinate_transform
+  display_zh: 坐标变换
+  category: math_technique
+  aliases:
+  - 变量替换
+  - 换元
+  description: 通过合适坐标或变量替换简化积分。
+- internal_id: spherical_integration
+  display_zh: 球坐标积分
+  category: math_technique
+  aliases:
+  - 立体角积分
+  - 角向积分
+  description: 用球坐标和立体角处理取向或球对称问题。
+- internal_id: cylindrical_integration
+  display_zh: 柱坐标积分
+  category: math_technique
+  aliases:
+  - 圆柱坐标
+  - 径向积分
+  description: 用柱坐标处理圆筒、电场和导热问题。
+- internal_id: series_expansion
+  display_zh: 级数展开
+  category: math_technique
+  aliases:
+  - 泰勒展开
+  - Taylor展开
+  description: 对小参数函数展开并保留主导项。
+- internal_id: differential_equation
+  display_zh: 微分方程
+  category: math_technique
+  aliases:
+  - ODE
+  - PDE
+  description: 通过连续变量方程描述系统演化或平衡。
+- internal_id: separation_of_variables
+  display_zh: 分离变量
+  category: math_technique
+  aliases:
+  - 变量分离
+  - separation
+  description: 将偏微分方程拆成空间和时间方程求解。
+- internal_id: integrating_factor
+  display_zh: 积分因子
+  category: math_technique
+  aliases:
+  - 全微分因子
+  - integrating factor
+  description: 将一阶微分方程化为可直接积分形式。
+- internal_id: eigenmode_expansion
+  display_zh: 本征模展开
+  category: math_technique
+  aliases:
+  - 模态展开
+  - Fourier展开
+  description: 用边界条件下的本征函数展开温度或振动场。
+- internal_id: complex_amplitude_method
+  display_zh: 复振幅法
+  category: math_technique
+  aliases:
+  - 相量法
+  - 复数表示
+  description: 用复指数处理简谐驱动和相位差问题。
+- internal_id: damped_oscillator_solution
+  display_zh: 阻尼振子求解
+  category: math_technique
+  aliases:
+  - 受迫振动
+  - 阻尼振动
+  description: 求解含阻尼、回复力和外驱动的线性振子。
+- internal_id: dimensional_analysis
+  display_zh: 量纲分析
+  category: math_technique
+  aliases:
+  - 量纲检验
+  - scaling
+  description: 用量纲关系约束公式形式和物理尺度。
+- internal_id: asymptotic_matching
+  display_zh: 渐近估计
+  category: math_technique
+  aliases:
+  - 数量级估计
+  - asymptotic
+  description: 在参数极限下保留主导量并估计结果。
+- internal_id: small_angle_linearization
+  display_zh: 小角线性化
+  category: approximation
+  aliases:
+  - sinθ≈θ
+  - 小角近似
+  description: 将角函数在小角范围内化为线性形式。
+- internal_id: high_temperature_limit
+  display_zh: 高温极限
+  category: approximation
+  aliases:
+  - kT远大
+  - 经典极限
+  description: 在热能远大于特征能量时展开物理量。
+- internal_id: low_temperature_limit
+  display_zh: 低温极限
+  category: approximation
+  aliases:
+  - 低温近似
+  - 指数抑制
+  description: 在热能远小于特征能量时保留最低激发贡献。
+- internal_id: weak_field_expansion
+  display_zh: 弱场展开
+  category: approximation
+  aliases:
+  - 高温弱场
+  - 小电场展开
+  description: 对外场能量远小于热能的情形作线性展开。
+- internal_id: thin_shell_approximation
+  display_zh: 薄层近似
+  category: approximation
+  aliases:
+  - 薄板近似
+  - 薄壳近似
+  description: 忽略厚度高阶影响并按薄层积分处理。
+- internal_id: continuum_approximation
+  display_zh: 连续介质近似
+  category: approximation
+  aliases:
+  - 连续化
+  - 连续场近似
+  description: 将离散粒子体系近似为连续密度场。
+- internal_id: dilute_gas_approximation
+  display_zh: 稀薄气体近似
+  category: approximation
+  aliases:
+  - 理想稀薄气体
+  - 低密度近似
+  description: 忽略分子间相互作用并保留碰撞统计效应。
+- internal_id: mean_free_path_approximation
+  display_zh: 平均自由程近似
+  category: approximation
+  aliases:
+  - 自由程估计
+  - λ近似
+  description: 用平均自由程估算输运系数和热流。
+- internal_id: steady_state_approximation
+  display_zh: 稳态近似
+  category: approximation
+  aliases:
+  - 定常近似
+  - 时间项忽略
+  description: 忽略时间变化项以求稳定分布。
+- internal_id: quasistatic_approximation
+  display_zh: 准静态近似
+  category: approximation
+  aliases:
+  - 慢变近似
+  - 平衡近似
+  description: 认为过程足够慢以持续满足平衡关系。
+- internal_id: linear_response
+  display_zh: 线性响应
+  category: approximation
+  aliases:
+  - 一阶响应
+  - linear response
+  description: 只保留外界扰动的一阶物理响应。
+- internal_id: far_field_approximation
+  display_zh: 远场近似
+  category: approximation
+  aliases:
+  - 辐射远区
+  - 远区近似
+  description: 在距离远大于源尺度时简化辐射场表达式。
+- internal_id: lumped_capacity_approximation
+  display_zh: 集总热容近似
+  category: approximation
+  aliases:
+  - 集总参数
+  - 均温近似
+  description: 将物体内部温度视作空间均匀变量。
+- internal_id: negligible_radiation_loss
+  display_zh: 忽略辐射损失
+  category: approximation
+  aliases:
+  - 无辐射损失
+  - 辐射忽略
+  description: 在传导或对流主导时忽略热辐射项。

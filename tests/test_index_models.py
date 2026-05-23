@@ -86,14 +86,14 @@ def test_vocabulary_round_trip() -> None:
     vocab = Vocabulary(
         version="v0.1",
         tags={
-            "newton_second_law": CanonicalTag(
-                internal_id="newton_second_law",
-                display_zh="牛顿第二定律",
-                category=TagCategory.PHYSICS_MODEL,
-                aliases=["F=ma"],
+            "momentum_conservation": CanonicalTag(
+                internal_id="momentum_conservation",
+                display_zh="动量守恒",
+                category=TagCategory.PHYSICS_LAW,
+                aliases=["p 守恒"],
             )
         },
-        alias_index={"f=ma": "newton_second_law"},
+        alias_index={"p守恒": "momentum_conservation"},
     )
 
     assert Vocabulary.model_validate_json(vocab.model_dump_json()) == vocab

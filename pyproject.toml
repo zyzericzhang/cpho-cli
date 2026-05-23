@@ -32,7 +32,7 @@ package = true
 where = ["src"]
 
 [tool.setuptools.package-data]
-cpho_cli = ["builtin_skills/**/*", "vocabulary/*.yml"]
+cpho_cli = ["builtin_skills/**/*", "vocabulary/*.yml", "vocabulary/builtin/*.yml"]
 
 [tool.ruff]
 line-length = 100

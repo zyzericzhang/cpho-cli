@@ -20,6 +20,13 @@ def _builtin_vocab_path() -> Path:
     return Path(__file__).resolve().parents[2] / "vocabulary" / "builtin.yml"
 
 
+def _builtin_vocab_paths() -> list[Path]:
+    root = _builtin_vocab_path().parent
+    paths = [_builtin_vocab_path()]
+    paths.extend(sorted((root / "builtin").glob("*.yml")))
+    return paths
+
+
 def normalize_alias(text: str) -> str:
     text = unicodedata.normalize("NFKC", text)
     text = text.casefold()
@@ -79,8 +86,15 @@ def _short_sha8(path: Path) -> str | None:
 
 
 def load_merged_vocabulary(workspace_root: Path) -> Vocabulary:
-    builtin = load_yaml_vocab(_builtin_vocab_path(), layer=TagLayer.BUILTIN, optional=False)
-    if builtin is None:
+    builtin_layers = [
+        vocab
+        for vocab in (
+            load_yaml_vocab(path, layer=TagLayer.BUILTIN, optional=False)
+            for path in _builtin_vocab_paths()
+        )
+        if vocab is not None
+    ]
+    if not builtin_layers:
         raise VocabularyError("Builtin vocabulary unexpectedly missing.")
 
     workspace_path = workspace_root / ".cpho" / "vocabulary" / "workspace.yml"
@@ -89,14 +103,19 @@ def load_merged_vocabulary(workspace_root: Path) -> Vocabulary:
     private = load_yaml_vocab(private_path, layer=TagLayer.USER_PRIVATE, optional=True)
 
     merged: dict[str, CanonicalTag] = {}
-    for vocabulary in [builtin, workspace, private]:
+    for vocabulary in [*builtin_layers, workspace, private]:
         if vocabulary is None:
             continue
         for tag in vocabulary.tags.values():
             merged[tag.internal_id] = tag
 
+    builtin_hash = hashlib.sha256()
+    for path in _builtin_vocab_paths():
+        builtin_hash.update(path.name.encode("utf-8"))
+        builtin_hash.update(path.read_bytes())
+    builtin_version = f"{builtin_layers[0].version}+bt-{builtin_hash.hexdigest()[:8]}"
     version = (
-        f"{builtin.version}+ws-{_short_sha8(workspace_path) or 'none'}"
+        f"{builtin_version}+ws-{_short_sha8(workspace_path) or 'none'}"
         f"+pv-{_short_sha8(private_path) or 'none'}"
     )
     return Vocabulary(version=version, tags=merged, alias_index=_build_alias_index(merged))
