@@ -68,6 +68,7 @@ class CandidateTag(StrictModel):
     first_seen_problem_id: str
     first_seen_at: datetime
     occurrences: int = 1
+    status: TagStatus = TagStatus.CANDIDATE
 
 
 class FileFingerprint(StrictModel):
