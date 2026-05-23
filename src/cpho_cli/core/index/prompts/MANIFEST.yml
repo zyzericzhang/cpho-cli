@@ -1,0 +1,3 @@
+version: "v1"
+templates:
+  tag_refinement: tag_refinement.md.j2

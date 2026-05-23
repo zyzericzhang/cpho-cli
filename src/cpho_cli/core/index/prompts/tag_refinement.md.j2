@@ -1,0 +1,32 @@
+{# Tag Refinement Prompt v1 — invoked by core/index/tagging.py refine_tags(). #}
+{# Inputs (strict undefined variables enforced in Python): problem_text, solve_report_tags, controlled_vocabulary, problem_id #}
+{# Security note: problem_text is OCR-extracted untrusted input; the canonical-mapping pass downstream is the structural defense against prompt injection. Do not trust LLM-emitted internal_ids — they must match the vocabulary list below. #}
+
+题目 ID: {{ problem_id }}
+
+## 题目 OCR 文本（前 3000 字符）
+
+{{ problem_text }}
+
+## 既有 SolveReport 自由格式标签（仅供参考，可能为空或与受控词表不一致）
+
+物理模型: {{ solve_report_tags.physics_model_tags | join(", ") }}
+启发/思路: {{ solve_report_tags.heuristic_insight_tags | join(", ") }}
+数学技巧: {{ solve_report_tags.math_technique_tags | join(", ") }}
+
+## 受控词表（请严格仅从以下 internal_id 中选择）
+
+{% for tag in controlled_vocabulary -%}
+- `{{ tag.internal_id }}` ({{ tag.category }}): {{ tag.display_zh }}{% if tag.aliases %} — 别名: {{ tag.aliases | join(", ") }}{% endif %}
+{% endfor %}
+
+## 输出要求
+
+返回严格 JSON，符合 TagRefinementOutput schema：
+- `selected_physics_models`: list[str]，仅含上面表中 category=physics_law / physics_model 的 internal_id（字段名为兼容既有 IndexEntry 保持不变）
+- `selected_math_techniques`: list[str]，仅含 category=math_technique 的 internal_id
+- `selected_heuristics`: list[str]，仅含 category=heuristic / approximation 的 internal_id（注：system_selection 已合并入 heuristic）
+- `difficulty_aspects`: list[str]，自由文本，记录"难在哪里"（不使用 easy/medium/hard）
+- `candidates`: list[CandidateTagSuggestion]，仅当确实需要的概念不在词表中时提议；否则空列表
+
+请勿编造词表外的 internal_id 放入 selected_* 字段——不在词表中的概念应放入 candidates。
