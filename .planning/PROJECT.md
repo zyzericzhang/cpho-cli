@@ -12,11 +12,12 @@ CPHO CLI 是一个本地命令行工具，帮助物理竞赛教练和深度学�
 
 ### Validated
 
-(None yet — ship to validate)
+- [x] 题目标签索引系统：对每道题自动生成标签（物理模型、启发点、难点、数学技巧），存入本地索引，后续操作通过标签检索而非重复读取原始文件 — Validated in Phase 2
+- [x] 本地 LLM API key 支持：默认读取 gitignored `config.local.yml`，支持多 provider/key profile，并可通过 `--provider` 选择本次运行的 key — Validated in Phase 1
+- [x] 题目文件夹即工作空间：无需导入流程，文件夹内的 PDF/图片直接可被索引和分析 — Validated in Phase 1
 
 ### Active
 
-- [ ] 题目标签索引系统：对每道题自动生成标签（物理模型、启发点、难点、数学技巧），存入本地索引，后续操作通过标签检索而非重复读取原始文件
 - [ ] Skill 插件系统：用户可编写和安装自定义分析 skill，支持三层模式（纯 prompt / 声明式配置 YAML / Python 脚本）
 - [ ] Skill Creator：用户输入自然语言描述，自动生成完整的 skill 配置文件和 prompt 管线
 - [ ] 内置 skill — 主动提问模式：检查答案正确性 → 提取启发点 → 生成标签 → 向学生提问，交互支持问题列表和 REPL 对话两种方式
@@ -24,8 +25,6 @@ CPHO CLI 是一个本地命令行工具，帮助物理竞赛教练和深度学�
 - [ ] 内置 skill — 对比分析模式：用户选择两道或多道题目，找出共同模型、共同思路，或基于标签关联其他题目进行联合分析
 - [ ] 内置 skill — 组卷输出：将关联题目及其答案分别拼接为两份 PDF（题目卷 + 答案卷）
 - [ ] DAG 分步管线：长题按步骤/小问拆分，每步仅注入裁剪过的上下文，避免注意力稀释导致跳步
-- [ ] 本地 LLM API key 支持：默认读取 gitignored `config.local.yml`，支持多 provider/key profile，并可通过 `--provider` 选择本次运行的 key
-- [ ] 题目文件夹即工作空间：无需导入流程，文件夹内的 PDF/图片直接可被索引和分析
 
 ### Out of Scope
 
@@ -37,7 +36,7 @@ CPHO CLI 是一个本地命令行工具，帮助物理竞赛教练和深度学�
 
 ## Context
 
-项目处于早期设计阶段。最初的产品 spec 定位为"批量解析工具"，经过深入讨论后 scope 大幅扩展为"物理竞赛知识库 + AI 分析助手"。现有仓库包含旧版 product-spec.md、architecture-decisions.md、research-questions.md——这些文档作为参考保留但需要按新定位重写。
+Phase 1（Core Foundation）和 Phase 2（Tag Indexing）已完成。用户可以 `cpho solve` 解题、`cpho index` 索引工作空间（自动 OCR + LLM 标签提取 + 主题分类）、`cpho topic` 浏览主题树、`cpho compose` 组卷筛选。Python API 已导出供 Phase 3 skills 使用。216 个测试全部通过。
 
 技术方向（不锁定）：
 - Python 生态（AI/LLM 工具链最成熟）
@@ -81,4 +80,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-20 after project initialization*
+*Last updated: 2026-05-23 after Phase 2 completion*
