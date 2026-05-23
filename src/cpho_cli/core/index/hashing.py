@@ -3,9 +3,11 @@ from __future__ import annotations
 import hashlib
 import json
 from pathlib import Path
+from typing import Literal
 
 from cpho_cli.models.index import (
     FileFingerprint,
+    IndexEntry,
     IndexFingerprint,
     SemanticFingerprint,
     UserLearningFingerprint,
@@ -14,6 +16,8 @@ from cpho_cli.models.index import (
 
 # Increment when IndexEntry / TaggedReference / IndexFingerprint schemas change. Embedded in SemanticFingerprint per D-14.
 TAG_SCHEMA_VERSION = "v1"
+
+IndexAction = Literal["full_index", "re_ocr_and_re_tag", "re_tag_only", "refinement_only", "skip"]
 
 
 def sha256_file(path: Path) -> str:
@@ -93,3 +97,18 @@ def compose_index_fingerprint(
     user_learning_fp: UserLearningFingerprint,
 ) -> IndexFingerprint:
     return IndexFingerprint(file=file_fp, semantic=semantic_fp, user_learning=user_learning_fp)
+
+
+# D-14 dispatcher. Order matters: file > semantic > user_learning. File changes invalidate
+# everything below; semantic changes keep OCR cache; user_learning changes touch neither OCR
+# nor LLM (refinement-only pass).
+def decide_action(old: IndexEntry | None, new_fp: IndexFingerprint) -> IndexAction:
+    if old is None:
+        return "full_index"
+    if old.fingerprint.file != new_fp.file:
+        return "re_ocr_and_re_tag"
+    if old.fingerprint.semantic != new_fp.semantic:
+        return "re_tag_only"
+    if old.fingerprint.user_learning != new_fp.user_learning:
+        return "refinement_only"
+    return "skip"

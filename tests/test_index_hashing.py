@@ -6,12 +6,52 @@ from pathlib import Path
 
 from cpho_cli.core.index.hashing import (
     compose_file_fingerprint,
+    compose_index_fingerprint,
     compose_semantic_fingerprint,
     compose_user_learning_fingerprint,
+    decide_action,
     sha256_file,
     sha256_json,
 )
-from cpho_cli.models.index import UserNotebookEntry, UserLearningFingerprint
+from cpho_cli.models.index import FileFingerprint, IndexEntry, IndexFingerprint, SemanticFingerprint, UserLearningFingerprint, UserNotebookEntry
+
+
+def _make_fp(
+    file_sha: str = "a" * 64,
+    ocr_engine_version: str = "3.0",
+    notes_sha256: str | None = None,
+) -> IndexFingerprint:
+    file_fp = FileFingerprint(
+        problem_sha256=file_sha,
+        answer_sha256=None,
+        problem_size_bytes=1,
+        answer_size_bytes=None,
+        problem_mtime_ns=1,
+    )
+    semantic_fp = SemanticFingerprint(
+        file_fp_hash=file_sha[:16],
+        ocr_engine="rapidocr",
+        ocr_engine_version=ocr_engine_version,
+        ocr_config_hash="config",
+        tag_prompt_version="v1",
+        tag_schema_version="v1",
+        model_name="model",
+        model_temperature=0.0,
+        vocabulary_version="vocab",
+    )
+    user_learning_fp = UserLearningFingerprint(notes_sha256=notes_sha256)
+    return compose_index_fingerprint(file_fp, semantic_fp, user_learning_fp)
+
+
+def _make_entry(fingerprint: IndexFingerprint) -> IndexEntry:
+    return IndexEntry(
+        problem_id="p1",
+        problem_path=Path("problem.pdf"),
+        indexed_at=datetime(2024, 1, 1),
+        fingerprint=fingerprint,
+        ocr_text_length=0,
+        tag_prompt_version="v1",
+    )
 
 
 def test_sha256_file_deterministic(tmp_path: Path) -> None:
@@ -210,3 +250,49 @@ def test_user_learning_fp_ignores_updated_at() -> None:
     second = UserNotebookEntry(problem_id="p1", key_points=["Newton"], updated_at=datetime(2025, 1, 1))
 
     assert compose_user_learning_fingerprint(first) == compose_user_learning_fingerprint(second)
+
+
+def test_decide_action_new_problem_full_index() -> None:
+    assert decide_action(None, _make_fp()) == "full_index"
+
+
+def test_decide_action_file_changed_re_ocr_and_re_tag() -> None:
+    old = _make_entry(_make_fp(file_sha="a" * 64))
+    new = _make_fp(file_sha="b" * 64)
+
+    assert decide_action(old, new) == "re_ocr_and_re_tag"
+
+
+def test_decide_action_semantic_changed_re_tag_only() -> None:
+    old = _make_entry(_make_fp(ocr_engine_version="3.0"))
+    new = _make_fp(ocr_engine_version="4.0")
+
+    assert decide_action(old, new) == "re_tag_only"
+
+
+def test_decide_action_user_learning_changed_refinement_only() -> None:
+    old = _make_entry(_make_fp(notes_sha256="old"))
+    new = _make_fp(notes_sha256="new")
+
+    assert decide_action(old, new) == "refinement_only"
+
+
+def test_decide_action_all_equal_skip() -> None:
+    fingerprint = _make_fp()
+    old = _make_entry(fingerprint)
+
+    assert decide_action(old, fingerprint) == "skip"
+
+
+def test_decide_action_precedence_file_wins_over_semantic() -> None:
+    old = _make_entry(_make_fp(file_sha="a" * 64, ocr_engine_version="3.0"))
+    new = _make_fp(file_sha="b" * 64, ocr_engine_version="4.0")
+
+    assert decide_action(old, new) == "re_ocr_and_re_tag"
+
+
+def test_decide_action_precedence_semantic_wins_over_user_learning() -> None:
+    old = _make_entry(_make_fp(ocr_engine_version="3.0", notes_sha256="old"))
+    new = _make_fp(ocr_engine_version="4.0", notes_sha256="new")
+
+    assert decide_action(old, new) == "re_tag_only"
