@@ -10,9 +10,11 @@ dependencies = [
   "onnxruntime>=1.18",
   "pydantic>=2.7",
   "pymupdf>=1.24",
+  "prompt_toolkit>=3.0.50",
   "pyyaml>=6.0",
   "rapidocr>=3.0",
   "typer>=0.12",
+  "wcwidth>=0.2.13",
 ]
 
 [project.scripts]
@@ -22,6 +24,7 @@ cpho = "cpho_cli.cli.app:app"
 dev = [
   "mypy>=1.10",
   "pytest>=8.2",
+  "pytest-asyncio>=0.23",
   "ruff>=0.5",
 ]
 
