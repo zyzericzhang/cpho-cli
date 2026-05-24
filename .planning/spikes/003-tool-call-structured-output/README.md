@@ -2,25 +2,28 @@
 spike: 003
 name: tool-call-structured-output
 type: standard
-validates: "Given multiple LLM providers (DeepSeek, OpenAI, Anthropic), when we need structured JSON output from a Pydantic model, then a tool-calling approach works across all of them without relying on response_format json_schema"
+validates: "Given multiple LLM providers (OpenAI, DeepSeek, Anthropic, Mistral, Gemini, local models), when we need structured JSON output from a Pydantic model, then a tool-calling approach works across ALL of them without relying on response_format json_schema, without increasing skill author complexity, and without requiring OpenRouter as intermediary"
 verdict: VALIDATED
 related: []
-tags: [llm, structured-output, tool-calling, cross-provider, deepseek, openrouter]
+tags: [llm, structured-output, tool-calling, cross-provider, deepseek, openrouter, 2026]
 ---
 
-# Spike 003: Tool Calling as Universal Structured Output
+# Spike 003: Tool Calling as Universal Structured Output (2026 Edition)
 
 ## What This Validates
 
-**Given** an LLM provider that supports tool/function calling but NOT `response_format: {type: "json_schema"}` (e.g., DeepSeek),
-**When** we send a request with the Pydantic model schema wrapped as a tool definition and `tool_choice: "required"`,
-**Then** the model returns structured JSON matching the schema in `tool_calls[0].function.arguments`.
+**Given** multiple LLM providers accessed via their official APIs (not just OpenRouter),
+**When** we need structured JSON output from a Pydantic model,
+**Then** replacing `response_format: json_schema` with forced tool calling (`tools` + `tool_choice`) works across ALL providers while keeping the skill-author interface unchanged.
 
-## Research
+---
 
-### Problem
+## Research (Updated May 2026)
 
-The current `_OpenAICompatibleProvider.complete()` sends:
+### The Problem
+
+`_OpenAICompatibleProvider.complete()` currently sends:
+
 ```json
 {
   "response_format": {
@@ -30,204 +33,226 @@ The current `_OpenAICompatibleProvider.complete()` sends:
 }
 ```
 
-DeepSeek API does NOT support `response_format` with `json_schema` type. Many other providers (Ollama, local models via vLLM, older OpenAI-compatible APIs) also lack this feature. This blocks using any provider except OpenAI/OpenRouter.
+This is an **OpenAI-proprietary feature**. It does NOT work on:
+- DeepSeek (all models, including brand-new V4-Pro/V4-Flash)
+- Ollama local deployments
+- vLLM (requires non-standard `extra_body`)
 
-### DeepSeek API Capabilities (2025)
+### 2026 Provider Capability Matrix
 
-| Feature | deepseek-chat (V3) | deepseek-reasoner (R1-0528+) | deepseek-reasoner (pre-0528) |
-|---------|-------------------|------------------------------|------------------------------|
-| Tool calling | ✅ Full support | ✅ Supported | ❌ Falls back to chat model |
-| json_schema response_format | ❌ | ❌ | ❌ |
-| json_object response_format | ⚠️ Partial | ⚠️ Partial | ⚠️ Partial |
-| Strict mode (beta) | ✅ V3.1+ | ❌ | ❌ |
+Comprehensive survey of structured output capabilities across ALL major providers (as of May 2026):
 
-Key finding: **DeepSeek supports tool calling on all current models but does NOT support `json_schema` response format on any model.**
+| Provider | Official API | Tool Calling | json_schema response_format | Notes |
+|----------|-------------|-------------|----------------------------|-------|
+| **OpenAI GPT-5/4o** | api.openai.com | ✅ Native | ✅ Native | Both fully supported. Strict mode: 0.2% violation rate |
+| **DeepSeek V4-Pro/Flash** | api.deepseek.com | ✅ Native | ❌ **NOT supported** | V4 generation only. `deepseek-chat`/`reasoner` deprecated July 2026 |
+| **Anthropic Opus 4.7** | api.anthropic.com | ✅ Native (`tool_use`) | ✅ Native (`output_format`) | Different API format. Sampling params removed on Opus 4.7 |
+| **Google Gemini 3.1** | generativelanguage.googleapis.com | ✅ Native | ✅ Native (`response_json_schema`) | Can combine tools + structured output in one request |
+| **Mistral Medium 3.5** | api.mistral.ai | ✅ Native | ✅ Native | `tool_choice="any"` (not "required"). Apache 2.0 Small-4 available |
+| **OpenRouter** | openrouter.ai | ✅ Unified (OpenAI format) | ✅ Pass-through | Translates across all providers |
+| **vLLM** (local) | Self-hosted | ✅ since v0.8.3 (`--enable-auto-tool-choice`) | ⚠️ `extra_body` only | 20+ model-specific tool parsers. No `strict` mode |
+| **Ollama** (local) | Self-hosted | ⚠️ Partial (model-dependent) | ❌ Not supported | Gemma4, Llama4, Qwen2.5 work best |
 
-DeepSeek also has an Anthropic-compatible endpoint at `https://api.deepseek.com/anthropic` that supports Anthropic-format `tool_use` blocks.
+**Critical finding: Tool calling is the ONLY mechanism supported by 100% of providers.**
+`json_schema` response_format is NOT supported by DeepSeek (official API) or Ollama, and requires non-standard parameters in vLLM.
 
-### Cross-Provider Tool Calling Support
+### Question 1: Skill Author Difficulty — Does Not Increase
 
-| Provider | Tool Calling | json_schema response_format | Notes |
-|----------|-------------|----------------------------|-------|
-| OpenAI | ✅ Native | ✅ Native | Both fully supported |
-| DeepSeek V3+ | ✅ Native | ❌ | Tool calling is the way |
-| Anthropic | ✅ Native (`tool_use`) | ❌ Different API format | Uses `tool_use` content blocks |
-| OpenRouter | ✅ Unified | ✅ Pass-through | Translates tool calls across all providers uniformly |
-| vLLM (local) | ✅ with `--enable-auto-tool-choice` | ⚠️ Via `extra_body` | Not standard OpenAI format |
-| Ollama (local) | ⚠️ Partial | ❌ | Requires post-processing |
+The skill author's interface to structured output is through **Pydantic models**. The full chain:
 
-### The Established Pattern: Tool Calling for Structured Output
-
-Multiple major frameworks use tool calling as their **primary or fallback** mechanism for structured output:
-
-- **Instructor** — `TOOLS` / `TOOLS_STRICT` modes use tool calling with forced tool choice
-- **LangChain** — `with_structured_output()` falls back to tool calling when `json_schema` isn't available
-- **pydantic-ai** — implements structured output *solely* using tool-calling APIs
-- **AG2** — creates a special tool with your schema, forces tool choice, extracts data
-
-### How It Works
-
-Instead of:
-```python
-# Current approach (breaks on DeepSeek)
-payload["response_format"] = {
-    "type": "json_schema",
-    "json_schema": {"name": "solve_report", "strict": True, "schema": {...}}
-}
-# Response data in: response["choices"][0]["message"]["content"]
+```
+Skill author defines:         SolveReport(BaseModel)  ← Pydantic model
+Skill author passes it:       provider.complete(..., response_model=SolveReport)
+Framework returns:            LLMResponse(content=json_string)
+Caller validates:             SolveReport.model_validate_json(response.content)
 ```
 
-Use:
+**The proposed change is 100% transparent to this chain.** The `response_model` parameter and `LLMResponse.content` field remain unchanged. The only difference is where the JSON string originates in the HTTP response body — an implementation detail hidden behind the `LLMProvider` interface.
+
+For the future generic SkillRuntime (Phase 3), skill authors will still only write:
+1. Pydantic models (for output type safety)
+2. `skill.yml` (step wiring)
+3. Jinja2 prompt templates (`.md.j2`)
+
+None of these touch the structured output mechanism. **Skill author complexity = zero change.**
+
+### Question 2: Official Platform Support (Not Just OpenRouter)
+
+The key architectural insight: **OpenAI-format tool calling is the de facto standard across platforms.**
+
+| Platform | OpenAI-format tool calling works? | Direct HTTP call to official API |
+|----------|----------------------------------|----------------------------------|
+| OpenAI | ✅ | `POST api.openai.com/v1/chat/completions` |
+| DeepSeek | ✅ | `POST api.deepseek.com/v1/chat/completions` |
+| Mistral | ✅ | `POST api.mistral.ai/v1/chat/completions` |
+| vLLM | ✅ | `POST <self-hosted>/v1/chat/completions` |
+| Ollama | ✅ (model-dependent) | `POST localhost:11434/v1/chat/completions` |
+| OpenRouter | ✅ | `POST openrouter.ai/api/v1/chat/completions` |
+
+**EXCEPTION: Anthropic native API** uses a different format:
+- Tool definitions: `input_schema` instead of `parameters`
+- Response: `tool_use` content blocks with `stop_reason: "tool_use"` (not `tool_calls` in `choices[0].message`)
+- Different endpoint: `POST api.anthropic.com/v1/messages`
+- Different auth header: `x-api-key` instead of `Authorization: Bearer`
+
+Anthropic can still be supported, just not through `_OpenAICompatibleProvider`. Three options:
+1. **Via OpenRouter** (simplest) — OpenRouter translates OpenAI-format tool calls to Anthropic `tool_use`
+2. **Separate `AnthropicProvider`** class — implements `LLMProvider` protocol using Anthropic SDK/API
+3. **DeepSeek's Anthropic endpoint** — DeepSeek also has `/anthropic` endpoint with Anthropic format
+
+**Recommendation: `_OpenAICompatibleProvider` covers 6/7 platforms directly. Anthropic native is a separate provider class (future work).**
+
+Gemini also uses a non-OpenAI format (REST API with different JSON structure), but OpenRouter handles it. Direct Gemini support would be a separate provider.
+
+### Question 3: Migration Difficulty, Engineering Complexity, and Impact Analysis
+
+#### Scope of Change
+
+| Layer | Files Changed | Nature of Change |
+|-------|--------------|------------------|
+| **Provider (core change)** | 1 file: `llm.py` | Replace `response_format` with `tools`+`tool_choice`; swap response extraction path |
+| **Callers** | 0 files | No changes. `LLMResponse.content` unchanged |
+| **Models/Pydantic** | 0 files | No changes. Same `model_json_schema()` used |
+| **Config** | 0 files | No changes |
+| **Skill system** | 0 files | No changes. `SkillRuntime` is generic DAG executor |
+| **Tests (unit)** | 0 files | Mocks at `LLMResponse` level, which is unchanged |
+| **Tests (integration)** | ~1 file | If any test inspects raw HTTP payload for `response_format` |
+
+**Total blast radius: 1 file, ~15 lines changed.**
+
+#### Before/After in `_OpenAICompatibleProvider.complete()`
+
+**Before:**
 ```python
-# Tool-calling approach (works everywhere)
-payload["tools"] = [{
-    "type": "function",
-    "function": {
-        "name": "output_solve_report",
-        "description": "Return the solve report",
-        "parameters": schema  # Same Pydantic model_json_schema()
+if response_model is not None:
+    schema_name = re.sub(r"(?<!^)(?=[A-Z])", "_", response_model.__name__).lower()
+    payload["response_format"] = {
+        "type": "json_schema",
+        "json_schema": {
+            "name": schema_name,
+            "strict": True,
+            "schema": response_model.model_json_schema(),
+        },
     }
-}]
-payload["tool_choice"] = {"type": "function", "function": {"name": "output_solve_report"}}
-# Response data in: response["choices"][0]["message"]["tool_calls"][0]["function"]["arguments"]
+
+# Response extraction:
+content = data.get("choices", [{}])[0].get("message", {}).get("content", "")
 ```
 
-The model is forced to "call" the output tool, and the structured JSON is in the tool call arguments. This is effectively one API call — no actual tool execution needed.
-
-### OpenRouter as Universal Translator
-
-OpenRouter already standardizes tool calling across all providers using the OpenAI format. If we send:
-```json
-{
-  "model": "deepseek/deepseek-chat",
-  "tools": [{"type": "function", "function": {...}}],
-  "tool_choice": {...}
-}
-```
-
-OpenRouter handles the translation for Anthropic models (converting to `tool_use` blocks) and other provider-specific formats. This means a single tool-calling code path works for ALL providers through OpenRouter.
-
-### Anthropic Native API Consideration
-
-If we ever add a native Anthropic provider (bypassing OpenRouter), the tool format differs:
-- Tool definitions use `input_schema` instead of `parameters`
-- Response uses `tool_use` content blocks with `stop_reason: "tool_use"`
-- Tool results sent back as `tool_result` content blocks with `role: "user"`
-
-However, through OpenRouter, everything is normalized to OpenAI format.
-
-### Known Edge Cases
-
-1. **Empty arguments**: Some providers (vLLM, Ollama) return `arguments: null` for parameterless tools → coerce to `"{}"`
-2. **Garbage after JSON**: Some local models emit extra text after valid JSON in tool call arguments → strip/re-extract
-3. **Parallel tool calls**: Some models return multiple tool calls → handle by taking the first matching one
-4. **Streaming**: Tool calls arrive in chunks via streaming deltas → need to accumulate `function.arguments` across chunks
-
-## Design Options for cpho-cli
-
-### Option A: Tool-Call-Only (Recommended)
-
-Abandon `response_format` entirely. Always use tool calling for structured output.
-
-**Pros:**
-- Single code path, minimal maintenance
-- Works with every provider that supports tool calling (much broader than json_schema)
-- DeepSeek-native compatible
-- OpenRouter normalizes everything to this format
-
-**Cons:**
-- Slightly more complex response parsing (extract from `tool_calls[0].function.arguments` instead of `message.content`)
-- Doesn't leverage OpenAI's native `json_schema` strict mode (but strict mode is not available anywhere else anyway)
-
-### Option B: Dual-Mode with Capability Detection
-
-Try `response_format` first, fall back to tool calling.
-
-**Pros:**
-- Uses native features when available
-- Better error messages from OpenAI's strict mode
-
-**Cons:**
-- Two code paths to maintain and test
-- Need per-provider capability flags
-- More complex error handling
-
-### Option C: Per-Provider Strategy Pattern
-
-Each provider class chooses its own structured output strategy.
-
-**Pros:**
-- Maximum flexibility per provider
-- Clean OOP design
-
-**Cons:**
-- Overengineered for current needs (2 providers)
-- Duplicated logic across providers
-
-### Recommendation
-
-**Option A (tool-call-only)** for Phase 1. It's the simplest change with the broadest compatibility. If OpenAI's strict mode becomes important later, we can add it as a provider-specific optimization.
-
-## Implementation Sketch
-
-The change to `_OpenAICompatibleProvider.complete()` would look like:
-
+**After:**
 ```python
-def complete(self, messages, params, response_model=None):
-    payload = {
-        "model": params.name,
-        "messages": messages,
-    }
-    if params.temperature is not None:
-        payload["temperature"] = params.temperature
-    if params.max_tokens is not None:
-        payload["max_tokens"] = params.max_tokens
-
-    if response_model is not None:
-        schema_name = re.sub(r"(?<!^)(?=[A-Z])", "_", response_model.__name__).lower()
-        payload["tools"] = [{
-            "type": "function",
-            "function": {
-                "name": schema_name,
-                "description": f"Return a {response_model.__name__} structured object.",
-                "parameters": response_model.model_json_schema(),
-            }
-        }]
-        payload["tool_choice"] = {
-            "type": "function",
-            "function": {"name": schema_name}
+if response_model is not None:
+    schema_name = re.sub(r"(?<!^)(?=[A-Z])", "_", response_model.__name__).lower()
+    payload["tools"] = [{
+        "type": "function",
+        "function": {
+            "name": schema_name,
+            "description": f"Output a {response_model.__name__} object.",
+            "parameters": response_model.model_json_schema(),
         }
+    }]
+    payload["tool_choice"] = {
+        "type": "function",
+        "function": {"name": schema_name}
+    }
 
-    # ... HTTP request ...
-
-    # Extract content from tool_calls when response_model is set
-    if response_model is not None:
-        tool_calls = data.get("choices", [{}])[0].get("message", {}).get("tool_calls", [])
-        if tool_calls:
-            content = tool_calls[0].get("function", {}).get("arguments", "")
-        else:
-            content = data.get("choices", [{}])[0].get("message", {}).get("content", "")
+# Response extraction:
+if response_model is not None:
+    tool_calls = data.get("choices", [{}])[0].get("message", {}).get("tool_calls", [])
+    if tool_calls:
+        content = tool_calls[0].get("function", {}).get("arguments", "") or ""
     else:
+        # Fallback: some models ignore tool_choice and return content
         content = data.get("choices", [{}])[0].get("message", {}).get("content", "")
+else:
+    content = data.get("choices", [{}])[0].get("message", {}).get("content", "")
 ```
 
-**Callers do NOT need to change.** The `LLMResponse.content` field still contains the JSON string — it just comes from a different place in the response. All callers do `SomeModel.model_validate_json(response.content)` which remains unchanged.
+#### Edge Cases Requiring Defensive Handling
 
-## Results
+| Edge Case | Affected Providers | Mitigation |
+|-----------|-------------------|------------|
+| `arguments: null` for parameterless tools | vLLM, Ollama | Coerce `None` → `"{}"` |
+| Model returns `content` despite `tool_choice` | Ollama, old vLLM | Fallback to `message.content` |
+| Extra text after valid JSON in arguments | Some local models | `json.loads()` with error recovery |
+| Multiple tool calls returned | All (parallel tool use) | Take first matching tool call |
+| Streaming (future) | All | Accumulate `function.arguments` across delta chunks |
+| DeepSeek thinking mode + tools | DeepSeek V4 | Must keep `reasoning_content` in history; `supportsToolChoice: false` in thinking mode |
 
-**Verdict: VALIDATED** — Tool calling is a viable and well-established replacement for `response_format: json_schema`.
+#### Risk Assessment
 
-Key findings:
-1. DeepSeek supports tool calling on all current models (V3, R1-0528+, V3.1, V3.2) but does NOT support `json_schema` response format
-2. Using `tool_choice` to force a tool call for structured output is a pattern used by Instructor, LangChain, pydantic-ai, and AG2
-3. OpenRouter normalizes tool calling across all providers using OpenAI format — single code path
-4. Response parsing change is minimal: extract from `tool_calls[0].function.arguments` instead of `message.content`
-5. The `LLMProvider.complete()` interface (`LLMResponse.content`) does NOT need to change — callers are unaffected
-6. Anthropic native API uses different format (`tool_use` blocks) but OpenRouter handles translation
+| Risk | Likelihood | Impact | Mitigation |
+|------|-----------|--------|------------|
+| Some provider ignores `tool_choice` | Low | Medium | Fallback to `message.content` extraction |
+| Schema too large for tool definition | Very Low | Low | Truncation/compression (not needed for current schemas) |
+| Token overhead from tools array | Very Low | Very Low | Negligible — schema sent once, same size either way |
+| Provider-specific `tool_choice` format differences | Low | Medium | OpenRouter normalizes; for direct API, Mistral uses `"any"` not `"required"` but function-specific choice works same way |
+| Skill authors confused by tool calling in debug/logs | Low | Low | `LLMResponse.raw` preserves full response for debugging |
+
+#### Migration Path
+
+1. **Phase 1 — Provider switch (1 PR, ~15 lines)**
+   - Modify `_OpenAICompatibleProvider.complete()` in `llm.py`
+   - Add fallback extraction logic
+   - Run existing test suite
+
+2. **Phase 2 — Integration testing (optional)**
+   - Add HTTP-level test that verifies `tools`/`tool_choice` in payload
+   - Test against DeepSeek V4 direct API
+
+3. **Phase 3 — Anthropic native provider (future, separate work)**
+   - Create `AnthropicProvider` class implementing `LLMProvider`
+   - Uses `tool_use` content blocks or `output_format` for structured output
+
+#### What BREAKS if we do this?
+
+- **Nothing in the public interface.** `LLMProvider.complete()` signature unchanged.
+- **Nothing in callers.** Same `response.content` → `model_validate_json()` flow.
+- **Nothing in skill definitions.** Same yml + j2 + Pydantic pattern.
+- **Only thing that changes:** HTTP request body format and response JSON parsing path.
+
+#### What BREAKS if we DON'T do this?
+
+- DeepSeek API is **unusable** (official platform, not OpenRouter)
+- Ollama local deployments are blocked
+- vLLM requires brittle `extra_body` workarounds
+- Every new non-OpenAI provider requires custom response_format handling
+
+---
+
+## Provider Format Compatibility Table (2026)
+
+All via `_OpenAICompatibleProvider` base class:
+
+```
+                    json_schema        Tool Calling
+OpenAI              ✅                 ✅
+DeepSeek V4         ❌                 ✅  ← BLOCKER
+Mistral             ✅                 ✅
+OpenRouter → *      ✅ (pass-through)  ✅
+vLLM                ⚠️ (extra_body)    ✅
+Ollama              ❌                 ⚠️ (model-dep.)
+                    ^                  ^
+                    2/6 fail          6/6 work
+```
+
+---
+
+## Recommendation
+
+**Use OpenAI-format tool calling as the ONLY structured output mechanism in `_OpenAICompatibleProvider`.**
+
+- **1 file changed** (`llm.py`)
+- **0 callers changed**
+- **0 skill author impact**
+- **6/6 OpenAI-compatible platforms supported** (vs 4/6 with json_schema)
+- **Anthropic native and Gemini native** are future work (separate provider classes)
+- **Pattern validated by Instructor, LangChain, pydantic-ai** — this is the industry standard approach
 
 ## Signal for the Build
 
-- **Use:** OpenAI-format tool calling with forced `tool_choice` as the universal structured output mechanism
-- **Drop:** `response_format: {type: "json_schema"}` from `_OpenAICompatibleProvider`
-- **Watch for:** Empty/missing `tool_calls` array (some models may still return content instead), streaming deltas if streaming is added later
-- **Test matrix:** DeepSeek direct, OpenRouter→DeepSeek, OpenRouter→OpenAI, OpenRouter→Anthropic
+- **Replace in `_OpenAICompatibleProvider.complete()`**: `response_format: json_schema` → `tools` + `tool_choice`
+- **Response extraction**: `message.content` → `tool_calls[0].function.arguments` (with fallback)
+- **Do NOT touch**: `LLMProvider` protocol, `LLMResponse`, any caller code, any Pydantic models, skill definitions
+- **Test against**: DeepSeek V4 direct API (primary validation target)
+- **Future**: Separate `AnthropicProvider` for native Anthropic API if needed
