@@ -38,11 +38,12 @@ from cpho_cli.core.index.vocabulary import (
     load_merged_vocabulary,
     normalize_alias,
 )
-from cpho_cli.core.llm import LLMProvider
+from cpho_cli.core.llm import LLMProvider, OpenRouterProvider
 from cpho_cli.core.ocr import OCRProvider, RapidOCRProvider
 from cpho_cli.core.splitting import split_paper
 from cpho_cli.core.splitting.llm import load_split_prompt_version
 from cpho_cli.core.workspace import discover_workspace
+from cpho_cli.models.config import ResolvedProviderConfig
 from cpho_cli.models.documents import PaperFile, SplitMethod
 from cpho_cli.models.index import (
     CandidateTag,
@@ -77,6 +78,18 @@ def _solve_report_tag_dict(report: SolveReport | None) -> dict[str, list[str]]:
 
 def _ocr_config() -> dict[str, object]:
     return {"low_confidence_threshold": 0.6}
+
+
+def _ensure_llm_provider(
+    existing: LLMProvider | None,
+    provider_config: ResolvedProviderConfig,
+) -> LLMProvider:
+    if existing is not None:
+        return existing
+    return OpenRouterProvider(
+        api_key=provider_config.api_key,
+        base_url=provider_config.base_url,
+    )
 
 
 def _merge_candidates(workspace_root: Path, new_candidates: list[CandidateTag]) -> int:
@@ -147,6 +160,7 @@ def build_index(
 
     config = load_config(config_path)
     provider_config = resolve_provider_config(config, os.environ, provider_name)
+    active_llm_provider = _ensure_llm_provider(llm_provider, provider_config)
     vocabulary = load_merged_vocabulary(workspace_root)
 
     # Load topic taxonomy (non-blocking: failure disables topic assignment)
@@ -215,7 +229,7 @@ def build_index(
             paper_file=paper_file,
             answer_file=answer_file,
             paper_sha256=file_fp.problem_sha256,
-            llm_provider=llm_provider,
+            llm_provider=active_llm_provider,
             llm_params=params,
         )
         stats.papers_split += 1
@@ -305,7 +319,7 @@ def build_index(
                 vocabulary,
                 config,
                 provider_config,
-                llm_provider=llm_provider,
+                llm_provider=active_llm_provider,
                 trace_path=trace_path,
                 source=source,
             )
@@ -322,7 +336,7 @@ def build_index(
                         topic_taxonomy,
                         config,
                         provider_config,
-                        llm_provider=llm_provider,
+                        llm_provider=active_llm_provider,
                         trace_path=trace_path,
                     )
                     topic_path = topic_result.topic_path
