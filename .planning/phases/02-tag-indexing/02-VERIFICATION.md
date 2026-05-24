@@ -14,7 +14,7 @@ re_verification:
 
 # Phase 2: Tag Indexing Verification Report
 
-**Phase Goal:** 构建题目知识索引基础设施——将 workspace 中的题目文件、OCR 缓存、SolveReport 等整理成结构化索引，后续 skill 通过 Python API 检索而非重复读取原始文件。索引使用受控词表保证标签一致性，支持分层增量更新，并为用户错题本/学习记忆层预留数据边界。
+**Phase Goal:** 构建题目知识索引基础设施——将 workspace 中的试卷文件经 Phase 02.1 拆分为 ProblemEntry 后，连同 OCR 缓存、SolveReport 等整理成结构化索引，后续 skill 通过 Python API 检索而非重复读取原始文件。索引使用受控词表保证标签一致性，支持分层增量更新，并为用户错题本/学习记忆层预留数据边界。
 
 **Verified:** 2026-05-23
 **Status:** passed
@@ -125,7 +125,7 @@ re_verification:
 | IDX-02 | 02-02, 02-03, 02-05 | 内容哈希检测变更，仅对变更文件重新索引 | ✓ SATISFIED | `hashing.py` sha256-based fingerprints, `decide_action` 5-branch dispatch, `test_build_index_skip_on_rerun` PASSES |
 | IDX-03 | 02-01, 02-05, 02-07 | 通过标签索引检索题目而非重读原始文件，受控词汇表保证一致性 | ✓ SATISFIED | `query_index`/`find_related_problems`/`get_problem_entry` API serves from JSONL only; `canonical_mapping_pass` enforces vocabulary; `test_index_api.py` 17 tests PASS |
 
-**REQUIREMENTS.md status note:** REQUIREMENTS.md still lists IDX-01/02/03 as "Pending" — this is a documentation lag (ROADMAP.md correctly marks Phase 2 as Complete on 2026-05-23). Not a blocker; recommend updating REQUIREMENTS.md traceability table on phase close.
+**REQUIREMENTS.md status note:** REQUIREMENTS.md IDX-01/02/03 traceability updated to "Complete" on 2026-05-24 (was documentation lag from Phase 2 close on 2026-05-23).
 
 ### Anti-Patterns Found
 

@@ -78,7 +78,7 @@ Phase 1 交付端到端的分析管线——从 API key 配置和 workspace 发�
 
 ### Integration Points
 
-- **Phase 2 (Tag Indexing)** 需要索引系统读取 skill trace 中的标签输出来构建 JSONL 索引——Phase 1 的 trace schema 是 Phase 2 的输入接口
+- **Phase 2 (Tag Indexing)** 需要索引系统读取 skill trace 中的标签输出来构建 JSONL 索引——Phase 1 的 trace schema 是 Phase 2 的输入接口。Phase 02.1 已在索引前插入试卷切分阶段，将多题试卷拆分为 ProblemEntry 后再进入索引管线。
 - **Phase 3 (Skill System)** 扩展 skills 目录发现机制——Phase 1 的 skill loader 必须设计为可扩展的
 - **Phase 4 (Knowledge Network)** 从 trace 中读取标签关联构建知识图谱——trace 中必须包含标签信息
 

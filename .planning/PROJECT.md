@@ -2,7 +2,7 @@
 
 ## What This Is
 
-CPHO CLI 是一个本地命令行工具，帮助物理竞赛教练和深度学习者对题目文件夹进行 AI 驱动的结构化分析。用户在自己本地的题目文件夹（PDF/图片 + 答案）中工作，通过可扩展的 Skill 插件系统运行多种分析模式——包括主动提问、逐步讲解、多题对比分析、组卷输出。它是物理竞赛领域的 Obsidian + AI agent：文件夹即知识库，标签索引驱动高效检索，解析质量优先于一切。
+CPHO CLI 是一个本地命令行工具，帮助物理竞赛教练和深度学习者对试卷文件夹进行 AI 驱动的结构化分析。用户在自己本地的试卷文件夹（PDF/图片 + 答案）中工作，工具自动将多题试卷拆分为独立题目条目，通过可扩展的 Skill 插件系统运行多种分析模式——包括主动提问、逐步讲解、多题对比分析、组卷输出。它是物理竞赛领域的 Obsidian + AI agent：文件夹即知识库，标签索引驱动高效检索，解析质量优先于一切。
 
 ## Core Value
 
@@ -36,7 +36,7 @@ CPHO CLI 是一个本地命令行工具，帮助物理竞赛教练和深度学�
 
 ## Context
 
-Phase 1（Core Foundation）和 Phase 2（Tag Indexing）已完成。用户可以 `cpho solve` 解题、`cpho index` 索引工作空间（自动 OCR + LLM 标签提取 + 主题分类）、`cpho topic` 浏览主题树、`cpho compose` 组卷筛选。Python API 已导出供 Phase 3 skills 使用。216 个测试全部通过。
+Phase 1（Core Foundation）和 Phase 2（Tag Indexing）已完成，Phase 02.1（Paper Splitting — 试卷切分）已插入并完成。用户可以 `cpho solve` 解题、`cpho index` 索引工作空间（自动将多题试卷拆分为独立题目 → OCR → LLM 标签提取 → 主题分类）、`cpho topic` 浏览主题树、`cpho compose` 组卷筛选。Python API 已导出供 Phase 3 skills 使用。216 个测试全部通过。
 
 技术方向（不锁定）：
 - Python 生态（AI/LLM 工具链最成熟）

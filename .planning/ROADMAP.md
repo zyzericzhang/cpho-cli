@@ -2,7 +2,7 @@
 
 ## Overview
 
-CPHO CLI builds from a quality-first core pipeline through four phases: first establishing trustworthy physics derivations with answer-key grounding and OCR validation (Phase 1), then building the problem knowledge index infrastructure — the retrieval backbone and learning-memory foundation for all downstream skills (Phase 2), layering on built-in Explanation and Quiz skills with a YAML skill loader extracted from real usage (Phase 3), and finally completing the knowledge network with cross-problem comparative analysis, exam PDF generation, Skill Creator, and community plugin ecosystem (Phase 4). Each phase delivers a coherent, verifiable capability that builds on the previous phase's foundation.
+CPHO CLI builds from a quality-first core pipeline through four phases: first establishing trustworthy physics derivations with answer-key grounding and OCR validation (Phase 1), then building the problem knowledge index infrastructure — the retrieval backbone and learning-memory foundation for all downstream skills (Phase 2), with an urgent Phase 02.1 insertion to fix a data-model mismatch by splitting multi-problem exam papers into individual ProblemEntries, layering on built-in Explanation and Quiz skills with a YAML skill loader extracted from real usage (Phase 3), and finally completing the knowledge network with cross-problem comparative analysis, exam PDF generation, Skill Creator, and community plugin ecosystem (Phase 4). Each phase delivers a coherent, verifiable capability that builds on the previous phase's foundation.
 
 ## Phases
 
@@ -14,6 +14,8 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [ ] **Phase 1: Core Foundation** — End-to-end analysis pipeline with verifiable output quality (Needs Review: verification gaps)
 - [x] **Phase 2: Tag Indexing** — Problem knowledge index infrastructure: retrieval backbone + learning-memory foundation for all downstream skills (completed 2026-05-23)
+- [x] **Phase 02.1: Paper Splitting** — 试卷切分：多题试卷拆分为独立题目条目，修复数据模型形状错配 (INSERTED — COMPLETE 2026-05-24)
+- [ ] **Phase 02.2: TUI REPL 骨架** — prompt_toolkit REPL 主循环、skill 注册机制、slash command 首批命令，为后续 phase 顺带扩展 TUI 打好基础 (INSERTED)
 - [ ] **Phase 3: Skill System + Core Skills** — Explanation mode, Quiz mode, and YAML skill extensibility
 - [ ] **Phase 4: Knowledge Network + Ecosystem** — Comparative analysis, exam generation, knowledge graph, and community plugins
 
@@ -25,7 +27,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Requirements**: CORE-01, CORE-02, CORE-03, CORE-04, CORE-05
 **Success Criteria** (what must be TRUE):
   1. User configures OpenRouter API key once via environment variable or local config file and runs any command without inline key prompts; the key is never hardcoded or committed to git.
-  2. User points `cpho` at a folder containing PDF problem files and answer keys; the tool auto-discovers all problems with correct problem-to-answer pairings based on naming heuristics.
+  2. User points `cpho` at a folder containing PDF exam papers and answer keys; the tool auto-discovers paper-to-answer pairings based on naming heuristics, then splits multi-problem papers into individual ProblemEntries (Phase 02.1).
   3. User runs `cpho solve <problem.pdf>` and receives structured LLM analysis where each derivation step is explicitly cross-referenced against the provided answer key; discrepancies are flagged.
   4. OCR-extracted text from Chinese-language physics PDFs preserves core mathematical notation (subscripts, Greek letters, fractions); low-confidence OCR regions are surfaced in output rather than silently fed to the LLM.
   5. Developer runs the golden test suite (20-30 physics problems with known correct derivations) with a single command and receives a per-problem pass/fail report; all problems pass before Phase 1 is declared complete.
@@ -37,7 +39,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - Wave 4: `01-05` — golden evaluation runner, `cpho eval golden_tests/`, and Phase 1 E2E regression
 
 ### Phase 2: Tag Indexing
-**Goal**: 构建题目知识索引基础设施——将 workspace 中的题目文件、OCR 缓存、SolveReport 等整理成结构化索引，后续 skill 通过 Python API 检索而非重复读取原始文件。索引使用受控词表保证标签一致性，支持分层增量更新，并为用户错题本/学习记忆层预留数据边界。
+**Goal**: 构建题目知识索引基础设施——将 workspace 中的试卷文件经 Phase 02.1 拆分为 ProblemEntry 后，连同 OCR 缓存、SolveReport 等整理成结构化索引，后续 skill 通过 Python API 检索而非重复读取原始文件。索引使用受控词表保证标签一致性，支持分层增量更新，并为用户错题本/学习记忆层预留数据边界。
 **Depends on**: Phase 1
 **Requirements**: IDX-01, IDX-02, IDX-03
 **Success Criteria** (what must be TRUE):
@@ -54,18 +56,35 @@ Decimal phases appear between their surrounding integers in numeric order.
 - Wave 3: `02-05` — build_index orchestration, `cpho index` CLI with layered stats (D-17), Python API (query_index/get_problem_entry/find_related_problems), notebook stubs, golden determinism test
 - Wave 4: `02-07` — Topic hierarchy classification (TopicNode tree model, builtin taxonomy YAML, LLM topic assignment, topic query API, CLI topic/compose commands, MVP exam composition)
 
-### Phase 02.1: Paper Splitting — 试卷切分：将多题试卷 PDF 拆分为独立大题条目，修复 Phase 1/2 数据模型与真实工作空间之间的形状错配 (INSERTED)
+### Phase 02.1: Paper Splitting — 试卷切分：将多题试卷 PDF 拆分为独立大题条目，修复 Phase 1/2 数据模型与真实工作空间之间的形状错配 (INSERTED — COMPLETE 2026-05-24)
 
-**Goal:** [Urgent work - to be planned]
-**Requirements**: TBD
+**Goal:** 引入 PaperFile/ProblemEntry 分层数据模型，通过规则优先+LLM兜底切分器将多题试卷拆为独立题目条目，使 `cpho index` 的消费单位从「文件」升级为「题目」。
+**Requirements**: 6 locked (see 02.1-SPEC.md)
 **Depends on:** Phase 02
+**Status:** Complete (5/5 plans executed, ready for verification)
 **Plans:** 5/5 plans complete
 
 Plans:
-- [x] TBD (run /gsd-plan-phase 02.1 to break down) (completed 2026-05-24)
+- [x] 02.1-01 — PaperFile + ProblemEntry 数据模型 (StrictModel)
+- [x] 02.1-02 — 规则切分器 (regex + 页号定位)
+- [x] 02.1-03 — LLM 兜底切分器 (Jinja2 prompt, 复用 core/llm.py)
+- [x] 02.1-04 — 切分编排器 + discover_workspace 升级 + 答案卷配对
+- [x] 02.1-05 — CLI 与索引集成 + golden 验收卷
+
+### Phase 02.2: TUI REPL 骨架 — 打造 REPL 交互界面，后续新功能顺带扩展 TUI 零摩擦 (INSERTED)
+
+**Goal:** 基于 cmd2 构建 REPL 主循环和 skill 注册机制，首批实现 `/search` + `/show` 斜杠命令。核心原则：加新功能 = 注册一个新 slash command + 补全规则，无需额外改动 TUI 布局。设计决策见 `.planning/notes/tui-design-decisions.md`。
+**Requirements**: TUI-01, TUI-02, TUI-03, TUI-04
+**Depends on:** Phase 02.1
+**Success Criteria** (what must be TRUE):
+  1. 用户运行 `cpho repl` 进入 REPL 界面，看到 `cpho>` 提示符，输入 `/help` 列出所有可用命令。
+  2. 用户输入 `/search 力学` 按标签搜索题目，REPL 输出匹配结果列表，搜索结果保存在会话上下文中。
+  3. 用户在搜索后输入 `/show 3` 显示第 3 道题的全文内容（OCR 文本 + 标签 + 来源试卷），无需重新指定文件路径。
+  4. 开发者在 Phase 3 中新增一个 skill（如 `/explain`）时，只需注册一个 Command 对象 + 补全规则，无需修改 REPL 主循环或任何 TUI 布局代码。
+**Plans**: TBD
 
 ### Phase 3: Skill System + Core Skills
-**Goal**: Users can run Explanation and Quiz analysis modes on indexed problems, and extend the system with custom YAML-defined skills that are auto-discovered from a skills directory.
+**Goal**: Users can run Explanation and Quiz analysis modes on indexed problems (individual ProblemEntries split from exam papers), and extend the system with custom YAML-defined skills that are auto-discovered from a skills directory.
 **Depends on**: Phase 2
 **Requirements**: SKILL-01, SKILL-02, PLUGIN-01
 **Success Criteria** (what must be TRUE):
@@ -90,11 +109,13 @@ Plans:
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4
+Phases execute in numeric order: 1 → 2 → 2.1 → 2.2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Core Foundation | 5/5 | Needs Review | - |
 | 2. Tag Indexing | 7/7 | Complete   | 2026-05-23 |
+| 02.1. Paper Splitting | 5/5 | Complete | 2026-05-24 |
+| 02.2. TUI REPL 骨架 | 0/TBD | Not started | - |
 | 3. Skill System + Core Skills | 0/TBD | Not started | - |
 | 4. Knowledge Network + Ecosystem | 0/TBD | Not started | - |

@@ -87,8 +87,8 @@ Phase 2 交付题目标签索引系统——将本地 workspace 整理成后续 
 
 ### Integration Points
 - **Phase 1 SolveReport** → Phase 2 读取作为标签来源之一（优先级 2）
-- **Phase 1 workspace 发现** → Phase 2 索引入口（复用 discover_workspace）
-- **Phase 3 Skill System** → 通过 `query_index`、`find_related_problems` API 检索题目
+- **Phase 1 workspace 发现** → Phase 2 索引入口（复用 discover_workspace；Phase 02.1 在 OCR 后插入 split 阶段，将 PaperFile 拆为 ProblemEntry 再进入索引）
+- **Phase 3 Skill System** → 通过 `query_index`、`find_related_problems` API 检索题目（每条 IndexEntry 对应一个 ProblemEntry，非整份试卷）
 - **Phase 4 Knowledge Network** → 基于索引标签相似度构建知识图谱
 
 ## Specific Ideas

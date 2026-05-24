@@ -29,12 +29,13 @@ Phase 3 在 Phase 1/2 的索引基础设施上构建统一的 Skill 执行框架
 
 - **D-08:** 混合命令模型。内置核心 skill 有专属子命令（`cpho explain`、`cpho quiz`），用户 YAML skill 通过 `cpho run <skill-name>` 运行。
 - **D-09:** 所有 skill（内置 + 用户）注册进统一的 skill registry。`cpho explain` 是 `cpho run explain` 的快捷封装——共用同一套 SkillSpec 解析和执行逻辑，不出现两套执行路径。
-- **D-10:** 未来 Phase 02.2 REPL 的 `/explain` 和 `/run my_skill` 也从同一 registry 解析，不重复实现发现逻辑。
+- **D-10:** Phase 02.2 REPL 通过 cmd2 CommandSet + SkillCommandAdapter 从 unified skill registry 生成命令：内置 skill（`/explain`、`/quiz`）走 `BuiltinSkillCommandSet` 注册点，用户 YAML skill 走 `SkillCommandAdapter` 动态包装成 `/run <skill-name>`。两者共用同一 registry 解析，不重复实现发现和执行逻辑。
 
 ### Explain 模式输出
 
 - **D-11:** Phase 3 MVP 输出一次性完整报告，但必须是结构化 step report。每个推导步骤包含字段：`step_id`、`step_title`、`derivation`（推导内容）、`why_this_step`（为什么想到这一步——核心要求）、`possible_confusion`（学生可能困惑的点）、`check_question`（检验理解的追问，为 REPL 追问预留入口）。
-- **D-12:** 不做分步交互式 explain（依赖 Phase 02.2 REPL）。但数据结构中的 `step_id` 和 `check_question` 为后续 REPL 按步追问预留升级空间。
+- **D-12:** 不做分步交互式 explain（依赖 Phase 02.2 cmd2 REPL 主循环）。但数据结构中的 `step_id` 和 `check_question` 为后续 REPL 按步追问预留升级空间。
+- **D-13:** SkillSpec 必须声明 `completions` 字段（input type），支持 `problem_ref`、`tag`、`file_path`、`enum`、`free_text`。Phase 02.2 的 `SkillCommandAdapter` 据此生成 cmd2 Tab 补全逻辑，无此字段则命令无补全。Phase 3 实现 SkillSpec 时将此字段纳入 schema 定义。
 
 ### Claude's Discretion
 
@@ -59,6 +60,7 @@ Phase 3 在 Phase 1/2 的索引基础设施上构建统一的 Skill 执行框架
 ### 前序 Phase 上下文
 - `.planning/phases/01-core-foundation/01-CONTEXT.md` — Phase 1 决策：uv/pyproject scaffold、skill-based 架构、blackboard DAG、Jinja2 prompt 模板、JSON mode + Pydantic、manual-first eval loop、芯-壳分离
 - `.planning/phases/02-tag-indexing/02-CONTEXT.md` — Phase 2 决策：混合索引架构、受控词表三层体系、半开放词表、增量哈希、Python API（query_index / get_problem_entry / find_related_problems）、Phase 3 deferred 项
+- `.planning/phases/02.2-tui-repl-repl-tui-inserted/02.2-CONTEXT.md` — Phase 02.2 决策：cmd2 REPL 骨架、CommandSet 命令注册架构、SkillCommandAdapter 动态命令封装、SessionState 会话模型、`/explain`/`/quiz` 通过 BuiltinSkillCommandSet 预留注册点、SkillSpec `completions` 字段声明要求（Phase 3 必须实现）
 
 ### 既有代码（Phase 3 直接依赖）
 - `src/cpho_cli/core/skills.py` — Skill loader（读取 skill.yml + SKILL.md，返回 LoadedSkill）
@@ -91,7 +93,7 @@ Phase 3 在 Phase 1/2 的索引基础设施上构建统一的 Skill 执行框架
 ### Integration Points
 - **Phase 2 Index API** → Phase 3 `ProblemContextBuilder` 读取题目上下文和关联题目
 - **Phase 2 IndexEntry** → explain/quiz 通过 `problem_id` 检索索引条目
-- **Phase 02.2 TUI REPL** → Phase 3 skill registry 被 REPL 复用（`/explain`、`/run` 命令从同一 registry 解析）
+- **Phase 02.2 cmd2 REPL** → Phase 3 unified skill registry 是 REPL 命令的唯一数据源。`BuiltinSkillCommandSet` 读取 explain/quiz SkillSpec 生成 `/explain`、`/quiz` 斜杠命令；`SkillCommandAdapter` 读取用户 YAML SkillSpec 生成 `/run <skill-name>` 动态命令。SkillSpec 的 `completions` 字段驱动 cmd2 Tab 补全
 - **Phase 4 Knowledge Network** → explain 输出的 `related_problems` 字段为知识图谱关联提供数据
 
 ## Specific Ideas
@@ -108,7 +110,7 @@ Phase 3 在 Phase 1/2 的索引基础设施上构建统一的 Skill 执行框架
 - solve 迁移到 SkillRuntime → 后续 phase（solve 是已验证路径，等 explain/quiz 在 SkillRuntime 上跑稳后再迁移）
 - `user_prompt` / `condition_branch` / `loop` step kind → 后续 phase（quiz 交互走 Python 状态机，不做通用 workflow engine）
 - pip entry points skill 发现 → Phase 4（PLUGIN-04，需要包管理、版本冲突、安全边界）
-- 分步交互式 explain（REPL 中按 step_id 追问）→ Phase 02.2 + 后续增强
+- 分步交互式 explain（cmd2 REPL 中按 step_id 追问）→ Phase 02.2 已提供 REPL 骨架 + BuiltinSkillCommandSet 注册点，交互追问逻辑本身待后续增强
 
 ### 讨论中提及但不在 Phase 3 范围
 - 用户错题本编辑交互 → Phase 2 已 defer 到 Phase 3，但 Phase 3 scope 为 explain/quiz/YAML loader，错题本完整编辑体验仍需后续 phase

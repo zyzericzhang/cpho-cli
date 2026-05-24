@@ -151,14 +151,14 @@ Tag-based indexing is the retrieval backbone. Problems are pre-analyzed once, an
 | Component | Responsibility | Communicates With |
 |-----------|---------------|-------------------|
 | `schema.py` | TagSet model (physical models, insights, difficulties, math techniques) | All index components |
-| `writer.py` | Scan problems, call LLM for tag generation, write JSONL index | LLMGateway, WorkspaceManager |
+| `writer.py` | Scan papers, split into problems (Phase 02.1), call LLM for tag generation, write JSONL index | LLMGateway, WorkspaceManager |
 | `reader.py` | Query index by tag combinations, return matching problem references | (reads JSONL file) |
 | `query.py` | Tag query parser (AND/OR/NOT operations on tag fields) | IndexReader |
 
-**Index Format (JSONL — one JSON object per line):**
+**Index Format (JSONL — one JSON object per problem entry, split from exam papers):**
 
 ```jsonl
-{"id": "2024-mechanics-q3", "file": "problems/2024-mechanics.pdf", "pages": "2-3", "tags": {"physical_models": ["rigid_body", "angular_momentum"], "insights": ["conservation_law_selection", "reference_frame_choice"], "difficulties": ["implicit_constraints"], "math_techniques": ["vector_cross_product", "differential_equation"]}, "answer_file": "answers/2024-mechanics-ans.pdf", "indexed_at": "2026-05-20T10:30:00Z"}
+{"problem_id": "abc123:1", "paper_path": "papers/2024-mechanics.pdf", "problem_page_range": [2, 3], "problem_number": 1, "tags": {"physics_model": ["rigid_body", "angular_momentum"], "heuristic": ["conservation_law_selection", "reference_frame_choice"], "math_technique": ["vector_cross_product", "differential_equation"]}, "answer_paper_path": "answers/2024-mechanics-ans.pdf", "answer_page_range": [1, 2], "indexed_at": "2026-05-20T10:30:00Z"}
 ```
 
 **Why JSONL not SQLite:** The project constraints say no database. JSONL is append-only, grep-friendly, version-controllable, and trivially mergeable. For the expected scale (hundreds to low thousands of problems), JSONL scanning with in-memory filtering is fast enough (sub-10ms for 1000 records). If the problem set grows to 10K+, a SQLite FTS layer can be added behind the same `IndexReader` interface without changing any consumer code.
@@ -188,11 +188,12 @@ Abstract interface in core, concrete OpenRouter implementation in adapters.
 
 | Component | Responsibility | Communicates With |
 |-----------|---------------|-------------------|
-| `discovery.py` | Scan problem folder, identify PDF/image files, associate answer files | (filesystem via adapter interface) |
-| `problem.py` | Problem model: file path, pages, answer file, extracted text cache | IndexWriter, PipelineEngine |
+| `discovery.py` | Scan paper folder, identify PDF/image files, associate answer files at paper level | (filesystem via adapter interface) |
+| `paper.py` | PaperFile model: file path, paper kind, total pages + answer pairing | Phase 02.1 splitter, PipelineEngine |
+| `problem.py` | ProblemEntry model: problem_id, paper_path, page_range, text (split from paper) | IndexWriter, PipelineEngine |
 | `file_io.py` (adapters) | File system operations (abstracted for testability) | WorkspaceManager |
 
-**Problem-Answer Association:** The workspace manager uses naming heuristics to match problems with answer files. A problem named `2024-mechanics-q3.pdf` pairs with `2024-mechanics-q3-ans.pdf` or `2024-mechanics-q3_answer.pdf` in the same directory or a parallel `answers/` directory. Users can override with `--answer` flag.
+**Paper-Answer Association:** The workspace manager uses naming heuristics to match exam papers with answer files at the paper level (e.g., `模拟试卷七.pdf` pairs with `模拟试卷七解析.pdf`). After Phase 02.1 splitting, individual ProblemEntries from the question paper are paired with corresponding ProblemEntries from the answer paper by problem number.
 
 ### 7. OCR Adapter (`core/ocr/` interface + adapter implementations)
 
@@ -220,6 +221,8 @@ class OcrBackend(Protocol):
 ## Data Flow
 
 ### Primary Flow: `cpho solve problem.pdf`
+
+> **Note:** This flow represents pre-Phase-02.1 design. In the current codebase, exam papers are split into ProblemEntries during `cpho index`. `cpho solve` currently works on individual PDF files; Phase 3 will upgrade solve to consume ProblemEntry from the index.
 
 ```
 User invokes: cpho solve "2024-mechanics-q3.pdf" --skill step-by-step
@@ -269,15 +272,20 @@ User invokes: cpho solve "2024-mechanics-q3.pdf" --skill step-by-step
      └─ Writes result to output/2024-mechanics-q3_result.json
 ```
 
-### Index Build Flow: `cpho index ./problems/`
+### Index Build Flow: `cpho index ./papers/`
 
 ```
-  1. WorkspaceManager scans ./problems/ recursively
-     └─ Returns list of Problem objects (PDFs, images)
+  1. WorkspaceManager scans ./papers/ recursively
+     └─ Returns list of PaperFile objects (exam papers)
 
-  2. For each unindexed Problem:
+  2. Phase 02.1 Paper Splitting:
+     ├─ Rules-based splitter (regex + page markers)
+     ├─ LLM fallback for ambiguous cases
+     └─ Produces list of ProblemEntry objects (one per problem)
+
+  3. For each unindexed ProblemEntry:
      │
-     ├─ OCR Adapter extracts text
+     ├─ OCR Adapter extracts text from the paper's relevant pages
      │
      ├─ LLMGateway.complete(
      │     "Analyze this physics problem and generate tags...",
@@ -286,7 +294,7 @@ User invokes: cpho solve "2024-mechanics-q3.pdf" --skill step-by-step
      │
      └─ IndexWriter appends record to index.jsonl
 
-  3. IndexReader verifies: count of indexed == count of problems
+  4. IndexReader verifies: count of indexed == count of problems
 ```
 
 ### REPL Session Flow: `cpho repl`
