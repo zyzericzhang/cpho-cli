@@ -105,6 +105,11 @@ def test_index_layered_stats_rendered(
         refinement_only=0,
         candidate_tags_proposed=0,
         pending_review_items=0,
+        papers_split=2,
+        problems_extracted=5,
+        split_method_rules=3,
+        split_method_llm=1,
+        split_method_single=1,
     )
     monkeypatch.setattr(
         "cpho_cli.cli.app.build_index", lambda *a, **kw: fake_stats
@@ -113,6 +118,12 @@ def test_index_layered_stats_rendered(
     assert result.exit_code == 0
     assert "扫描题目数" in result.output
     assert "3" in result.output
+    assert "切分试卷数" in result.output
+    assert "提取题目数" in result.output
+    assert "规则切分" in result.output
+    assert "LLM 切分" in result.output
+    assert "单题路径" in result.output
+    assert "5" in result.output
     assert "标签层" in result.output
     assert "候选词表" in result.output
 
@@ -127,3 +138,5 @@ def test_index_quiet_suppresses_stats(
     result = runner.invoke(app, ["index", str(tmp_path), "--quiet"])
     assert result.exit_code == 0
     assert "扫描题目数" not in result.output
+    assert "切分试卷数" not in result.output
+    assert "提取题目数" not in result.output
