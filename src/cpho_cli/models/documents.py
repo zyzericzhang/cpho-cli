@@ -58,10 +58,18 @@ class PaperAnswerPair(StrictModel):
     paper: PaperFile
     answer: PaperFile | None
 
+    @property
+    def problem(self) -> PaperFile:
+        return self.paper
+
 
 class AmbiguousPaperMatch(StrictModel):
     paper: PaperFile
     candidates: list[PaperFile]
+
+    @property
+    def problem(self) -> PaperFile:
+        return self.paper
 
 
 def _validate_page_range(value: tuple[int, int]) -> tuple[int, int]:
@@ -126,9 +134,9 @@ class AmbiguousAnswerMatch(BaseModel):
 class WorkspaceDiscoveryResult(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
-    pairs: list[ProblemAnswerPair]
+    pairs: list[ProblemAnswerPair | PaperAnswerPair]
     unmatched_papers: list[ProblemFile | PaperFile] = Field(alias="unmatched_problems")
-    ambiguous: list[AmbiguousAnswerMatch]
+    ambiguous: list[AmbiguousAnswerMatch | AmbiguousPaperMatch]
 
     @property
     def unmatched_problems(self) -> list[ProblemFile | PaperFile]:

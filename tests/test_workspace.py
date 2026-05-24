@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from cpho_cli.core.workspace import discover_workspace
+from cpho_cli.models.documents import PaperAnswerPair, PaperFile
 
 
 def touch(path: Path) -> None:
@@ -40,3 +41,31 @@ def test_ambiguous_answer_is_not_selected(tmp_path: Path) -> None:
     assert result.ambiguous[0].problem.path.name == "p1.pdf"
     assert len(result.ambiguous[0].candidates) == 2
 
+
+def test_discovers_chinese_paper_answer_pairs(tmp_path: Path) -> None:
+    touch(tmp_path / "力学2试题.pdf")
+    touch(tmp_path / "力学2解析.pdf")
+    touch(tmp_path / "理论5试题.pdf")
+    touch(tmp_path / "理论5-答案.pdf")
+
+    result = discover_workspace(tmp_path)
+
+    assert {pair.paper.path.name for pair in result.pairs} == {"力学2试题.pdf", "理论5试题.pdf"}
+    assert {pair.answer.path.name for pair in result.pairs if pair.answer is not None} == {
+        "力学2解析.pdf",
+        "理论5-答案.pdf",
+    }
+    assert all(isinstance(pair, PaperAnswerPair) for pair in result.pairs)
+    assert all(pair.paper.total_pages == 1 for pair in result.pairs)
+
+
+def test_discovers_standalone_images_as_single_page_papers(tmp_path: Path) -> None:
+    touch(tmp_path / "scan-a.png")
+    touch(tmp_path / "scan-b.jpg")
+
+    result = discover_workspace(tmp_path)
+
+    assert result.pairs == []
+    assert {paper.path.name for paper in result.unmatched_problems} == {"scan-a.png", "scan-b.jpg"}
+    assert all(isinstance(paper, PaperFile) for paper in result.unmatched_problems)
+    assert all(paper.total_pages == 1 for paper in result.unmatched_problems)
