@@ -36,6 +36,7 @@ def _stub_fingerprint() -> IndexFingerprint:
             ocr_engine_version="3.0",
             ocr_config_hash="c" * 64,
             tag_prompt_version="v0.1",
+            split_prompt_version="v1",
             tag_schema_version="v1",
             model_name="test",
             model_temperature=0.0,
@@ -61,6 +62,7 @@ def _make_entry(
     return IndexEntry(
         problem_id=problem_id,
         problem_path=Path(f"{problem_id}.pdf"),
+        problem_page_range=(1, 1),
         indexed_at=datetime(2025, 1, 1, tzinfo=timezone.utc),
         physics_model_tags=_refs(physics),
         math_technique_tags=_refs(math),

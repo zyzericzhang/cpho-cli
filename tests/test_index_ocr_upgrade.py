@@ -27,6 +27,7 @@ def _make_entry(
     return IndexEntry(
         problem_id=problem_id,
         problem_path=Path(f"{problem_id}.pdf"),
+        problem_page_range=(1, 1),
         answer_path=None,
         indexed_at=datetime.now(timezone.utc),
         fingerprint=IndexFingerprint(
@@ -43,6 +44,7 @@ def _make_entry(
                 ocr_engine_version=ocr_engine_version,
                 ocr_config_hash=ocr_config_hash,
                 tag_prompt_version="v1",
+                split_prompt_version="v1",
                 tag_schema_version="v1",
                 model_name="m",
                 model_temperature=0.0,

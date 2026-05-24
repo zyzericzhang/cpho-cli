@@ -4,7 +4,7 @@ from datetime import datetime
 from enum import Enum
 from pathlib import Path
 
-from pydantic import Field
+from pydantic import Field, field_validator
 
 from cpho_cli.models.config import StrictModel
 
@@ -85,6 +85,7 @@ class SemanticFingerprint(StrictModel):
     ocr_engine_version: str
     ocr_config_hash: str
     tag_prompt_version: str
+    split_prompt_version: str
     tag_schema_version: str
     model_name: str
     model_temperature: float
@@ -121,6 +122,7 @@ class UserNotebookEntry(StrictModel):
 class IndexEntry(StrictModel):
     problem_id: str
     problem_path: Path
+    problem_page_range: tuple[int, int]
     answer_path: Path | None = None
     indexed_at: datetime
     physics_model_tags: list[TaggedReference] = Field(default_factory=list)
@@ -136,6 +138,16 @@ class IndexEntry(StrictModel):
     tag_prompt_version: str
     topic_path: str | None = None
 
+    @field_validator("problem_page_range")
+    @classmethod
+    def validate_problem_page_range(cls, value: tuple[int, int]) -> tuple[int, int]:
+        start, end = value
+        if start <= 0 or end <= 0:
+            raise ValueError("problem_page_range must be 1-indexed")
+        if end < start:
+            raise ValueError("problem_page_range end must be >= start")
+        return value
+
 
 class IndexRunStats(StrictModel):
     total_problems: int = 0
@@ -150,3 +162,8 @@ class IndexRunStats(StrictModel):
     candidate_tags_proposed: int = 0
     pending_review_items: int = 0
     forced_regenerations: int = 0
+    papers_split: int = 0
+    problems_extracted: int = 0
+    split_method_rules: int = 0
+    split_method_llm: int = 0
+    split_method_single: int = 0

@@ -36,6 +36,7 @@ def _fingerprint() -> IndexFingerprint:
             ocr_engine_version="3.0",
             ocr_config_hash="ocr-config",
             tag_prompt_version="v1",
+            split_prompt_version="v1",
             tag_schema_version="v1",
             model_name="openai/gpt-4o-mini",
             model_temperature=0.0,
@@ -48,6 +49,7 @@ def _index_entry(**overrides: object) -> IndexEntry:
     data = {
         "problem_id": "p1",
         "problem_path": Path("problem.pdf"),
+        "problem_page_range": (1, 2),
         "answer_path": None,
         "indexed_at": datetime.now(timezone.utc),
         "physics_model_tags": [
@@ -80,6 +82,27 @@ def test_index_entry_rejects_unknown_fields() -> None:
 
     with pytest.raises(ValidationError):
         IndexEntry.model_validate(data)
+
+
+def test_index_entry_requires_problem_page_range() -> None:
+    data = _index_entry().model_dump()
+    data.pop("problem_page_range")
+
+    with pytest.raises(ValidationError):
+        IndexEntry.model_validate(data)
+
+
+def test_index_entry_validates_problem_page_range() -> None:
+    with pytest.raises(ValidationError):
+        _index_entry(problem_page_range=(2, 1))
+
+
+def test_semantic_fingerprint_requires_split_prompt_version() -> None:
+    data = _fingerprint().semantic.model_dump()
+    data.pop("split_prompt_version")
+
+    with pytest.raises(ValidationError):
+        SemanticFingerprint.model_validate(data)
 
 
 def test_vocabulary_round_trip() -> None:
@@ -130,7 +153,16 @@ def test_index_fingerprint_round_trip() -> None:
 
 
 def test_index_run_stats_round_trip() -> None:
-    stats = IndexRunStats(total_problems=2, file_changed=1, ocr_engine_upgrade_detected=False)
+    stats = IndexRunStats(
+        total_problems=2,
+        file_changed=1,
+        ocr_engine_upgrade_detected=False,
+        papers_split=1,
+        problems_extracted=2,
+        split_method_rules=2,
+        split_method_llm=0,
+        split_method_single=0,
+    )
 
     assert IndexRunStats.model_validate_json(stats.model_dump_json()) == stats
 

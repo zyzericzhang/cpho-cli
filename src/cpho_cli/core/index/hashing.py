@@ -15,7 +15,7 @@ from cpho_cli.models.index import (
 )
 
 # Increment when IndexEntry / TaggedReference / IndexFingerprint schemas change. Embedded in SemanticFingerprint per D-14.
-TAG_SCHEMA_VERSION = "v1"
+TAG_SCHEMA_VERSION = "v2"
 
 IndexAction = Literal["full_index", "re_ocr_and_re_tag", "re_tag_only", "refinement_only", "skip"]
 
@@ -53,6 +53,7 @@ def compose_semantic_fingerprint(
     ocr_engine_version: str,
     ocr_config: dict[str, object],
     tag_prompt_version: str,
+    split_prompt_version: str,
     tag_schema_version: str,
     model_name: str,
     model_temperature: float,
@@ -64,6 +65,7 @@ def compose_semantic_fingerprint(
         ocr_engine_version=ocr_engine_version,
         ocr_config_hash=sha256_json(ocr_config),
         tag_prompt_version=tag_prompt_version,
+        split_prompt_version=split_prompt_version,
         tag_schema_version=tag_schema_version,
         model_name=model_name,
         model_temperature=model_temperature,

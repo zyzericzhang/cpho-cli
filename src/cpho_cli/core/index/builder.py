@@ -42,6 +42,7 @@ from cpho_cli.core.index.vocabulary import (
 )
 from cpho_cli.core.llm import LLMProvider
 from cpho_cli.core.ocr import OCRProvider, RapidOCRProvider
+from cpho_cli.core.splitting.llm import load_split_prompt_version
 from cpho_cli.core.workspace import discover_workspace
 from cpho_cli.models.index import (
     CandidateTag,
@@ -189,6 +190,7 @@ def build_index(
         only_new = True
 
     tag_prompt_version = load_tag_prompt_version()
+    split_prompt_version = load_split_prompt_version()
     params = resolve_model_params(config, "index")
 
     index_path = workspace_root / ".cpho" / "index.jsonl"
@@ -222,6 +224,7 @@ def build_index(
             ocr_engine_version=ocr_engine_version,
             ocr_config=_ocr_config(),
             tag_prompt_version=tag_prompt_version,
+            split_prompt_version=split_prompt_version,
             tag_schema_version=TAG_SCHEMA_VERSION,
             model_name=params.name or "",
             model_temperature=params.temperature if params.temperature is not None else 0.0,
@@ -317,6 +320,7 @@ def build_index(
         entry = IndexEntry(
             problem_id=problem_id,
             problem_path=problem_path.relative_to(workspace_root),
+            problem_page_range=(1, 1),
             answer_path=answer_path.relative_to(workspace_root) if answer_path else None,
             indexed_at=datetime.now(timezone.utc),
             physics_model_tags=mapping.physics_model_tags,

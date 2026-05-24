@@ -31,6 +31,7 @@ def _stub_fingerprint() -> IndexFingerprint:
             ocr_engine_version="3.0",
             ocr_config_hash="c" * 64,
             tag_prompt_version="v0.1",
+            split_prompt_version="v1",
             tag_schema_version="v1",
             model_name="test",
             model_temperature=0.0,
@@ -100,6 +101,7 @@ def test_index_entry_topic_path_default_none() -> None:
     entry = IndexEntry(
         problem_id="p1",
         problem_path=Path("p1.pdf"),
+        problem_page_range=(1, 1),
         indexed_at=datetime(2025, 1, 1, tzinfo=timezone.utc),
         fingerprint=_stub_fingerprint(),
         ocr_text_length=100,
@@ -112,6 +114,7 @@ def test_index_entry_topic_path_round_trip() -> None:
     entry = IndexEntry(
         problem_id="p1",
         problem_path=Path("p1.pdf"),
+        problem_page_range=(1, 1),
         indexed_at=datetime(2025, 1, 1, tzinfo=timezone.utc),
         fingerprint=_stub_fingerprint(),
         ocr_text_length=100,

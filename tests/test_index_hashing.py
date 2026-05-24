@@ -19,6 +19,7 @@ from cpho_cli.models.index import FileFingerprint, IndexEntry, IndexFingerprint,
 def _make_fp(
     file_sha: str = "a" * 64,
     ocr_engine_version: str = "3.0",
+    split_prompt_version: str = "v1",
     notes_sha256: str | None = None,
 ) -> IndexFingerprint:
     file_fp = FileFingerprint(
@@ -34,6 +35,7 @@ def _make_fp(
         ocr_engine_version=ocr_engine_version,
         ocr_config_hash="config",
         tag_prompt_version="v1",
+        split_prompt_version=split_prompt_version,
         tag_schema_version="v1",
         model_name="model",
         model_temperature=0.0,
@@ -47,6 +49,7 @@ def _make_entry(fingerprint: IndexFingerprint) -> IndexEntry:
     return IndexEntry(
         problem_id="p1",
         problem_path=Path("problem.pdf"),
+        problem_page_range=(1, 1),
         indexed_at=datetime(2024, 1, 1),
         fingerprint=fingerprint,
         ocr_text_length=0,
@@ -123,6 +126,7 @@ def test_semantic_fingerprint_diff_on_engine_version(tmp_path: Path) -> None:
         ocr_engine_version="3.0",
         ocr_config={},
         tag_prompt_version="v1",
+        split_prompt_version="v1",
         tag_schema_version="v1",
         model_name="model",
         model_temperature=0.0,
@@ -134,6 +138,7 @@ def test_semantic_fingerprint_diff_on_engine_version(tmp_path: Path) -> None:
         ocr_engine_version="4.0",
         ocr_config={},
         tag_prompt_version="v1",
+        split_prompt_version="v1",
         tag_schema_version="v1",
         model_name="model",
         model_temperature=0.0,
@@ -156,6 +161,7 @@ def test_semantic_fingerprint_diff_on_vocab_version(tmp_path: Path) -> None:
         {},
         "v1",
         "v1",
+        "v1",
         "model",
         0.0,
         "builtin-v0.1+ws-none+pv-none",
@@ -165,6 +171,7 @@ def test_semantic_fingerprint_diff_on_vocab_version(tmp_path: Path) -> None:
         "rapidocr",
         "3.0",
         {},
+        "v1",
         "v1",
         "v1",
         "model",
@@ -180,10 +187,33 @@ def test_semantic_fingerprint_diff_on_prompt_version(tmp_path: Path) -> None:
     problem.write_bytes(b"problem")
     file_fp = compose_file_fingerprint(problem, None)
 
-    first = compose_semantic_fingerprint(file_fp, "rapidocr", "3.0", {}, "v1", "v1", "model", 0.0, "vocab")
-    second = compose_semantic_fingerprint(file_fp, "rapidocr", "3.0", {}, "v2", "v1", "model", 0.0, "vocab")
+    first = compose_semantic_fingerprint(file_fp, "rapidocr", "3.0", {}, "v1", "v1", "v1", "model", 0.0, "vocab")
+    second = compose_semantic_fingerprint(file_fp, "rapidocr", "3.0", {}, "v2", "v1", "v1", "model", 0.0, "vocab")
 
     assert first != second
+
+
+def test_semantic_fingerprint_diff_on_split_prompt_version(tmp_path: Path) -> None:
+    problem = tmp_path / "problem.pdf"
+    problem.write_bytes(b"problem")
+    file_fp = compose_file_fingerprint(problem, None)
+
+    first = compose_semantic_fingerprint(
+        file_fp, "rapidocr", "3.0", {}, "v1", "split-v1", "v1", "model", 0.0, "vocab"
+    )
+    second = compose_semantic_fingerprint(
+        file_fp, "rapidocr", "3.0", {}, "v1", "split-v2", "v1", "model", 0.0, "vocab"
+    )
+
+    assert first != second
+    assert first.split_prompt_version != second.split_prompt_version
+
+
+def test_decide_action_split_prompt_changed_re_tag_only() -> None:
+    old = _make_entry(_make_fp(split_prompt_version="split-v1"))
+    new = _make_fp(split_prompt_version="split-v2")
+
+    assert decide_action(old, new) == "re_tag_only"
 
 
 def test_semantic_fingerprint_diff_on_temperature(tmp_path: Path) -> None:
@@ -191,8 +221,8 @@ def test_semantic_fingerprint_diff_on_temperature(tmp_path: Path) -> None:
     problem.write_bytes(b"problem")
     file_fp = compose_file_fingerprint(problem, None)
 
-    first = compose_semantic_fingerprint(file_fp, "rapidocr", "3.0", {}, "v1", "v1", "model", 0.0, "vocab")
-    second = compose_semantic_fingerprint(file_fp, "rapidocr", "3.0", {}, "v1", "v1", "model", 0.2, "vocab")
+    first = compose_semantic_fingerprint(file_fp, "rapidocr", "3.0", {}, "v1", "v1", "v1", "model", 0.0, "vocab")
+    second = compose_semantic_fingerprint(file_fp, "rapidocr", "3.0", {}, "v1", "v1", "v1", "model", 0.2, "vocab")
 
     assert first != second
 
@@ -209,6 +239,7 @@ def test_semantic_fingerprint_diff_on_ocr_config(tmp_path: Path) -> None:
         {"low_confidence_threshold": 0.6},
         "v1",
         "v1",
+        "v1",
         "model",
         0.0,
         "vocab",
@@ -218,6 +249,7 @@ def test_semantic_fingerprint_diff_on_ocr_config(tmp_path: Path) -> None:
         "rapidocr",
         "3.0",
         {"low_confidence_threshold": 0.7},
+        "v1",
         "v1",
         "v1",
         "model",
