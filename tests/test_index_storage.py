@@ -1,10 +1,11 @@
+import json
 from datetime import datetime, timezone
 from pathlib import Path
 
 import pytest
 
 from cpho_cli.core.index import IndexNotFoundError
-from cpho_cli.core.index.storage import load_index, write_index
+from cpho_cli.core.index.storage import load_existing_index_for_rebuild, load_index, write_index
 from cpho_cli.models.index import (
     FileFingerprint,
     IndexEntry,
@@ -35,7 +36,7 @@ def _entry(problem_id: str = "p1", **overrides: object) -> IndexEntry:
                 ocr_config_hash="y",
                 tag_prompt_version="v1",
                 split_prompt_version="v1",
-                tag_schema_version="v1",
+                tag_schema_version="v2",
                 model_name="m",
                 model_temperature=0.0,
                 vocabulary_version="builtin-v0.1+ws-none+pv-none",
@@ -101,3 +102,21 @@ def test_load_index_utf8_chinese(tmp_path: Path) -> None:
     write_index(path, [entry])
 
     assert load_index(tmp_path)[0].difficulty_aspects == ["选系统时容易忽略约束"]
+
+
+def test_load_existing_index_for_rebuild_discards_pre_021_rows(tmp_path: Path) -> None:
+    path = tmp_path / ".cpho" / "index.jsonl"
+    entry = _entry().model_dump(mode="json")
+    entry.pop("problem_page_range")
+    entry["fingerprint"]["semantic"].pop("split_prompt_version")
+    path.parent.mkdir(parents=True)
+    path.write_text(json.dumps(entry) + "\n", encoding="utf-8")
+
+    with pytest.raises(Exception):
+        load_index(tmp_path)
+
+    result = load_existing_index_for_rebuild(tmp_path, expected_schema_version="v2")
+
+    assert result.entries == []
+    assert result.stale_reason is not None
+    assert "stale" in result.stale_reason

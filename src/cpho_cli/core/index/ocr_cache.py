@@ -5,9 +5,9 @@ from pathlib import Path
 
 from pydantic import Field
 
-from cpho_cli.core.index import IndexBuildError, IndexNotFoundError
-from cpho_cli.core.index.hashing import sha256_file, sha256_json
-from cpho_cli.core.index.storage import load_index
+from cpho_cli.core.index import IndexBuildError
+from cpho_cli.core.index.hashing import TAG_SCHEMA_VERSION, sha256_file, sha256_json
+from cpho_cli.core.index.storage import load_existing_index_for_rebuild
 from cpho_cli.core.ocr import OCRProvider
 from cpho_cli.models.config import StrictModel
 from cpho_cli.models.documents import DocumentInput
@@ -96,10 +96,10 @@ def detect_ocr_engine_upgrade(
     current_version: str,
     current_config_hash: str,
 ) -> OcrEngineDelta | None:
-    try:
-        entries = load_index(workspace_root)
-    except IndexNotFoundError:
+    load_result = load_existing_index_for_rebuild(workspace_root, TAG_SCHEMA_VERSION)
+    if load_result.stale_reason is not None:
         return None
+    entries = load_result.entries
 
     if not entries:
         return None

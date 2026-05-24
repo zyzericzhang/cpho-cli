@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 from pathlib import Path
+import json
 
 from cpho_cli.core.index.ocr_cache import (
     OcrEngineDelta,
@@ -45,7 +46,7 @@ def _make_entry(
                 ocr_config_hash=ocr_config_hash,
                 tag_prompt_version="v1",
                 split_prompt_version="v1",
-                tag_schema_version="v1",
+                tag_schema_version="v2",
                 model_name="m",
                 model_temperature=0.0,
                 vocabulary_version="builtin-v0.1",
@@ -152,3 +153,14 @@ def test_ocr_engine_delta_summary_chinese() -> None:
     )
 
     assert delta.summary() == "OCR 引擎升级: rapidocr 3.0 → rapidocr 4.1; 受影响条目 2"
+
+
+def test_detect_returns_none_for_stale_pre_021_rows(tmp_path: Path) -> None:
+    path = tmp_path / ".cpho" / "index.jsonl"
+    row = _make_entry("old").model_dump(mode="json")
+    row.pop("problem_page_range")
+    row["fingerprint"]["semantic"].pop("split_prompt_version")
+    path.parent.mkdir(parents=True)
+    path.write_text(json.dumps(row) + "\n", encoding="utf-8")
+
+    assert detect_ocr_engine_upgrade(tmp_path, "rapidocr", "3.0", "abc") is None

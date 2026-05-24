@@ -31,7 +31,7 @@ from cpho_cli.core.index.ocr_cache import (
     detect_ocr_engine_upgrade,
     ocr_config_hash,
 )
-from cpho_cli.core.index.storage import load_index, write_index
+from cpho_cli.core.index.storage import load_existing_index_for_rebuild, write_index
 from cpho_cli.core.index.tagging import CanonicalMappingResult, load_tag_prompt_version, refine_tags
 from cpho_cli.core.index.topic_assignment import assign_topic
 from cpho_cli.core.index.topic_vocabulary import load_merged_topic_taxonomy
@@ -196,7 +196,8 @@ def build_index(
     index_path = workspace_root / ".cpho" / "index.jsonl"
     existing_entries: dict[str, IndexEntry] = {}
     if index_path.exists():
-        existing_entries = {e.problem_id: e for e in load_index(workspace_root)}
+        load_result = load_existing_index_for_rebuild(workspace_root, TAG_SCHEMA_VERSION)
+        existing_entries = {e.problem_id: e for e in load_result.entries}
 
     inner_ocr = ocr_provider or RapidOCRProvider()
     cached_ocr = CachedOCRProvider(
