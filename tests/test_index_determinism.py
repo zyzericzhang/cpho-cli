@@ -9,8 +9,10 @@ from pathlib import Path
 import pytest
 
 from cpho_cli.core.index.builder import build_index
+from cpho_cli.core.index.hashing import sha256_file
 from cpho_cli.core.index.storage import load_index
 from cpho_cli.core.index.tagging import TagRefinementOutput
+from cpho_cli.models.documents import make_problem_id
 
 from conftest import FakeLLMProvider, FakeOCRProvider
 
@@ -19,6 +21,13 @@ GOLDEN_DIR = Path(__file__).parent / "fixtures" / "golden_index_workspace"
 
 def _expected_tags() -> dict[str, dict[str, list[str]]]:
     return json.loads((GOLDEN_DIR / "expected_canonical_tags.json").read_text(encoding="utf-8"))
+
+
+def _expected_tags_by_problem_id(ws: Path) -> dict[str, dict[str, list[str]]]:
+    return {
+        make_problem_id(sha256_file(ws / f"{stem}.png"), 1): tags
+        for stem, tags in _expected_tags().items()
+    }
 
 
 def _golden_llm() -> FakeLLMProvider:
@@ -57,7 +66,7 @@ def test_golden_workspace_first_indexing(
 ) -> None:
     _patch_rapidocr_version(monkeypatch)
     ws = _copy_golden_workspace(tmp_path)
-    expected = _expected_tags()
+    expected = _expected_tags_by_problem_id(ws)
 
     build_index(
         ws,

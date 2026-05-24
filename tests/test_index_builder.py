@@ -381,18 +381,19 @@ def test_build_index_user_notebook_refinement_only(
         ocr_strategy="reuse",
     )
     build_index(ws, **kwargs)
+    problem_id = load_index(ws)[0].problem_id
 
     # Write a notebook entry
     from cpho_cli.core.index.notebook import set_problem_notes
 
-    set_problem_notes(ws, UserNotebookEntry(problem_id="p1", key_points=["x"]))
+    set_problem_notes(ws, UserNotebookEntry(problem_id=problem_id, key_points=["x"]))
 
     stats = build_index(ws, **kwargs)
     assert stats.refinement_only == 1
     assert stats.tags_regenerated == 0
 
     entries = load_index(ws)
-    p1 = next(e for e in entries if e.problem_id == "p1")
+    p1 = next(e for e in entries if e.problem_id == problem_id)
     assert p1.user_confirmed_key_points == ["x"]
 
 
@@ -515,8 +516,9 @@ def test_build_index_solve_report_consumed_when_present(
     ws = setup_workspace(tmp_path, problem_names=["p1"])
     output_dir = ws / "output"
     output_dir.mkdir()
+    problem_id = make_problem_id(sha256_file(ws / "p1.png"), 1)
     report = SolveReport(
-        problem_id="p1",
+        problem_id=problem_id,
         derivation_steps=[
             DerivationStep(
                 reasoning="test", expression="F=ma", official_answer_refs=["ref1"]
@@ -526,7 +528,9 @@ def test_build_index_solve_report_consumed_when_present(
         heuristic_insight_tags=[],
         math_technique_tags=[],
     )
-    (output_dir / "p1-report.json").write_text(report.model_dump_json(), encoding="utf-8")
+    (output_dir / f"{problem_id}-report.json").write_text(
+        report.model_dump_json(), encoding="utf-8"
+    )
 
     fake_llm = FakeLLMProvider()
     build_index(
@@ -543,7 +547,7 @@ def test_build_index_solve_report_consumed_when_present(
     assert "Newton" in user_msg
 
     entries = load_index(ws)
-    p1 = next(e for e in entries if e.problem_id == "p1")
+    p1 = next(e for e in entries if e.problem_id == problem_id)
     # Source should be SOLVE_REPORT when report exists
     for tag in p1.physics_model_tags:
         assert tag.source == TagSource.SOLVE_REPORT
@@ -562,7 +566,7 @@ def test_build_index_no_solve_report_falls_back_to_ocr(
         ocr_strategy="reuse",
     )
     entries = load_index(ws)
-    p1 = next(e for e in entries if e.problem_id == "p1")
+    p1 = entries[0]
     for tag in p1.physics_model_tags:
         assert tag.source == TagSource.OCR_FALLBACK
 

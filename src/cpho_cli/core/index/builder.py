@@ -2,10 +2,8 @@
 
 from __future__ import annotations
 
-import hashlib
 import logging
 import os
-import re
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -42,8 +40,10 @@ from cpho_cli.core.index.vocabulary import (
 )
 from cpho_cli.core.llm import LLMProvider
 from cpho_cli.core.ocr import OCRProvider, RapidOCRProvider
+from cpho_cli.core.splitting import split_paper
 from cpho_cli.core.splitting.llm import load_split_prompt_version
 from cpho_cli.core.workspace import discover_workspace
+from cpho_cli.models.documents import PaperFile, SplitMethod
 from cpho_cli.models.index import (
     CandidateTag,
     IndexEntry,
@@ -52,20 +52,6 @@ from cpho_cli.models.index import (
     UserNotebookEntry,
 )
 from cpho_cli.models.solve import SolveReport
-
-_PROBLEM_ID_RE = re.compile(r"[^A-Za-z0-9._-]")
-
-
-def _problem_id_for(path: Path, used_ids: set[str]) -> str:
-    stem = _PROBLEM_ID_RE.sub("_", path.stem)
-    if not stem:
-        stem = "unnamed"
-    pid = stem
-    if pid in used_ids:
-        sha8 = hashlib.sha256(str(path).encode()).hexdigest()[:8]
-        pid = f"{stem}_{sha8}"
-    used_ids.add(pid)
-    return pid
 
 
 def _load_solve_report(workspace_root: Path, problem_id: str) -> SolveReport | None:
@@ -145,17 +131,18 @@ def build_index(
     workspace_root = workspace_root.resolve()
     discovery = discover_workspace(workspace_root)
 
-    # Build problems list: pairs + unmatched, skip ambiguous
-    problems: list[tuple[Path, Path | None]] = []
+    # Build paper inputs: pairs + unmatched papers, skip ambiguous.
+    papers: list[tuple[PaperFile, PaperFile | None]] = []
     for pair in discovery.pairs:
-        problems.append((pair.problem.path, pair.answer.path if pair.answer else None))
+        papers.append((pair.paper, pair.answer))
     for unmatched in discovery.unmatched_problems:
-        problems.append((unmatched.path, None))
+        papers.append((unmatched, None))
 
-    stats = IndexRunStats(total_problems=len(problems))
+    stats = IndexRunStats()
 
     if dry_run:
         load_merged_vocabulary(workspace_root)
+        stats.total_problems = len(papers)
         return stats
 
     config = load_config(config_path)
@@ -207,149 +194,179 @@ def build_index(
         ocr_engine_version,
     )
 
-    used_ids: set[str] = set()
     result_entries: dict[str, IndexEntry] = dict(existing_entries)
     trace_path = workspace_root / ".cpho" / "run-trace.jsonl"
     all_candidates: list[CandidateTag] = []
 
-    for problem_path, answer_path in problems:
-        problem_id = _problem_id_for(problem_path, used_ids)
-        file_fp = compose_file_fingerprint(problem_path, answer_path)
+    for paper_file, answer_file in papers:
+        answer_path = answer_file.path if answer_file else None
+        file_fp = compose_file_fingerprint(paper_file.path, answer_path)
 
-        notebook: UserNotebookEntry | None = get_problem_notes(workspace_root, problem_id)
-        user_learning_fp = compose_user_learning_fingerprint(notebook)
+        paper_document = load_document(paper_file.path)
+        paper_ocr = cached_ocr.extract(paper_document)
+        answer_ocr = None
+        if answer_file is not None:
+            answer_document = load_document(answer_file.path)
+            answer_ocr = cached_ocr.extract(answer_document)
 
-        semantic_fp = compose_semantic_fingerprint(
-            file_fp=file_fp,
-            ocr_engine=RAPIDOCR_ENGINE_NAME,
-            ocr_engine_version=ocr_engine_version,
-            ocr_config=_ocr_config(),
-            tag_prompt_version=tag_prompt_version,
-            split_prompt_version=split_prompt_version,
-            tag_schema_version=TAG_SCHEMA_VERSION,
-            model_name=params.name or "",
-            model_temperature=params.temperature if params.temperature is not None else 0.0,
-            vocabulary_version=vocabulary.version,
-        )
-        fingerprint = compose_index_fingerprint(file_fp, semantic_fp, user_learning_fp)
-
-        old = existing_entries.get(problem_id)
-        action = decide_action(old, fingerprint)
-        forced_override = False
-
-        # only_new: skip existing (but force wins if both set)
-        if only_new and old is not None and not force:
-            action = "skip"
-
-        # force overrides
-        if force and old is not None:
-            if action == "skip":
-                forced_override = True
-            action = "re_ocr_and_re_tag"
-        elif force and old is None:
-            action = "full_index"
-
-        # OCR rebuild strategy
-        if (
-            ocr_strategy == "rebuild"
-            and old is not None
-            and old.fingerprint.semantic.ocr_engine_version != ocr_engine_version
-        ):
-            action = "re_ocr_and_re_tag"
-
-        # Dispatch
-        if action == "skip":
-            stats.tags_skipped += 1
-            stats.file_unchanged += 1
-            continue
-
-        if action == "refinement_only":
-            entry = old.model_copy(  # type: ignore[union-attr]
-                update={
-                    "fingerprint": fingerprint,
-                    "user_confirmed_key_points": notebook.key_points if notebook else [],
-                    "user_confirmed_stuck_points": notebook.stuck_points if notebook else [],
-                    "indexed_at": datetime.now(timezone.utc),
-                }
-            )
-            stats.refinement_only += 1
-            result_entries[problem_id] = entry
-            continue
-
-        # re_tag_only, re_ocr_and_re_tag, full_index all need OCR + tagging
-        document = load_document(problem_path)
-        ocr_result = cached_ocr.extract(document)
-        ocr_text = ocr_result.text
-
-        report = _load_solve_report(workspace_root, problem_id)
-        solve_report_tags = _solve_report_tag_dict(report)
-        source = TagSource.SOLVE_REPORT if report else TagSource.OCR_FALLBACK
-
-        mapping: CanonicalMappingResult = refine_tags(
-            problem_id,
-            ocr_text,
-            solve_report_tags,
-            vocabulary,
-            config,
-            provider_config,
+        split_outcome = split_paper(
+            paper_ocr,
+            answer_ocr,
+            paper_file=paper_file,
+            answer_file=answer_file,
+            paper_sha256=file_fp.problem_sha256,
             llm_provider=llm_provider,
-            trace_path=trace_path,
-            source=source,
+            llm_params=params,
         )
+        stats.papers_split += 1
+        stats.problems_extracted += len(split_outcome.problems)
+        stats.total_problems += len(split_outcome.problems)
+        for problem_entry in split_outcome.problems:
+            if problem_entry.split_method is SplitMethod.RULES:
+                stats.split_method_rules += 1
+            elif problem_entry.split_method is SplitMethod.LLM:
+                stats.split_method_llm += 1
+            elif problem_entry.split_method is SplitMethod.SINGLE:
+                stats.split_method_single += 1
 
-        all_candidates.extend(mapping.candidates)
+        for problem_entry in split_outcome.problems:
+            problem_id = problem_entry.problem_id
 
-        # Topic assignment (non-blocking: failure sets topic_path to None)
-        topic_path: str | None = None
-        if topic_taxonomy is not None:
-            try:
-                topic_result = assign_topic(
-                    problem_id,
-                    ocr_text,
-                    topic_taxonomy,
-                    config,
-                    provider_config,
-                    llm_provider=llm_provider,
-                    trace_path=trace_path,
+            notebook: UserNotebookEntry | None = get_problem_notes(workspace_root, problem_id)
+            user_learning_fp = compose_user_learning_fingerprint(notebook)
+
+            semantic_fp = compose_semantic_fingerprint(
+                file_fp=file_fp,
+                ocr_engine=RAPIDOCR_ENGINE_NAME,
+                ocr_engine_version=ocr_engine_version,
+                ocr_config=_ocr_config(),
+                tag_prompt_version=tag_prompt_version,
+                split_prompt_version=split_prompt_version,
+                tag_schema_version=TAG_SCHEMA_VERSION,
+                model_name=params.name or "",
+                model_temperature=params.temperature if params.temperature is not None else 0.0,
+                vocabulary_version=vocabulary.version,
+            )
+            fingerprint = compose_index_fingerprint(file_fp, semantic_fp, user_learning_fp)
+
+            old = existing_entries.get(problem_id)
+            action = decide_action(old, fingerprint)
+            forced_override = False
+
+            # only_new: skip existing (but force wins if both set)
+            if only_new and old is not None and not force:
+                action = "skip"
+
+            # force overrides
+            if force and old is not None:
+                if action == "skip":
+                    forced_override = True
+                action = "re_ocr_and_re_tag"
+            elif force and old is None:
+                action = "full_index"
+
+            # OCR rebuild strategy
+            if (
+                ocr_strategy == "rebuild"
+                and old is not None
+                and old.fingerprint.semantic.ocr_engine_version != ocr_engine_version
+            ):
+                action = "re_ocr_and_re_tag"
+
+            # Dispatch
+            if action == "skip":
+                stats.tags_skipped += 1
+                stats.file_unchanged += 1
+                continue
+
+            if action == "refinement_only":
+                entry = old.model_copy(  # type: ignore[union-attr]
+                    update={
+                        "fingerprint": fingerprint,
+                        "user_confirmed_key_points": notebook.key_points if notebook else [],
+                        "user_confirmed_stuck_points": notebook.stuck_points if notebook else [],
+                        "indexed_at": datetime.now(timezone.utc),
+                    }
                 )
-                topic_path = topic_result.topic_path
-            except Exception:
-                logging.getLogger(__name__).warning(
-                    "Topic assignment failed for %s; continuing without topic.", problem_id
-                )
+                stats.refinement_only += 1
+                result_entries[problem_id] = entry
+                continue
 
-        entry = IndexEntry(
-            problem_id=problem_id,
-            problem_path=problem_path.relative_to(workspace_root),
-            problem_page_range=(1, 1),
-            answer_path=answer_path.relative_to(workspace_root) if answer_path else None,
-            indexed_at=datetime.now(timezone.utc),
-            physics_model_tags=mapping.physics_model_tags,
-            math_technique_tags=mapping.math_technique_tags,
-            heuristic_tags=mapping.heuristic_tags,
-            difficulty_aspects=mapping.difficulty_aspects,
-            user_confirmed_key_points=notebook.key_points if notebook else [],
-            user_confirmed_stuck_points=notebook.stuck_points if notebook else [],
-            fingerprint=fingerprint,
-            solve_report_path=Path("output") / f"{problem_id}-report.json" if report else None,
-            ocr_text_length=len(ocr_text),
-            tag_prompt_version=tag_prompt_version,
-            topic_path=topic_path,
-        )
-        result_entries[problem_id] = entry
+            # re_tag_only, re_ocr_and_re_tag, full_index all need tagging.
+            ocr_text = problem_entry.problem_text
+            report = _load_solve_report(workspace_root, problem_id)
+            solve_report_tags = _solve_report_tag_dict(report)
+            source = TagSource.SOLVE_REPORT if report else TagSource.OCR_FALLBACK
 
-        # Stats accounting
-        if action == "re_tag_only":
-            stats.tags_regenerated += 1
-            stats.file_unchanged += 1
-            stats.ocr_reused += 1
-        elif action in ("re_ocr_and_re_tag", "full_index"):
-            if forced_override:
-                stats.forced_regenerations += 1
-            else:
-                stats.file_changed += 1
-            stats.ocr_regenerated += 1
-            stats.tags_regenerated += 1
+            mapping: CanonicalMappingResult = refine_tags(
+                problem_id,
+                ocr_text,
+                solve_report_tags,
+                vocabulary,
+                config,
+                provider_config,
+                llm_provider=llm_provider,
+                trace_path=trace_path,
+                source=source,
+            )
+
+            all_candidates.extend(mapping.candidates)
+
+            # Topic assignment (non-blocking: failure sets topic_path to None)
+            topic_path: str | None = None
+            if topic_taxonomy is not None:
+                try:
+                    topic_result = assign_topic(
+                        problem_id,
+                        ocr_text,
+                        topic_taxonomy,
+                        config,
+                        provider_config,
+                        llm_provider=llm_provider,
+                        trace_path=trace_path,
+                    )
+                    topic_path = topic_result.topic_path
+                except Exception:
+                    logging.getLogger(__name__).warning(
+                        "Topic assignment failed for %s; continuing without topic.", problem_id
+                    )
+
+            entry = IndexEntry(
+                problem_id=problem_id,
+                problem_path=problem_entry.paper_path.relative_to(workspace_root),
+                problem_page_range=problem_entry.problem_page_range,
+                answer_path=(
+                    problem_entry.answer_paper_path.relative_to(workspace_root)
+                    if problem_entry.answer_paper_path
+                    else None
+                ),
+                indexed_at=datetime.now(timezone.utc),
+                physics_model_tags=mapping.physics_model_tags,
+                math_technique_tags=mapping.math_technique_tags,
+                heuristic_tags=mapping.heuristic_tags,
+                difficulty_aspects=mapping.difficulty_aspects,
+                user_confirmed_key_points=notebook.key_points if notebook else [],
+                user_confirmed_stuck_points=notebook.stuck_points if notebook else [],
+                fingerprint=fingerprint,
+                solve_report_path=Path("output") / f"{problem_id}-report.json" if report else None,
+                ocr_text_length=len(ocr_text),
+                tag_prompt_version=tag_prompt_version,
+                topic_path=topic_path,
+            )
+            result_entries[problem_id] = entry
+
+            # Stats accounting
+            if action == "re_tag_only":
+                stats.tags_regenerated += 1
+                stats.file_unchanged += 1
+                stats.ocr_reused += 1
+            elif action in ("re_ocr_and_re_tag", "full_index"):
+                if forced_override:
+                    stats.forced_regenerations += 1
+                else:
+                    stats.file_changed += 1
+                stats.ocr_regenerated += 1
+                stats.tags_regenerated += 1
 
     write_index(workspace_root / ".cpho" / "index.jsonl", list(result_entries.values()))
 

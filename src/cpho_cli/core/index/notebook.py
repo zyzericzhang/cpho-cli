@@ -8,7 +8,7 @@ from pathlib import Path
 from cpho_cli.core.index import IndexBuildError
 from cpho_cli.models.index import UserNotebookEntry
 
-PROBLEM_ID_PATTERN = re.compile(r"^[A-Za-z0-9._-]+$")
+PROBLEM_ID_PATTERN = re.compile(r"^[A-Za-z0-9._:-]+$")
 
 
 def _validate_problem_id(problem_id: str) -> None:
