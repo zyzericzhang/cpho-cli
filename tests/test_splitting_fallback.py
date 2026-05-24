@@ -117,7 +117,7 @@ def test_invalid_rule_diagnostics_trigger_llm_once(
 def test_required_fallback_without_provider_raises_clear_error() -> None:
     with pytest.raises(ValueError, match="LLM provider"):
         split_paper(
-            _ocr_pages("intro only"),
-            paper_file=_paper(pages=1),
+            _ocr_pages("intro only", "still no marker"),
+            paper_file=_paper(pages=2),
             paper_sha256="paper-sha",
         )
