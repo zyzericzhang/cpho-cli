@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Phase 2 context gathered
-last_updated: "2026-05-24T02:37:37.788Z"
+stopped_at: Completed 02.1-02-PLAN.md
+last_updated: "2026-05-24T02:48:12.748Z"
 last_activity: 2026-05-24
 progress:
   total_phases: 5
   completed_phases: 2
   total_plans: 17
-  completed_plans: 13
+  completed_plans: 14
   percent: 40
 ---
 
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-05-20)
 ## Current Position
 
 Phase: 02.1 (paper-splitting-pdf-phase-1-2) — EXECUTING
-Plan: 2 of 5
+Plan: 3 of 5
 Status: Ready to execute
 Last activity: 2026-05-24
 
-Progress: [████████░░] 76%
+Progress: [████████░░] 82%
 
 ## Performance Metrics
 
@@ -56,6 +56,7 @@ Progress: [████████░░] 76%
 - Trend: N/A
 
 *Updated after each plan completion*
+| Phase 02.1 P02 | 7min | 3 tasks | 9 files |
 
 ## Quick Tasks Completed
 
@@ -78,6 +79,9 @@ Recent decisions affecting current work:
 - Three-tier skill system, extracted from real usage not designed in advance
 - PDF output via image stitching, not LaTeX re-rendering
 - Chinese-language UX from day 1
+- [Phase 02.1]: Split LLM fallback uses an internal Pydantic response schema before producing ProblemEntry objects.
+- [Phase 02.1]: split_paper requires an explicit llm_provider for fallback and does not construct providers.
+- [Phase 02.1]: Image suffixes and one-page no-marker inputs return SplitMethod.SINGLE without LLM fallback.
 
 ### Pending Todos
 
@@ -107,6 +111,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-05-24T02:37:37.775Z
-Stopped at: Phase 2 context gathered
+Last session: 2026-05-24T02:48:12.743Z
+Stopped at: Completed 02.1-02-PLAN.md
 Resume file: None
