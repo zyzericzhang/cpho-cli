@@ -8,7 +8,7 @@ from pydantic import ValidationError
 
 from cpho_cli.core.config import load_config, resolve_model_params, resolve_provider_config
 from cpho_cli.core.documents import load_document
-from cpho_cli.core.llm import LLMProvider, OpenRouterProvider
+from cpho_cli.core.llm import LLMProvider, create_llm_provider
 from cpho_cli.core.ocr import OCRProvider, RapidOCRProvider
 from cpho_cli.core.skills import load_skill
 from cpho_cli.models.solve import SolveReport, SolveRunResult
@@ -76,7 +76,8 @@ def solve_problem(
         for block in page.blocks
         if block.low_confidence
     ]
-    provider = llm_provider or OpenRouterProvider(
+    provider = llm_provider or create_llm_provider(
+        kind=provider_config.kind,
         api_key=provider_config.api_key,
         base_url=provider_config.base_url,
     )

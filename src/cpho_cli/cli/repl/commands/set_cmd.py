@@ -10,6 +10,7 @@ from cpho_cli.cli.repl import display
 from cpho_cli.cli.repl.commands import Command
 from cpho_cli.cli.repl.persistence import write_session
 from cpho_cli.cli.repl.session import load_index_meta
+from cpho_cli.core.llm import supported_provider_kinds
 
 ALLOWED_KEYS = ("workspace", "max_results", "output_format", "provider")
 
@@ -68,9 +69,45 @@ async def do_set(session, args: list[str]) -> None:  # type: ignore[no-untyped-d
             return
         session.output_format = value
     elif key == "provider":
+        if not _validate_provider(session, value):
+            return
         session.provider_name = value
     write_session(session)
     print(f"已更新 {key}: {_current_value(session, key)}")
+
+
+def _validate_provider(session, name: str) -> bool:  # type: ignore[no-untyped-def]
+    if name == "openrouter":
+        return True
+
+    profile = session.config.providers.get(name)
+    if profile is None:
+        display.error(
+            f"未知的 provider: {name}。"
+            f"可用: openrouter{_configured_providers_hint(session.config.providers)}"
+        )
+        return False
+
+    if profile.kind not in supported_provider_kinds():
+        display.error(
+            f"Provider '{name}' 的 kind '{profile.kind}' 不支持。"
+            f"支持: {', '.join(sorted(supported_provider_kinds()))}"
+        )
+        return False
+
+    if not profile.api_key and not profile.api_key_env:
+        display.warn(
+            f"Provider '{name}' 未配置 api_key 或 api_key_env，"
+            f"使用时将报错。请在 config.local.yml 的 providers.{name} 中设置。"
+        )
+    return True
+
+
+def _configured_providers_hint(providers: dict) -> str:  # type: ignore[no-untyped-def]
+    names = [n for n in providers if n != "openrouter"]
+    if not names:
+        return ""
+    return ", " + ", ".join(sorted(names))
 
 
 def register(registry: dict[str, Command]) -> None:

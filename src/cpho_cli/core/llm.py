@@ -28,18 +28,22 @@ class LLMProvider(Protocol):
         """Complete a chat request."""
 
 
-class OpenRouterProvider:
+class _OpenAICompatibleProvider:
+    """Shared implementation for OpenAI-compatible chat completions APIs."""
+
     def __init__(
         self,
         api_key: str,
-        base_url: str = "https://openrouter.ai/api/v1",
+        base_url: str,
         client: httpx.Client | None = None,
         max_retries: int = 2,
+        label: str = "provider",
     ) -> None:
         self.api_key = api_key
         self.base_url = base_url.rstrip("/")
         self.client = client or httpx.Client(timeout=httpx.Timeout(30.0))
         self.max_retries = max_retries
+        self.label = label
 
     def complete(
         self,
@@ -80,7 +84,7 @@ class OpenRouterProvider:
                 if response.status_code >= 400:
                     raise LLMProviderError(
                         redact_secrets(
-                            f"OpenRouter request failed: {response.status_code} {response.text}",
+                            f"{self.label} request failed: {response.status_code} {response.text}",
                             [self.api_key],
                         )
                     )
@@ -102,5 +106,44 @@ class OpenRouterProvider:
                     break
                 time.sleep(0.1 * (2**attempt))
         raise LLMProviderError(
-            redact_secrets(f"OpenRouter request failed: {last_error}", [self.api_key])
+            redact_secrets(f"{self.label} request failed: {last_error}", [self.api_key])
         )
+
+
+class OpenRouterProvider(_OpenAICompatibleProvider):
+    def __init__(
+        self,
+        api_key: str,
+        base_url: str = "https://openrouter.ai/api/v1",
+        client: httpx.Client | None = None,
+        max_retries: int = 2,
+    ) -> None:
+        super().__init__(api_key, base_url, client, max_retries, label="OpenRouter")
+
+
+class DeepSeekProvider(_OpenAICompatibleProvider):
+    def __init__(
+        self,
+        api_key: str,
+        base_url: str = "https://api.deepseek.com/v1",
+        client: httpx.Client | None = None,
+        max_retries: int = 2,
+    ) -> None:
+        super().__init__(api_key, base_url, client, max_retries, label="DeepSeek")
+
+
+_PROVIDER_REGISTRY: dict[str, type[_OpenAICompatibleProvider]] = {
+    "openrouter": OpenRouterProvider,
+    "deepseek": DeepSeekProvider,
+}
+
+
+def create_llm_provider(kind: str, api_key: str, base_url: str) -> LLMProvider:
+    cls = _PROVIDER_REGISTRY.get(kind)
+    if cls is None:
+        raise LLMProviderError(f"Unsupported provider kind: {kind}")
+    return cls(api_key=api_key, base_url=base_url)
+
+
+def supported_provider_kinds() -> frozenset[str]:
+    return frozenset(_PROVIDER_REGISTRY.keys())

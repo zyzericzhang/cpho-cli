@@ -7,6 +7,7 @@ from typing import Any
 import yaml
 from pydantic import ValidationError
 
+from cpho_cli.core.llm import supported_provider_kinds
 from cpho_cli.models.config import AppConfig, ModelParams, ProviderProfile, ResolvedProviderConfig
 
 
@@ -66,6 +67,12 @@ def _provider_key(profile: ProviderProfile, env: Mapping[str, str]) -> str | Non
     return profile.api_key
 
 
+_DEFAULT_BASE_URLS: dict[str, str] = {
+    "openrouter": "https://openrouter.ai/api/v1",
+    "deepseek": "https://api.deepseek.com/v1",
+}
+
+
 def resolve_provider_config(
     config: AppConfig,
     env: Mapping[str, str],
@@ -80,8 +87,12 @@ def resolve_provider_config(
         profile = _legacy_openrouter_profile(config)
         legacy_profile = True
 
-    if profile.kind != "openrouter":
-        raise ConfigError(f"Unsupported provider kind for profile '{name}': {profile.kind}")
+    kind = profile.kind
+    if kind not in supported_provider_kinds():
+        raise ConfigError(
+            f"Unsupported provider kind for profile '{name}': {kind}. "
+            f"Supported: {', '.join(sorted(supported_provider_kinds()))}"
+        )
 
     api_key = _provider_key(profile, env)
     if not api_key:
@@ -95,11 +106,13 @@ def resolve_provider_config(
             source = f"{profile.api_key_env} or {source}"
         raise ConfigError(f"API key missing for provider profile '{name}'. Set {source}.")
 
+    base_url = profile.base_url or _DEFAULT_BASE_URLS.get(kind, config.provider.base_url)
+
     return ResolvedProviderConfig(
         name=name,
-        kind=profile.kind,
+        kind=kind,
         api_key=api_key,
-        base_url=profile.base_url or config.provider.base_url,
+        base_url=base_url,
     )
 
 
