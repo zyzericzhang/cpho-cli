@@ -64,7 +64,7 @@ def test_valid_rule_split_returns_without_llm(monkeypatch: pytest.MonkeyPatch) -
 @pytest.mark.parametrize(
     ("paper_ocr", "answer_ocr", "paper_file", "answer_file", "expected_diagnostic"),
     [
-        (_ocr_pages("intro only"), None, _paper(pages=1), None, "zero problems"),
+        (_ocr_pages("intro only", "still no marker"), None, _paper(pages=2), None, "zero problems"),
         (_ocr_pages("第1题 mechanics", "第3题 optics"), None, _paper(), None, "non-contiguous problem numbers"),
         (_ocr_pages("第1题 mechanics", "第1题 optics"), None, _paper(), None, "duplicate problem numbers"),
         (
