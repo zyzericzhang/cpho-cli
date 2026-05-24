@@ -15,7 +15,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 1: Core Foundation** — End-to-end analysis pipeline with verifiable output quality (Needs Review: verification gaps)
 - [x] **Phase 2: Tag Indexing** — Problem knowledge index infrastructure: retrieval backbone + learning-memory foundation for all downstream skills (completed 2026-05-23)
 - [x] **Phase 02.1: Paper Splitting** — 试卷切分：多题试卷拆分为独立题目条目，修复数据模型形状错配 (INSERTED — COMPLETE 2026-05-24)
-- [ ] **Phase 02.2: TUI REPL 骨架** — prompt_toolkit REPL 主循环、skill 注册机制、slash command 首批命令，为后续 phase 顺带扩展 TUI 打好基础 (INSERTED)
+- [x] **Phase 02.2: TUI REPL 骨架** — prompt_toolkit REPL 主循环、skill 注册机制、slash command 首批命令，为后续 phase 顺带扩展 TUI 打好基础 (INSERTED) (completed 2026-05-24)
 - [ ] **Phase 3: Skill System + Core Skills** — Explanation mode, Quiz mode, and YAML skill extensibility
 - [ ] **Phase 4: Knowledge Network + Ecosystem** — Comparative analysis, exam generation, knowledge graph, and community plugins
 
@@ -73,7 +73,7 @@ Plans:
 
 ### Phase 02.2: TUI REPL 骨架 — 打造 REPL 交互界面，后续新功能顺带扩展 TUI 零摩擦 (INSERTED)
 
-**Goal:** 基于 cmd2 构建 REPL 主循环和 skill 注册机制，首批实现 `/search` + `/show` 斜杠命令。核心原则：加新功能 = 注册一个新 slash command + 补全规则，无需额外改动 TUI 布局。设计决策见 `.planning/notes/tui-design-decisions.md`。
+**Goal:** 基于 prompt_toolkit 自建轻量 REPL 主循环和 `Command` registry，首批实现 `/search` + `/show` 斜杠命令。核心原则：加新功能 = 注册一个新 slash command + 补全规则，无需额外改动 TUI 布局。设计决策见 `.planning/notes/tui-design-decisions.md` 与 spike `.planning/spikes/02.2-repl-framework-comparison/COMPARISON.md`。
 **Requirements**: TUI-01, TUI-02, TUI-03, TUI-04
 **Depends on:** Phase 02.1
 **Success Criteria** (what must be TRUE):
@@ -81,19 +81,21 @@ Plans:
   2. 用户输入 `/search 力学` 按标签搜索题目，REPL 输出匹配结果列表，搜索结果保存在会话上下文中。
   3. 用户在搜索后输入 `/show 3` 显示第 3 道题的全文内容（OCR 文本 + 标签 + 来源试卷），无需重新指定文件路径。
   4. 开发者在 Phase 3 中新增一个 skill（如 `/explain`）时，只需注册一个 Command 对象 + 补全规则，无需修改 REPL 主循环或任何 TUI 布局代码。
-**Plans**: 5 plans
-- Wave 1: `02.2-01` — cmd2 依赖 + cli/repl/ 包骨架 + Typer `cpho repl` 子命令
-- Wave 2: `02.2-02` — SessionState/IndexMeta + ReplApp banner + Settable + 持久化历史
-- Wave 3: `02.2-03` — WorkspaceCommandSet (/workspace /status /config /index /reload-index /resume)
-- Wave 3: `02.2-04` — SearchCommandSet (/search /show) + 标签补全缓存 + Phase 3 stub
-- Wave 4: `02.2-05` — 端到端验收测试 (覆盖 4 项 Success Criteria + D-XX 决策)
+**Plans**: 6 plans
+- Wave 1: `02.2-01` — prompt_toolkit/wcwidth 依赖 + cli/repl/ 包骨架 + Typer `cpho repl` 子命令
+- Wave 2: `02.2-02` — Command registry + SessionState/IndexMeta + XDG persistence/history
+- Wave 3: `02.2-03` — prompt_toolkit ReplApp 主循环 + display/completer/lexer + `/help` `/set` `/run` + Phase 3 stub
+- Wave 4: `02.2-04` — workspace/index commands (`/workspace` `/status` `/config` `/index` `/reload-index` `/resume`)
+- Wave 5: `02.2-05` — search/show commands (`/search` `/show`) + 标签补全缓存
+- Wave 6: `02.2-06` — 端到端验收测试 (覆盖 4 项 Success Criteria + D-XX 决策)
 
 Plans:
-- [ ] 02.2-01-PLAN.md — cmd2 依赖 + cli/repl/ 包骨架 + `cpho repl` Typer 入口
-- [ ] 02.2-02-PLAN.md — SessionState + ReplApp banner + Settable + 持久化历史 + index 元数据加载
-- [ ] 02.2-03-PLAN.md — WorkspaceCommandSet：/workspace /status /config /index (D-20 dry-run) /reload-index /resume
-- [ ] 02.2-04-PLAN.md — SearchCommandSet：/search + /show + 标签补全 + BuiltinSkill stub + /run 调试
-- [ ] 02.2-05-PLAN.md — postloop 持久化 + 4 项 Success Criteria 端到端验收测试
+- [x] 02.2-01-deps-skeleton-PLAN.md — prompt_toolkit/wcwidth 依赖 + cli/repl/ 包骨架 + `cpho repl` Typer 入口
+- [x] 02.2-02-core-abstractions-PLAN.md — Command registry + SessionState/IndexMeta + XDG persistence/history
+- [x] 02.2-03-repl-runtime-display-PLAN.md — prompt_toolkit ReplApp 主循环 + display/completer/lexer + `/help` `/set` `/run`
+- [x] 02.2-04-workspace-index-commands-PLAN.md — workspace/index commands：/workspace /status /config /index (D-20 dry-run) /reload-index /resume
+- [x] 02.2-05-search-show-skill-PLAN.md — search/show commands：/search + /show + 标签补全缓存
+- [x] 02.2-06-acceptance-PLAN.md — 4 项 Success Criteria + D-XX 决策端到端验收测试
 
 ### Phase 3: Skill System + Core Skills
 **Goal**: Users can run Explanation and Quiz analysis modes on indexed problems (individual ProblemEntries split from exam papers), and extend the system with custom YAML-defined skills that are auto-discovered from a skills directory.
@@ -128,6 +130,6 @@ Phases execute in numeric order: 1 → 2 → 2.1 → 2.2 → 3 → 4
 | 1. Core Foundation | 5/5 | Needs Review | - |
 | 2. Tag Indexing | 7/7 | Complete   | 2026-05-23 |
 | 02.1. Paper Splitting | 5/5 | Complete | 2026-05-24 |
-| 02.2. TUI REPL 骨架 | 0/TBD | Not started | - |
+| 02.2. TUI REPL 骨架 | 6/6 | Complete   | 2026-05-24 |
 | 3. Skill System + Core Skills | 0/TBD | Not started | - |
 | 4. Knowledge Network + Ecosystem | 0/TBD | Not started | - |

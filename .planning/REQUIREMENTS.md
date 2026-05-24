@@ -40,10 +40,10 @@
 
 ### TUI REPL 界面 (TUI)
 
-- [ ] **TUI-01**: 用户运行 `cpho repl` 进入 REPL 交互界面，可用 `/` 斜杠命令执行操作，命令支持 Tab 自动补全
-- [ ] **TUI-02**: REPL 会话内搜索结果、当前题目等上下文跨命令共享（有状态会话）
-- [ ] **TUI-03**: Skill 注册为 Command 对象 + 补全规则，新增 skill 不需要修改 REPL 主循环或 TUI 布局
-- [ ] **TUI-04**: 首批实现 `/search`（按标签/关键词查题）和 `/show`（显示题目详情）两个斜杠命令
+- [x] **TUI-01**: 用户运行 `cpho repl` 进入 REPL 交互界面，可用 `/` 斜杠命令执行操作，命令支持 Tab 自动补全
+- [x] **TUI-02**: REPL 会话内搜索结果、当前题目等上下文跨命令共享（有状态会话）
+- [x] **TUI-03**: Skill 注册为 Command 对象 + 补全规则，新增 skill 不需要修改 REPL 主循环或 TUI 布局
+- [x] **TUI-04**: 首批实现 `/search`（按标签/关键词查题）和 `/show`（显示题目详情）两个斜杠命令
 
 ## v2 Requirements
 
@@ -84,10 +84,10 @@
 | PLUGIN-04 | Phase 4 | Pending |
 | KNOW-01 | Phase 4 | Pending |
 | KNOW-02 | Phase 4 | Pending |
-| TUI-01 | Phase 02.2 | Pending |
-| TUI-02 | Phase 02.2 | Pending |
-| TUI-03 | Phase 02.2 | Pending |
-| TUI-04 | Phase 02.2 | Pending |
+| TUI-01 | Phase 02.2 | Complete |
+| TUI-02 | Phase 02.2 | Complete |
+| TUI-03 | Phase 02.2 | Complete |
+| TUI-04 | Phase 02.2 | Complete |
 
 **Coverage:**
 - v1 requirements: 22 total
