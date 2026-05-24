@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: executing
-stopped_at: Completed 02.1-04-PLAN.md
-last_updated: "2026-05-24T08:18:14.996Z"
+status: verifying
+stopped_at: Completed 02.1-05-PLAN.md
+last_updated: "2026-05-24T08:30:53.668Z"
 last_activity: 2026-05-24
 progress:
   total_phases: 5
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 17
-  completed_plans: 16
-  percent: 40
+  completed_plans: 17
+  percent: 60
 ---
 
 # Project State
@@ -27,10 +27,10 @@ See: .planning/PROJECT.md (updated 2026-05-20)
 
 Phase: 02.1 (paper-splitting-pdf-phase-1-2) — EXECUTING
 Plan: 5 of 5
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-05-24
 
-Progress: [█████████░] 94%
+Progress: [██████████] 100%
 
 ## Performance Metrics
 
@@ -59,6 +59,7 @@ Progress: [█████████░] 94%
 | Phase 02.1 P02 | 7min | 3 tasks | 9 files |
 | Phase 02.1 P03 | 8min | 3 tasks | 16 files |
 | Phase 02.1 P04 | 9min | 3 tasks | 6 files |
+| Phase 02.1 P05 | 5min | 3 tasks | 3 files |
 
 ## Quick Tasks Completed
 
@@ -87,6 +88,8 @@ Recent decisions affecting current work:
 - [Phase 02.1]: build_index uses ProblemEntry.problem_id and source paper paths for persisted index rows.
 - [Phase 02.1]: The index builder constructs one OpenRouterProvider from resolved config and reuses it for split, tag, and topic LLM calls.
 - [Phase 02.1]: cpho index renders split-layer counters between scan and OCR stats.
+- [Phase 02.1]: Final acceptance uses guarded offline pytest with fake OCR/LLM/tagging instead of dry-run cpho index.
+- [Phase 02.1]: Guarded real-workspace acceptance copies sampled PDFs into a temp workspace so production safe traversal remains enforced.
 
 ### Pending Todos
 
@@ -116,6 +119,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-05-24T08:18:14.743Z
-Stopped at: Completed 02.1-04-PLAN.md
+Last session: 2026-05-24T08:30:53.660Z
+Stopped at: Completed 02.1-05-PLAN.md
 Resume file: None
