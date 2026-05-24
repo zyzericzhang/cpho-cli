@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 02.1-02-PLAN.md
-last_updated: "2026-05-24T02:48:12.748Z"
+stopped_at: Completed 02.1-04-PLAN.md
+last_updated: "2026-05-24T08:18:14.996Z"
 last_activity: 2026-05-24
 progress:
   total_phases: 5
   completed_phases: 2
   total_plans: 17
-  completed_plans: 14
+  completed_plans: 16
   percent: 40
 ---
 
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-05-20)
 ## Current Position
 
 Phase: 02.1 (paper-splitting-pdf-phase-1-2) — EXECUTING
-Plan: 3 of 5
+Plan: 5 of 5
 Status: Ready to execute
 Last activity: 2026-05-24
 
-Progress: [████████░░] 82%
+Progress: [█████████░] 94%
 
 ## Performance Metrics
 
@@ -57,6 +57,8 @@ Progress: [████████░░] 82%
 
 *Updated after each plan completion*
 | Phase 02.1 P02 | 7min | 3 tasks | 9 files |
+| Phase 02.1 P03 | 8min | 3 tasks | 16 files |
+| Phase 02.1 P04 | 9min | 3 tasks | 6 files |
 
 ## Quick Tasks Completed
 
@@ -82,6 +84,9 @@ Recent decisions affecting current work:
 - [Phase 02.1]: Split LLM fallback uses an internal Pydantic response schema before producing ProblemEntry objects.
 - [Phase 02.1]: split_paper requires an explicit llm_provider for fallback and does not construct providers.
 - [Phase 02.1]: Image suffixes and one-page no-marker inputs return SplitMethod.SINGLE without LLM fallback.
+- [Phase 02.1]: build_index uses ProblemEntry.problem_id and source paper paths for persisted index rows.
+- [Phase 02.1]: The index builder constructs one OpenRouterProvider from resolved config and reuses it for split, tag, and topic LLM calls.
+- [Phase 02.1]: cpho index renders split-layer counters between scan and OCR stats.
 
 ### Pending Todos
 
@@ -111,6 +116,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-05-24T02:48:12.743Z
-Stopped at: Completed 02.1-02-PLAN.md
+Last session: 2026-05-24T08:18:14.743Z
+Stopped at: Completed 02.1-04-PLAN.md
 Resume file: None
