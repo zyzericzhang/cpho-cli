@@ -81,7 +81,19 @@ Plans:
   2. 用户输入 `/search 力学` 按标签搜索题目，REPL 输出匹配结果列表，搜索结果保存在会话上下文中。
   3. 用户在搜索后输入 `/show 3` 显示第 3 道题的全文内容（OCR 文本 + 标签 + 来源试卷），无需重新指定文件路径。
   4. 开发者在 Phase 3 中新增一个 skill（如 `/explain`）时，只需注册一个 Command 对象 + 补全规则，无需修改 REPL 主循环或任何 TUI 布局代码。
-**Plans**: TBD
+**Plans**: 5 plans
+- Wave 1: `02.2-01` — cmd2 依赖 + cli/repl/ 包骨架 + Typer `cpho repl` 子命令
+- Wave 2: `02.2-02` — SessionState/IndexMeta + ReplApp banner + Settable + 持久化历史
+- Wave 3: `02.2-03` — WorkspaceCommandSet (/workspace /status /config /index /reload-index /resume)
+- Wave 3: `02.2-04` — SearchCommandSet (/search /show) + 标签补全缓存 + Phase 3 stub
+- Wave 4: `02.2-05` — 端到端验收测试 (覆盖 4 项 Success Criteria + D-XX 决策)
+
+Plans:
+- [ ] 02.2-01-PLAN.md — cmd2 依赖 + cli/repl/ 包骨架 + `cpho repl` Typer 入口
+- [ ] 02.2-02-PLAN.md — SessionState + ReplApp banner + Settable + 持久化历史 + index 元数据加载
+- [ ] 02.2-03-PLAN.md — WorkspaceCommandSet：/workspace /status /config /index (D-20 dry-run) /reload-index /resume
+- [ ] 02.2-04-PLAN.md — SearchCommandSet：/search + /show + 标签补全 + BuiltinSkill stub + /run 调试
+- [ ] 02.2-05-PLAN.md — postloop 持久化 + 4 项 Success Criteria 端到端验收测试
 
 ### Phase 3: Skill System + Core Skills
 **Goal**: Users can run Explanation and Quiz analysis modes on indexed problems (individual ProblemEntries split from exam papers), and extend the system with custom YAML-defined skills that are auto-discovered from a skills directory.
