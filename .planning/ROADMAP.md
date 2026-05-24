@@ -54,6 +54,16 @@ Decimal phases appear between their surrounding integers in numeric order.
 - Wave 3: `02-05` — build_index orchestration, `cpho index` CLI with layered stats (D-17), Python API (query_index/get_problem_entry/find_related_problems), notebook stubs, golden determinism test
 - Wave 4: `02-07` — Topic hierarchy classification (TopicNode tree model, builtin taxonomy YAML, LLM topic assignment, topic query API, CLI topic/compose commands, MVP exam composition)
 
+### Phase 02.1: Paper Splitting — 试卷切分：将多题试卷 PDF 拆分为独立大题条目，修复 Phase 1/2 数据模型与真实工作空间之间的形状错配 (INSERTED)
+
+**Goal:** [Urgent work - to be planned]
+**Requirements**: TBD
+**Depends on:** Phase 02
+**Plans:** 1/5 plans executed
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 02.1 to break down)
+
 ### Phase 3: Skill System + Core Skills
 **Goal**: Users can run Explanation and Quiz analysis modes on indexed problems, and extend the system with custom YAML-defined skills that are auto-discovered from a skills directory.
 **Depends on**: Phase 2
