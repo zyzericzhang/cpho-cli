@@ -251,3 +251,19 @@ def compose_command(
         typer.echo(
             f"  [{result.problem_id}] {result.topic_path or '未分类'} | tags: {all_tags}"
         )
+
+
+@app.command(name="repl")
+def repl_command(
+    workspace: Optional[Path] = typer.Option(
+        None, "--workspace", "-w", help="工作空间目录（覆盖持久化的 last_workspace）。"
+    ),
+    config: Optional[Path] = typer.Option(None, "--config", "-c", help="本地 YAML 配置文件路径。"),
+    provider: Optional[str] = typer.Option(None, "--provider", "-p", help="配置中的 provider 名称。"),
+) -> None:
+    """启动交互式 REPL（prompt_toolkit）。"""
+    import asyncio
+
+    from cpho_cli.cli.repl.app import run_repl
+
+    asyncio.run(run_repl(workspace=workspace, config_path=config, provider_name=provider))
