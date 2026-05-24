@@ -3,7 +3,7 @@ spike: 003
 name: tool-call-structured-output
 type: standard
 validates: "Given multiple LLM providers (OpenAI, DeepSeek, Anthropic, Mistral, Gemini, local models), when we need structured JSON output from a Pydantic model, then a tool-calling approach works across ALL of them without relying on response_format json_schema, without increasing skill author complexity, and without requiring OpenRouter as intermediary"
-verdict: VALIDATED
+verdict: DECIDED
 related: []
 tags: [llm, structured-output, tool-calling, cross-provider, deepseek, openrouter, 2026]
 ---
@@ -256,3 +256,33 @@ Ollama              ❌                 ⚠️ (model-dep.)
 - **Do NOT touch**: `LLMProvider` protocol, `LLMResponse`, any caller code, any Pydantic models, skill definitions
 - **Test against**: DeepSeek V4 direct API (primary validation target)
 - **Future**: Separate `AnthropicProvider` for native Anthropic API if needed
+
+---
+
+## Implementation (2026-05-24)
+
+### Changes Made
+
+**`src/cpho_cli/core/llm.py`** — `_OpenAICompatibleProvider.complete()`:
+1. Replaced `payload["response_format"]` with `payload["tools"]` + `payload["tool_choice"]`
+2. Response extraction now prefers `tool_calls[0].function.arguments`, falls back to `message.content`
+
+**`tests/test_llm.py`**:
+1. Renamed `test_openrouter_request_includes_json_schema` → `test_openrouter_request_includes_tool_call_for_structured_output`
+2. Updated mock response to return `tool_calls` instead of bare `content`
+3. Added `test_openrouter_request_extracts_from_content_when_no_tool_calls` for fallback path
+
+**0 callers changed.** `LLMProvider` protocol, `LLMResponse.content`, all Pydantic models, all skill definitions unchanged.
+
+### Conflicting Planning Documents
+
+The following `.planning/` files reference the old `response_format: json_schema` approach and are now outdated by this decision. These are historical snapshots — the decision to use tool calling supersedes them:
+
+| File | What's Outdated |
+|------|----------------|
+| `.planning/phases/01-core-foundation/01-RESEARCH.md` | Lines 59, 123, 182-189: `response_format` `json_schema` as structured output strategy |
+| `.planning/phases/01-core-foundation/01-04-PLAN.md` | Lines 96, 104, 107: Tests and tasks reference `response_format.type = json_schema` |
+| `.planning/phases/01-core-foundation/01-DISCUSSION-LOG.md` | Line 95: JSON mode + Pydantic as recommended approach |
+| `.planning/phases/02-tag-indexing/02-RESEARCH.md` | Lines 79, 479: `response_format=json_schema` for LLM structured output |
+| `.planning/phases/02-tag-indexing/02-PATTERNS.md` | Line 365: References `llm.py:58-67` which is now changed |
+| `.planning/research/ARCHITECTURE.md` | Lines 177-184: 3-layer structured output strategy; lines 364-366: code example |

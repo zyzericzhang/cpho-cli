@@ -15,4 +15,4 @@ Redesign cpho-cli's LLM structured output mechanism to use tool calling (functio
 
 | # | Name | Type | Validates | Verdict | Tags |
 |---|------|------|-----------|---------|------|
-| 003 | tool-call-structured-output | standard | Tool calling can replace json_schema response_format for structured output across all major providers | ✓ VALIDATED | llm, structured-output, tool-calling, deepseek |
+| 003 | tool-call-structured-output | standard | Tool calling can replace json_schema response_format for structured output across all major providers | ✓ DECIDED (implemented 2026-05-24) | llm, structured-output, tool-calling, deepseek |

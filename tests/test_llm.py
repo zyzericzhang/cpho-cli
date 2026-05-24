@@ -6,14 +6,23 @@ from cpho_cli.models.config import ModelParams
 from cpho_cli.models.solve import DerivationStep
 
 
-def test_openrouter_request_includes_json_schema() -> None:
+def test_openrouter_request_includes_tool_call_for_structured_output() -> None:
     captured = {}
 
     def handler(request: httpx.Request) -> httpx.Response:
         captured["json"] = request.read().decode()
         return httpx.Response(
             200,
-            json={"choices": [{"message": {"content": '{"ok": true}'}}], "usage": {}},
+            json={
+                "choices": [{
+                    "message": {
+                        "tool_calls": [{
+                            "function": {"arguments": '{"reasoning": "test", "expression": "x", "official_answer_refs": ["a"]}'}
+                        }]
+                    }
+                }],
+                "usage": {},
+            },
         )
 
     provider = OpenRouterProvider(
@@ -27,8 +36,35 @@ def test_openrouter_request_includes_json_schema() -> None:
         response_model=DerivationStep,
     )
 
-    assert "json_schema" in captured["json"]
+    assert '"tools"' in captured["json"]
     assert "derivation_step" in captured["json"]
+    assert "tool_choice" in captured["json"]
+
+
+def test_openrouter_request_extracts_from_content_when_no_tool_calls() -> None:
+    """Fallback: when model ignores tool_choice and returns content directly."""
+    captured = {}
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        captured["json"] = request.read().decode()
+        return httpx.Response(
+            200,
+            json={"choices": [{"message": {"content": '{"reasoning": "t", "expression": "x", "official_answer_refs": ["a"]}'}}], "usage": {}},
+        )
+
+    provider = OpenRouterProvider(
+        api_key="sk-test-secret",
+        client=httpx.Client(transport=httpx.MockTransport(handler)),
+    )
+
+    result = provider.complete(
+        messages=[{"role": "user", "content": "derive"}],
+        params=ModelParams(name="test-model"),
+        response_model=DerivationStep,
+    )
+
+    assert "tool_choice" in captured["json"]
+    assert "t" in result.content
 
 
 def test_provider_error_redacts_api_key() -> None:

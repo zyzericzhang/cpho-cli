@@ -61,13 +61,19 @@ class _OpenAICompatibleProvider:
             payload["max_tokens"] = params.max_tokens
         if response_model is not None:
             schema_name = re.sub(r"(?<!^)(?=[A-Z])", "_", response_model.__name__).lower()
-            payload["response_format"] = {
-                "type": "json_schema",
-                "json_schema": {
-                    "name": schema_name,
-                    "strict": True,
-                    "schema": response_model.model_json_schema(),
-                },
+            payload["tools"] = [
+                {
+                    "type": "function",
+                    "function": {
+                        "name": schema_name,
+                        "description": f"Return a {response_model.__name__} structured object.",
+                        "parameters": response_model.model_json_schema(),
+                    },
+                }
+            ]
+            payload["tool_choice"] = {
+                "type": "function",
+                "function": {"name": schema_name},
             }
 
         headers = {"Authorization": f"Bearer {self.api_key}"}
@@ -89,7 +95,15 @@ class _OpenAICompatibleProvider:
                         )
                     )
                 data = response.json()
-                content = data.get("choices", [{}])[0].get("message", {}).get("content", "")
+                message = data.get("choices", [{}])[0].get("message", {})
+                if response_model is not None:
+                    tool_calls = message.get("tool_calls", [])
+                    if tool_calls:
+                        content = tool_calls[0].get("function", {}).get("arguments") or ""
+                    else:
+                        content = message.get("content", "")
+                else:
+                    content = message.get("content", "")
                 usage_data = data.get("usage") or {}
                 return LLMResponse(
                     content=content,
@@ -125,7 +139,7 @@ class DeepSeekProvider(_OpenAICompatibleProvider):
     def __init__(
         self,
         api_key: str,
-        base_url: str = "https://api.deepseek.com/v1",
+        base_url: str = "https://api.deepseek.com",
         client: httpx.Client | None = None,
         max_retries: int = 2,
     ) -> None:
