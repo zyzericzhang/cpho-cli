@@ -71,10 +71,6 @@ class _OpenAICompatibleProvider:
                     },
                 }
             ]
-            payload["tool_choice"] = {
-                "type": "function",
-                "function": {"name": schema_name},
-            }
 
         headers = {"Authorization": f"Bearer {self.api_key}"}
         last_error: Exception | None = None

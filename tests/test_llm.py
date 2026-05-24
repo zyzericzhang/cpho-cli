@@ -38,11 +38,11 @@ def test_openrouter_request_includes_tool_call_for_structured_output() -> None:
 
     assert '"tools"' in captured["json"]
     assert "derivation_step" in captured["json"]
-    assert "tool_choice" in captured["json"]
+    assert "tool_choice" not in captured["json"]
 
 
 def test_openrouter_request_extracts_from_content_when_no_tool_calls() -> None:
-    """Fallback: when model ignores tool_choice and returns content directly."""
+    """Fallback: when model returns content directly without calling the tool."""
     captured = {}
 
     def handler(request: httpx.Request) -> httpx.Response:
@@ -63,7 +63,7 @@ def test_openrouter_request_extracts_from_content_when_no_tool_calls() -> None:
         response_model=DerivationStep,
     )
 
-    assert "tool_choice" in captured["json"]
+    assert "tool_choice" not in captured["json"]
     assert "t" in result.content
 
 
