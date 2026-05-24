@@ -20,6 +20,7 @@ from cpho_cli.models.index import (
     TagSource,
     UserNotebookEntry,
 )
+from cpho_cli.models.llm import LLMResponse, LLMUsage
 from cpho_cli.models.ocr import OCRBlock, OCRPageResult, OCRResult
 from cpho_cli.models.solve import DerivationStep, SolveReport
 
@@ -240,6 +241,74 @@ def test_build_index_prompt_strategy_stale_row_rebuild_does_not_crash(
     entries = load_index(ws)
     assert len(entries) == 1
     assert entries[0].problem_page_range == (1, 1)
+
+
+def test_build_index_constructs_provider_for_split_fallback_without_network(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _patch_rapidocr_version(monkeypatch)
+    paper_path = tmp_path / "fallback.pdf"
+    paper_pages = ["no marker page one", "no marker page two"]
+    _write_pdf(paper_path, paper_pages)
+    (tmp_path / "config.local.yml").write_text(
+        "provider:\n"
+        "  openrouter_api_key: configured-key\n"
+        "  base_url: https://example.invalid/api\n",
+        encoding="utf-8",
+    )
+    constructed: list[ConstructedProvider] = []
+
+    class ConstructedProvider:
+        def __init__(self, api_key: str, base_url: str) -> None:
+            self.api_key = api_key
+            self.base_url = base_url
+            self.calls: list[str | None] = []
+            constructed.append(self)
+
+        def complete(self, messages, params, response_model=None):  # type: ignore[no-untyped-def]
+            schema_name = response_model.__name__ if response_model is not None else None
+            self.calls.append(schema_name)
+            if schema_name == "_LLMSplitResponse":
+                content = (
+                    '{"problems":[{"problem_number":1,"problem_page_range":[1,2],'
+                    '"problem_text":"fallback problem","confidence":0.8}],'
+                    '"unmatched_answers":[],"diagnostics":[]}'
+                )
+            elif schema_name == "TopicAssignmentOutput":
+                content = (
+                    '{"topic_path":"力学/运动学","confidence":0.7,'
+                    '"rationale":"test"}'
+                )
+            else:
+                content = TagRefinementOutput(
+                    selected_physics_models=["energy_conservation"],
+                    selected_math_techniques=[],
+                    selected_heuristics=[],
+                    difficulty_aspects=["fallback"],
+                ).model_dump_json()
+            return LLMResponse(
+                content=content,
+                usage=LLMUsage(prompt_tokens=1, completion_tokens=1, total_tokens=2),
+                raw={},
+            )
+
+    monkeypatch.setattr(builder_module, "OpenRouterProvider", ConstructedProvider, raising=False)
+
+    stats = build_index(
+        tmp_path,
+        config_path=tmp_path / "config.local.yml",
+        ocr_provider=FakePagedOCRProvider({"fallback.pdf": paper_pages}),
+        llm_provider=None,
+        ocr_strategy="reuse",
+    )
+
+    assert len(constructed) == 1
+    assert constructed[0].api_key == "configured-key"
+    assert constructed[0].base_url == "https://example.invalid/api"
+    assert "_LLMSplitResponse" in constructed[0].calls
+    assert "TagRefinementOutput" in constructed[0].calls
+    assert stats.problems_extracted == 1
+    assert stats.split_method_llm == 1
 
 
 # --- skip on rerun ---
