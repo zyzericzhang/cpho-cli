@@ -38,6 +38,7 @@ cpho_cli = [
   "vocabulary/builtin/*.yml",
   "vocabulary/topics/*.yml",
   "core/index/prompts/*",
+  "core/splitting/prompts/*",
 ]
 
 [tool.ruff]
