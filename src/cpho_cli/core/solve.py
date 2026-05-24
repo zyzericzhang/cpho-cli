@@ -80,8 +80,9 @@ def solve_problem(
         kind=provider_config.kind,
         api_key=provider_config.api_key,
         base_url=provider_config.base_url,
+        timeout=provider_config.timeout,
     )
-    params = resolve_model_params(config, "solve")
+    params = resolve_model_params(config, "solve", provider_name=provider_name)
     response = provider.complete(
         messages=[
             {

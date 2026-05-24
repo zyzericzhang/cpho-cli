@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed Phase 02.2 execution
-last_updated: "2026-05-24T10:54:43.232Z"
+stopped_at: context exhaustion at 75% (2026-05-24)
+last_updated: "2026-05-24T14:25:44.991Z"
 last_activity: 2026-05-24 -- Phase 02.2 execution started
 progress:
-  total_phases: 6
+  total_phases: 7
   completed_phases: 4
   total_plans: 23
   completed_plans: 23
-  percent: 67
+  percent: 57
 ---
 
 # Project State
@@ -73,6 +73,7 @@ Progress: [██████████] 100%
 
 - Phase 02.1 inserted after Phase 02: Paper Splitting — 试卷切分，修复数据模型形状错配（真实试卷含多道题，非一题一文件） (URGENT — COMPLETED 2026-05-24)
 - Phase 02.2 inserted after Phase 02.1: TUI REPL 骨架 — prompt_toolkit REPL 交互界面，后续新功能通过 slash command 注册扩展
+- Phase 02.3 inserted after Phase 02.2: Index 读写分离 + Solve 降级 — 移除 SolveReport→index 耦合与 golden_tests，index 标签层开放读写 API 供 skills 修改 (URGENT)
 
 ### Decisions
 
@@ -118,6 +119,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-05-24T10:54:43.226Z
-Stopped at: Completed Phase 02.2 execution
+Last session: 2026-05-24T14:25:44.987Z
+Stopped at: context exhaustion at 75% (2026-05-24)
 Resume file: None

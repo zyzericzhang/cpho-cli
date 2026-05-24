@@ -32,6 +32,7 @@ class SessionState:
     current_problem_id: str | None = None
     max_results: int = 20
     output_format: str = "compact"
+    prompt_session: object | None = None
 
 
 def load_index_meta(workspace_root: Path) -> IndexMeta | None:

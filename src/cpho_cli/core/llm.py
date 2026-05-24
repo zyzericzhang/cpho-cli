@@ -38,10 +38,11 @@ class _OpenAICompatibleProvider:
         client: httpx.Client | None = None,
         max_retries: int = 2,
         label: str = "provider",
+        timeout: float = 120.0,
     ) -> None:
         self.api_key = api_key
         self.base_url = base_url.rstrip("/")
-        self.client = client or httpx.Client(timeout=httpx.Timeout(30.0))
+        self.client = client or httpx.Client(timeout=httpx.Timeout(timeout))
         self.max_retries = max_retries
         self.label = label
 
@@ -127,8 +128,9 @@ class OpenRouterProvider(_OpenAICompatibleProvider):
         base_url: str = "https://openrouter.ai/api/v1",
         client: httpx.Client | None = None,
         max_retries: int = 2,
+        timeout: float = 120.0,
     ) -> None:
-        super().__init__(api_key, base_url, client, max_retries, label="OpenRouter")
+        super().__init__(api_key, base_url, client, max_retries, label="OpenRouter", timeout=timeout)
 
 
 class DeepSeekProvider(_OpenAICompatibleProvider):
@@ -138,8 +140,9 @@ class DeepSeekProvider(_OpenAICompatibleProvider):
         base_url: str = "https://api.deepseek.com",
         client: httpx.Client | None = None,
         max_retries: int = 2,
+        timeout: float = 120.0,
     ) -> None:
-        super().__init__(api_key, base_url, client, max_retries, label="DeepSeek")
+        super().__init__(api_key, base_url, client, max_retries, label="DeepSeek", timeout=timeout)
 
 
 _PROVIDER_REGISTRY: dict[str, type[_OpenAICompatibleProvider]] = {
@@ -148,11 +151,11 @@ _PROVIDER_REGISTRY: dict[str, type[_OpenAICompatibleProvider]] = {
 }
 
 
-def create_llm_provider(kind: str, api_key: str, base_url: str) -> LLMProvider:
+def create_llm_provider(kind: str, api_key: str, base_url: str, *, timeout: float = 120.0) -> LLMProvider:
     cls = _PROVIDER_REGISTRY.get(kind)
     if cls is None:
         raise LLMProviderError(f"Unsupported provider kind: {kind}")
-    return cls(api_key=api_key, base_url=base_url)
+    return cls(api_key=api_key, base_url=base_url, timeout=timeout)
 
 
 def supported_provider_kinds() -> frozenset[str]:

@@ -69,7 +69,7 @@ def _provider_key(profile: ProviderProfile, env: Mapping[str, str]) -> str | Non
 
 _DEFAULT_BASE_URLS: dict[str, str] = {
     "openrouter": "https://openrouter.ai/api/v1",
-    "deepseek": "https://api.deepseek.com/v1",
+    "deepseek": "https://api.deepseek.com",
 }
 
 
@@ -108,11 +108,17 @@ def resolve_provider_config(
 
     base_url = profile.base_url or _DEFAULT_BASE_URLS.get(kind, config.provider.base_url)
 
+    timeout = profile.timeout
+    if timeout is None:
+        timeout_str = env.get("LLM_TIMEOUT")
+        timeout = float(timeout_str) if timeout_str and timeout_str.strip() else 120.0
+
     return ResolvedProviderConfig(
         name=name,
         kind=kind,
         api_key=api_key,
         base_url=base_url,
+        timeout=timeout,
     )
 
 
@@ -129,8 +135,13 @@ def resolve_model_params(
     config: AppConfig,
     skill_name: str,
     cli_overrides: ModelParams | None = None,
+    provider_name: str | None = None,
 ) -> ModelParams:
     params = config.model
+    if provider_name:
+        profile = config.providers.get(provider_name)
+        if profile is not None and profile.default_model:
+            params = _merge_params(params, ModelParams(name=profile.default_model))
     skill = config.skills.get(skill_name)
     if skill is not None:
         params = _merge_params(params, skill.model)

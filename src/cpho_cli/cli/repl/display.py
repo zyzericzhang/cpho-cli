@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import pydoc
+import sys
 from collections.abc import Iterable
 
 from wcwidth import wcswidth
@@ -94,4 +95,73 @@ def banner(session: SessionState) -> str:
     )
 
 
-__all__ = ["banner", "error", "info", "pager", "render_table", "warn"]
+__all__ = ["banner", "error", "info", "make_index_progress_printer", "pager", "render_table", "warn"]
+
+
+def make_index_progress_printer():
+    """Return a callable for build_index on_progress.
+
+    Maintains a multi-line status panel using ANSI cursor movement.
+    Falls back to sequential output when stdout is not a TTY.
+    """
+    tty = sys.stdout.isatty()
+    seq = tty
+
+    def printer(event: dict) -> None:
+        nonlocal seq
+        phase = event.get("phase", "")
+
+        if phase == "begin":
+            lines = [
+                f"{BLUE}索引进度: {event['total_files']} 个文件待处理{RESET}",
+                "───────────────────────────",
+            ]
+        elif phase == "paper_split_start":
+            path = event.get("file_path", "")[-50:]
+            lines = [
+                f"{BLUE}切分 [{event['file_index']}/{event['total_files']}]:{RESET} {path}",
+                "───────────────────────────",
+            ]
+        elif phase == "paper_split_done":
+            lines = [
+                f"{BLUE}切分完成 [{event['file_index']}/{event['total_files']}]:{RESET} "
+                f"累计提取 {event['problems_extracted_so_far']} 题",
+                "───────────────────────────",
+            ]
+        elif phase == "problem_tag_start":
+            lines = [
+                f"{BLUE}标签 [{event['problem_id']}]:{RESET} 正在分配...",
+            ]
+        elif phase == "problem_tag_done":
+            tag_summary = (
+                f"物理={event['physics_count']} "
+                f"数学={event['math_count']} "
+                f"启发={event['heuristic_count']}"
+            )
+            topic = event.get("topic_path") or "未分类"
+            lines = [
+                f"完成 [{event['problem_id']}]: {tag_summary} | 主题: {topic}",
+                f"累计: {event['problems_processed_so_far']} 题",
+                "───────────────────────────",
+            ]
+        elif phase == "problem_skip":
+            lines = [
+                f"跳过 [{event['problem_id']}]: 指纹未变",
+            ]
+        elif phase == "complete":
+            lines = []
+            seq = False
+            return
+        else:
+            return
+
+        if tty:
+            if seq:
+                sys.stdout.write("\033[F\033[K" * 3)
+            sys.stdout.write("\n".join(lines) + "\033[K\n")
+            sys.stdout.flush()
+        else:
+            for line in lines:
+                print(line)
+
+    return printer

@@ -3,12 +3,12 @@
 from __future__ import annotations
 
 import argparse
+import difflib
 import json
 from pathlib import Path
 
-from prompt_toolkit.shortcuts import prompt
-
 from cpho_cli.cli.repl import display
+from cpho_cli.cli.repl.display import make_index_progress_printer
 from cpho_cli.cli.repl.commands import Command
 from cpho_cli.cli.repl.persistence import read_session, write_session
 from cpho_cli.cli.repl.session import SessionState, load_index_meta
@@ -32,8 +32,122 @@ def _refresh_tag_cache_if_available(session: SessionState) -> None:
     refresh_tag_cache(session)
 
 
-def confirm_index_run(prompt_text: str) -> bool:
-    return prompt(prompt_text).strip().lower() in {"y", "yes"}
+async def _confirm_index_run(session: SessionState, prompt_text: str) -> bool:
+    ps = session.prompt_session
+    if ps is None:
+        return input(prompt_text).strip().lower() in {"y", "yes"}
+    result = await ps.prompt_async(prompt_text)  # type: ignore[union-attr]
+    return result.strip().lower() in {"y", "yes"}
+
+
+def _list_subdirs(root: Path) -> list[str]:
+    """Return relative paths of all directories under *root*, sorted."""
+    dirs: list[str] = []
+    for p in sorted(root.rglob("*")):
+        if p.is_dir() and not p.name.startswith("."):
+            try:
+                rel = p.relative_to(root).as_posix()
+                if rel != ".":
+                    dirs.append(rel)
+            except ValueError:
+                continue
+    return dirs
+
+
+async def _resolve_target_path(
+    session: SessionState,
+    path_arg: str | None,
+) -> Path | None:
+    """Resolve user input to a subpath under workspace.
+
+    Supports relative paths (``subdir/nested``) and absolute paths
+    (``/Users/.../workspace/subdir``, ``~/...``) that are under workspace.
+
+    If *path_arg* is given (via --path) and resolves immediately, returns the
+    relative Path.  Otherwise enters an interactive loop until a valid path is
+    entered or the user presses Enter on an empty line.
+
+    Returns the relative subpath, or None if user cancels (empty input).
+    """
+    ws_root = session.workspace_path.resolve()
+    ps = session.prompt_session
+
+    if path_arg is not None:
+        user_input = path_arg.strip()
+        if not user_input:
+            display.error("--path 需要指定一个路径")
+            return None
+        # Resolve once; if it fails, drop into interactive loop for retry.
+        target = Path(user_input)
+        if user_input.startswith("~") or target.is_absolute():
+            full_path = target.expanduser().resolve()
+        else:
+            full_path = (ws_root / target).resolve()
+        try:
+            full_path.relative_to(ws_root)
+        except ValueError:
+            display.error("路径必须在工作空间内")
+        else:
+            if full_path.is_dir():
+                return full_path.relative_to(ws_root)
+
+    while True:
+        if ps is None:
+            display.error("当前环境不支持交互式输入")
+            return None
+        hint = "待索引路径（相对/绝对均可，回车退出）"
+        user_input = await ps.prompt_async(f"{hint}: ")  # type: ignore[union-attr]
+        user_input = user_input.strip()
+
+        if not user_input:
+            print("已取消。")
+            return None
+
+        # Resolve: absolute (~ or /) vs relative
+        target = Path(user_input)
+        if user_input.startswith("~") or target.is_absolute():
+            full_path = target.expanduser().resolve()
+        else:
+            full_path = (ws_root / target).resolve()
+
+        # Security: must be within workspace
+        try:
+            full_path.relative_to(ws_root)
+        except ValueError:
+            display.error("路径必须在工作空间内")
+            continue
+
+        if full_path.is_dir():
+            return full_path.relative_to(ws_root)
+
+        # Fuzzy match
+        all_dirs = _list_subdirs(ws_root)
+        if not all_dirs:
+            display.error(f"目录不存在: {user_input}")
+            continue
+
+        matches = difflib.get_close_matches(user_input, all_dirs, n=5, cutoff=0.4)
+        if not matches:
+            display.error(f"目录不存在: {user_input}，也找不到相似目录")
+            continue
+
+        print(f"目录 '{user_input}' 不存在。相似目录:")
+        for i, name in enumerate(matches, 1):
+            print(f"  [{i}] {name}")
+
+        if ps is None:
+            choice = input("选择序号 (直接回车重试): ").strip()
+        else:
+            choice = await ps.prompt_async("选择序号 (直接回车重试): ")  # type: ignore[union-attr]
+        if not choice:
+            continue
+        try:
+            idx = int(choice) - 1
+            if 0 <= idx < len(matches):
+                return Path(matches[idx])
+        except ValueError:
+            pass
+        display.error("无效选择")
 
 
 async def do_workspace(session: SessionState, args: list[str]) -> None:
@@ -78,10 +192,14 @@ async def do_config(session: SessionState, args: list[str]) -> None:
 
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="/index", add_help=False)
+    parser.add_argument("--all", action="store_true")
+    parser.add_argument("--path", default=None)
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--force", action="store_true")
     parser.add_argument("--only-new", action="store_true")
-    parser.add_argument("--ocr-strategy", default="prompt", choices=("prompt", "reuse", "rebuild", "new-only"))
+    parser.add_argument(
+        "--ocr-strategy", default="prompt", choices=("prompt", "reuse", "rebuild", "new-only")
+    )
     return parser
 
 
@@ -89,38 +207,85 @@ async def do_index(session: SessionState, args: list[str]) -> None:
     try:
         ns = _parser().parse_args(args)
     except SystemExit:
-        display.error("参数无效。用法: /index [--dry-run] [--force] [--only-new] [--ocr-strategy prompt|reuse|rebuild|new-only]")
+        display.error(
+            "参数无效。用法: /index [--all] [--path PATH] [--dry-run] [--force]"
+            " [--only-new] [--ocr-strategy prompt|reuse|rebuild|new-only]\n"
+            "  PATH 支持相对路径或绝对路径（必须在工作空间内）"
+        )
         return
+
+    if ns.all and ns.path:
+        display.error("--all 和 --path 不能同时使用")
+        return
+
+    # Resolve target
+    if ns.all:
+        target_subpath: Path | None = None
+        show_preview = True
+    elif ns.path is not None:
+        try:
+            target_subpath = await _resolve_target_path(session, ns.path)
+        except ValueError as exc:
+            display.error(str(exc))
+            return
+        if target_subpath is None:
+            return
+        show_preview = False
+    else:
+        try:
+            target_subpath = await _resolve_target_path(session, None)
+        except ValueError as exc:
+            display.error(str(exc))
+            return
+        if target_subpath is None:
+            return
+        show_preview = False
+
     try:
-        preview = build_index(
-            session.workspace_path,
-            provider_name=session.provider_name,
-            force=ns.force,
-            only_new=ns.only_new,
-            dry_run=True,
-            ocr_strategy=ns.ocr_strategy,
-        )
-        display.info(
-            "索引预览: "
-            f"扫描 {preview.total_problems} 个输入，试卷 {preview.papers_split} 份，"
-            f"将提取 {preview.problems_extracted} 道题。"
-        )
-        if ns.dry_run:
-            return
-        if not confirm_index_run("确认执行真实索引? [y/N]: "):
-            print("已取消。")
-            return
-        result = build_index(
-            session.workspace_path,
-            provider_name=session.provider_name,
-            force=ns.force,
-            only_new=ns.only_new,
-            dry_run=False,
-            ocr_strategy=ns.ocr_strategy,
-        )
+        if show_preview:
+            preview = build_index(
+                session.workspace_path,
+                provider_name=session.provider_name,
+                force=ns.force,
+                only_new=ns.only_new,
+                dry_run=True,
+                ocr_strategy=ns.ocr_strategy,
+                on_progress=make_index_progress_printer(),
+            )
+            display.info(
+                "索引预览: "
+                f"扫描 {preview.total_problems} 个输入，试卷 {preview.papers_split} 份，"
+                f"将提取 {preview.problems_extracted} 道题。"
+            )
+            if ns.dry_run:
+                return
+            if not await _confirm_index_run(session, "确认执行真实索引? [y/N]: "):
+                print("已取消。")
+                return
+            result = build_index(
+                session.workspace_path,
+                provider_name=session.provider_name,
+                force=ns.force,
+                only_new=ns.only_new,
+                dry_run=False,
+                ocr_strategy=ns.ocr_strategy,
+                on_progress=make_index_progress_printer(),
+            )
+        else:
+            result = build_index(
+                session.workspace_path,
+                provider_name=session.provider_name,
+                force=ns.force,
+                only_new=ns.only_new,
+                dry_run=False,
+                ocr_strategy=ns.ocr_strategy,
+                target_subpath=target_subpath,
+                on_progress=make_index_progress_printer(),
+            )
     except (ConfigError, IndexBuildError, VocabularyError, OcrUpgradeDecisionRequired, ValueError) as exc:
         display.error(str(exc))
         return
+
     session.index_meta = load_index_meta(session.workspace_path)
     _refresh_tag_cache_if_available(session)
     print(f"索引完成: {result.total_problems} 个输入")
@@ -188,14 +353,13 @@ def register(registry: dict[str, Command]) -> None:
     registry["/workspace"] = Command("/workspace", "查看或切换工作空间", "/workspace [path]", do_workspace, category="工作空间")
     registry["/status"] = Command("/status", "显示当前工作空间与索引状态", "/status", do_status, category="工作空间")
     registry["/config"] = Command("/config", "显示安全配置摘要", "/config", do_config, category="工作空间")
-    registry["/index"] = Command("/index", "预览并可确认建立索引", "/index [--dry-run]", do_index, category="工作空间")
+    registry["/index"] = Command("/index", "预览并可确认建立索引", "/index [--all] [--path PATH] [--dry-run] [--force] [--only-new]", do_index, category="工作空间")
     registry["/reload-index"] = Command("/reload-index", "刷新索引元数据和补全缓存", "/reload-index", do_reload_index, category="工作空间")
     registry["/resume"] = Command("/resume", "显式恢复上次会话上下文", "/resume", do_resume, category="工作空间")
 
 
 __all__ = [
     "INDEX_MISSING_MSG",
-    "confirm_index_run",
     "do_config",
     "do_index",
     "do_reload_index",

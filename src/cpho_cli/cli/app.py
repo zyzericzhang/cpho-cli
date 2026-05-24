@@ -84,6 +84,21 @@ def eval_command(
     )
 
 
+def _index_progress_cli(event: dict) -> None:
+    phase = event.get("phase", "")
+    if phase == "begin":
+        typer.echo(f"开始索引: {event['total_files']} 个文件")
+    elif phase == "paper_split_start":
+        typer.echo(f"  切分 [{event['file_index']}/{event['total_files']}]: {event['file_path'][-60:]}")
+    elif phase == "problem_tag_done":
+        typer.echo(
+            f"  [{event['problem_id']}]: "
+            f"物理={event['physics_count']} 数学={event['math_count']} 启发={event['heuristic_count']}"
+        )
+    elif phase == "problem_skip":
+        typer.echo(f"  跳过 [{event['problem_id']}]: 无变化")
+
+
 @app.command(name="index")
 def index_command(
     workspace: Path = typer.Argument(Path.cwd(), help="工作空间目录（默认: 当前目录）。"),
@@ -120,6 +135,7 @@ def index_command(
             only_new=only_new,
             dry_run=dry_run,
             ocr_strategy=ocr_strategy,
+            on_progress=_index_progress_cli if not quiet else None,
         )
     except OcrUpgradeDecisionRequired as exc:
         delta = exc.delta
@@ -145,6 +161,7 @@ def index_command(
                 only_new=only_new,
                 dry_run=dry_run,
                 ocr_strategy=new_strategy,
+                on_progress=_index_progress_cli if not quiet else None,
             )
         except (ConfigError, IndexBuildError) as inner_exc:
             raise typer.BadParameter(str(inner_exc)) from inner_exc

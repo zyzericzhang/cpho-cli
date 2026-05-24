@@ -16,6 +16,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 2: Tag Indexing** — Problem knowledge index infrastructure: retrieval backbone + learning-memory foundation for all downstream skills (completed 2026-05-23)
 - [x] **Phase 02.1: Paper Splitting** — 试卷切分：多题试卷拆分为独立题目条目，修复数据模型形状错配 (INSERTED — COMPLETE 2026-05-24)
 - [x] **Phase 02.2: TUI REPL 骨架** — prompt_toolkit REPL 主循环、skill 注册机制、slash command 首批命令，为后续 phase 顺带扩展 TUI 打好基础 (INSERTED) (completed 2026-05-24)
+- [ ] **Phase 02.3: Index 读写分离 + Solve 降级** — 移除 SolveReport→index 耦合与 golden_tests，index 标签层开放读写 API 供 skills 修改 (INSERTED)
 - [ ] **Phase 3: Skill System + Core Skills** — Explanation mode, Quiz mode, and YAML skill extensibility
 - [ ] **Phase 4: Knowledge Network + Ecosystem** — Comparative analysis, exam generation, knowledge graph, and community plugins
 
@@ -97,6 +98,22 @@ Plans:
 - [x] 02.2-05-search-show-skill-PLAN.md — search/show commands：/search + /show + 标签补全缓存
 - [x] 02.2-06-acceptance-PLAN.md — 4 项 Success Criteria + D-XX 决策端到端验收测试
 
+### Phase 02.3: Index 读写分离 + Solve 降级 — 移除 SolveReport→index 耦合与 golden_tests，index 标签层开放读写 API 供 skills 修改 (INSERTED)
+
+**Goal:** 将 solve 从 core 管线的一等公民降级为真正的 builtin skill；移除 index 管线对 SolveReport 标签的硬依赖（`TagSource.SOLVE_REPORT`）；删除未经验证的 golden_tests eval 框架；为 index 标签层提供读写 API，使 solve/explain 等 skills 和社区 skill 可以通过统一接口修改 index 条目标签。
+
+**Depends on:** Phase 02.2
+
+**Success Criteria** (what must be TRUE):
+  1. `cpho index` 构建管线不再加载或依赖 `SolveReport`，标签归一化仅基于 OCR 文本 + vocabulary。
+  2. `IndexEntry` 数据模型中移除 `solve_report_path` 字段，`TagSource` 枚举移除 `SOLVE_REPORT` 变体。
+  3. `golden_tests/` 目录和 `cpho eval` 命令被移除；`core/eval.py` 不再存在。
+  4. 提供 `cpho index tag-set` / `tag-add` / `tag-remove` CLI 子命令，skills 可以读写 index 标签。
+  5. skill 写入的标签与 LLM 机打标签分离存储，`cpho index --force` 重建只覆盖机打标签，保留 skill 写入的标签。
+  6. 标签写入记录出处（provenance）：哪个 skill、什么时间、基于什么推理。
+
+**Plans**: TBD
+
 ### Phase 3: Skill System + Core Skills
 **Goal**: Users can run Explanation and Quiz analysis modes on indexed problems (individual ProblemEntries split from exam papers), and extend the system with custom YAML-defined skills that are auto-discovered from a skills directory.
 **Depends on**: Phase 2
@@ -123,7 +140,7 @@ Plans:
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 2.1 → 2.2 → 3 → 4
+Phases execute in numeric order: 1 → 2 → 2.1 → 2.2 → 2.3 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -131,5 +148,6 @@ Phases execute in numeric order: 1 → 2 → 2.1 → 2.2 → 3 → 4
 | 2. Tag Indexing | 7/7 | Complete   | 2026-05-23 |
 | 02.1. Paper Splitting | 5/5 | Complete | 2026-05-24 |
 | 02.2. TUI REPL 骨架 | 6/6 | Complete   | 2026-05-24 |
+| 02.3. Index 读写分离 + Solve 降级 | 0/TBD | Not started | - |
 | 3. Skill System + Core Skills | 0/TBD | Not started | - |
 | 4. Knowledge Network + Ecosystem | 0/TBD | Not started | - |

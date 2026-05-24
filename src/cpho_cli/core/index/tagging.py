@@ -11,7 +11,7 @@ from pydantic import Field, ValidationError
 from cpho_cli.core.config import resolve_model_params
 from cpho_cli.core.index import IndexBuildError
 from cpho_cli.core.index.vocabulary import normalize_alias
-from cpho_cli.core.llm import LLMProvider, OpenRouterProvider
+from cpho_cli.core.llm import LLMProvider, create_llm_provider
 from cpho_cli.core.runtime import redact_secrets
 from cpho_cli.models.config import AppConfig, ResolvedProviderConfig, StrictModel
 from cpho_cli.models.index import (
@@ -274,11 +274,13 @@ def refine_tags(
     source: TagSource = TagSource.SOLVE_REPORT,
 ) -> CanonicalMappingResult:
     started = datetime.now(timezone.utc)
-    provider = llm_provider or OpenRouterProvider(
+    provider = llm_provider or create_llm_provider(
+        kind=provider_config.kind,
         api_key=provider_config.api_key,
         base_url=provider_config.base_url,
+        timeout=provider_config.timeout,
     )
-    params = resolve_model_params(config, "index")
+    params = resolve_model_params(config, "index", provider_name=provider_config.name)
     user_prompt = _render_user_prompt(problem_id, ocr_text, solve_report_tags, vocabulary)
     input_keys = ["ocr_text", "solve_report_tags", f"vocabulary_{vocabulary.version}"]
     output_keys = ["tag_refinement"]

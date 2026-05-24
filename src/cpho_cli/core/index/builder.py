@@ -4,8 +4,10 @@ from __future__ import annotations
 
 import logging
 import os
+from collections.abc import Callable
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import TypedDict
 
 import yaml
 
@@ -38,7 +40,7 @@ from cpho_cli.core.index.vocabulary import (
     load_merged_vocabulary,
     normalize_alias,
 )
-from cpho_cli.core.llm import LLMProvider, OpenRouterProvider
+from cpho_cli.core.llm import LLMProvider, create_llm_provider
 from cpho_cli.core.ocr import OCRProvider, RapidOCRProvider
 from cpho_cli.core.splitting import split_paper
 from cpho_cli.core.splitting.llm import load_split_prompt_version
@@ -53,6 +55,21 @@ from cpho_cli.models.index import (
     UserNotebookEntry,
 )
 from cpho_cli.models.solve import SolveReport
+
+
+class IndexProgress(TypedDict, total=False):
+    """Progress event emitted by build_index at key milestones."""
+    phase: str
+    file_path: str
+    file_index: int
+    total_files: int
+    problem_id: str
+    problems_extracted_so_far: int
+    problems_processed_so_far: int
+    physics_count: int
+    math_count: int
+    heuristic_count: int
+    topic_path: str
 
 
 def _load_solve_report(workspace_root: Path, problem_id: str) -> SolveReport | None:
@@ -86,9 +103,11 @@ def _ensure_llm_provider(
 ) -> LLMProvider:
     if existing is not None:
         return existing
-    return OpenRouterProvider(
+    return create_llm_provider(
+        kind=provider_config.kind,
         api_key=provider_config.api_key,
         base_url=provider_config.base_url,
+        timeout=provider_config.timeout,
     )
 
 
@@ -135,14 +154,24 @@ def build_index(
     ocr_strategy: str = "prompt",
     ocr_provider: OCRProvider | None = None,
     llm_provider: LLMProvider | None = None,
+    target_subpath: Path | None = None,
+    on_progress: Callable[[IndexProgress], None] | None = None,
 ) -> IndexRunStats:
     """Orchestrate workspace indexing.
 
     When both ``--force`` and ``--only-new`` are set, ``--force`` wins for
     entries that already exist (force is explicit user intent).
+
+    If *target_subpath* is given, only that subdirectory (relative to
+    *workspace_root*) is scanned for papers.
     """
     workspace_root = workspace_root.resolve()
-    discovery = discover_workspace(workspace_root)
+    discovery_root = workspace_root
+    if target_subpath is not None:
+        discovery_root = (workspace_root / target_subpath).resolve()
+        if not discovery_root.is_relative_to(workspace_root):
+            raise ValueError(f"target_subpath must be under workspace_root: {target_subpath}")
+    discovery = discover_workspace(discovery_root)
 
     # Build paper inputs: pairs + unmatched papers, skip ambiguous.
     papers: list[tuple[PaperFile, PaperFile | None]] = []
@@ -152,6 +181,9 @@ def build_index(
         papers.append((unmatched, None))
 
     stats = IndexRunStats()
+
+    if on_progress is not None:
+        on_progress(IndexProgress(phase="begin", total_files=len(papers)))
 
     if dry_run:
         load_merged_vocabulary(workspace_root)
@@ -192,7 +224,7 @@ def build_index(
 
     tag_prompt_version = load_tag_prompt_version()
     split_prompt_version = load_split_prompt_version()
-    params = resolve_model_params(config, "index")
+    params = resolve_model_params(config, "index", provider_name=provider_name)
 
     index_path = workspace_root / ".cpho" / "index.jsonl"
     existing_entries: dict[str, IndexEntry] = {}
@@ -212,7 +244,7 @@ def build_index(
     trace_path = workspace_root / ".cpho" / "run-trace.jsonl"
     all_candidates: list[CandidateTag] = []
 
-    for paper_file, answer_file in papers:
+    for file_idx, (paper_file, answer_file) in enumerate(papers, start=1):
         answer_path = answer_file.path if answer_file else None
         file_fp = compose_file_fingerprint(paper_file.path, answer_path)
 
@@ -222,6 +254,14 @@ def build_index(
         if answer_file is not None:
             answer_document = load_document(answer_file.path)
             answer_ocr = cached_ocr.extract(answer_document)
+
+        if on_progress is not None:
+            on_progress(IndexProgress(
+                phase="paper_split_start",
+                file_path=str(paper_file.path),
+                file_index=file_idx,
+                total_files=len(papers),
+            ))
 
         split_outcome = split_paper(
             paper_ocr,
@@ -235,6 +275,15 @@ def build_index(
         stats.papers_split += 1
         stats.problems_extracted += len(split_outcome.problems)
         stats.total_problems += len(split_outcome.problems)
+
+        if on_progress is not None:
+            on_progress(IndexProgress(
+                phase="paper_split_done",
+                file_index=file_idx,
+                total_files=len(papers),
+                problems_extracted_so_far=stats.problems_extracted,
+            ))
+
         for problem_entry in split_outcome.problems:
             if problem_entry.split_method is SplitMethod.RULES:
                 stats.split_method_rules += 1
@@ -291,6 +340,12 @@ def build_index(
             if action == "skip":
                 stats.tags_skipped += 1
                 stats.file_unchanged += 1
+                if on_progress is not None:
+                    on_progress(IndexProgress(
+                        phase="problem_skip",
+                        problem_id=problem_id,
+                        problems_processed_so_far=stats.tags_skipped + stats.tags_regenerated + stats.refinement_only,
+                    ))
                 continue
 
             if action == "refinement_only":
@@ -311,6 +366,13 @@ def build_index(
             report = _load_solve_report(workspace_root, problem_id)
             solve_report_tags = _solve_report_tag_dict(report)
             source = TagSource.SOLVE_REPORT if report else TagSource.OCR_FALLBACK
+
+            if on_progress is not None:
+                on_progress(IndexProgress(
+                    phase="problem_tag_start",
+                    problem_id=problem_id,
+                    problems_processed_so_far=stats.tags_skipped + stats.tags_regenerated + stats.refinement_only,
+                ))
 
             mapping: CanonicalMappingResult = refine_tags(
                 problem_id,
@@ -369,6 +431,17 @@ def build_index(
             )
             result_entries[problem_id] = entry
 
+            if on_progress is not None:
+                on_progress(IndexProgress(
+                    phase="problem_tag_done",
+                    problem_id=problem_id,
+                    physics_count=len(mapping.physics_model_tags),
+                    math_count=len(mapping.math_technique_tags),
+                    heuristic_count=len(mapping.heuristic_tags),
+                    topic_path=topic_path or "",
+                    problems_processed_so_far=stats.tags_skipped + stats.tags_regenerated + stats.refinement_only,
+                ))
+
             # Stats accounting
             if action == "re_tag_only":
                 stats.tags_regenerated += 1
@@ -389,4 +462,6 @@ def build_index(
         stats.candidate_tags_proposed = new_count
 
     stats.pending_review_items = len(list_pending_candidates(workspace_root))
+    if on_progress is not None:
+        on_progress(IndexProgress(phase="complete"))
     return stats

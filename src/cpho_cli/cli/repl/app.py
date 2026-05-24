@@ -63,22 +63,23 @@ class ReplApp:
         except ConfigError as exc:
             display.warn(str(exc))
             config = load_config(None)
-        self.session = SessionState(
-            workspace_path=resolved_workspace,
-            config=config,
-            provider_name=provider_name,
-            index_path=resolved_workspace / ".cpho" / "index.jsonl",
-            index_meta=load_index_meta(resolved_workspace),
-        )
         self.registry: dict[str, Command] = dict(registry)
         install_builtin_commands(self.registry)
-        setattr(self.session, "registry", self.registry)
         self.prompt_session = prompt_session or PromptSession(
             history=FileHistory(str(history_path())),
             completer=CphoCompleter(self.registry),
             lexer=CphoLexer(),
             style=STYLE,
         )
+        self.session = SessionState(
+            workspace_path=resolved_workspace,
+            config=config,
+            provider_name=provider_name,
+            index_path=resolved_workspace / ".cpho" / "index.jsonl",
+            index_meta=load_index_meta(resolved_workspace),
+            prompt_session=self.prompt_session,
+        )
+        setattr(self.session, "registry", self.registry)
 
     async def dispatch(self, line: str) -> None:
         try:

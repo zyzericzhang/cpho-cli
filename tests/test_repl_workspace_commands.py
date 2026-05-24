@@ -67,10 +67,16 @@ async def test_index_dry_run_cancel_and_success(
         return IndexRunStats(total_problems=2, papers_split=1, problems_extracted=2)
 
     monkeypatch.setattr("cpho_cli.cli.repl.commands.workspace.build_index", fake_build_index)
-    monkeypatch.setattr("cpho_cli.cli.repl.commands.workspace.confirm_index_run", lambda _: True)
+
+    async def fake_confirm(*args, **kwargs):  # type: ignore[no-untyped-def]
+        return True
+
+    monkeypatch.setattr(
+        "cpho_cli.cli.repl.commands.workspace._confirm_index_run", fake_confirm
+    )
     session = SessionState(workspace_path=tmp_path, config=AppConfig())
 
-    await do_index(session, [])
+    await do_index(session, ["--all"])
 
     assert calls == [True, False]
 

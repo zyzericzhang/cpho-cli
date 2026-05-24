@@ -24,6 +24,7 @@ class ProviderProfile(StrictModel):
     api_key_env: str | None = None
     base_url: str | None = None
     default_model: str | None = None
+    timeout: float | None = None
 
 
 class ResolvedProviderConfig(StrictModel):
@@ -31,6 +32,7 @@ class ResolvedProviderConfig(StrictModel):
     kind: str
     api_key: str
     base_url: str
+    timeout: float = 120.0
 
 
 class SkillConfig(StrictModel):
