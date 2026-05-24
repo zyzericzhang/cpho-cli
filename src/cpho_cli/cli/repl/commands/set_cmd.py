@@ -72,6 +72,7 @@ async def do_set(session, args: list[str]) -> None:  # type: ignore[no-untyped-d
         if not _validate_provider(session, value):
             return
         session.provider_name = value
+        _apply_provider_default_model(session, value)
     write_session(session)
     print(f"已更新 {key}: {_current_value(session, key)}")
 
@@ -101,6 +102,12 @@ def _validate_provider(session, name: str) -> bool:  # type: ignore[no-untyped-d
             f"使用时将报错。请在 config.local.yml 的 providers.{name} 中设置。"
         )
     return True
+
+
+def _apply_provider_default_model(session, name: str) -> None:  # type: ignore[no-untyped-def]
+    profile = session.config.providers.get(name)
+    if profile is not None and profile.default_model:
+        session.config.model.name = profile.default_model
 
 
 def _configured_providers_hint(providers: dict) -> str:  # type: ignore[no-untyped-def]
