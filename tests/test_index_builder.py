@@ -3,19 +3,24 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Any
 
 import pytest
 
 from cpho_cli.core.index import VocabularyError
+from cpho_cli.core.index.hashing import sha256_file
+import cpho_cli.core.index.builder as builder_module
 from cpho_cli.core.index.builder import build_index
 from cpho_cli.core.index.ocr_cache import OcrUpgradeDecisionRequired
 from cpho_cli.core.index.storage import load_index
 from cpho_cli.core.index.tagging import CandidateTagSuggestion, TagRefinementOutput
+from cpho_cli.models.documents import SplitMethod, make_problem_id
 from cpho_cli.models.index import (
     TagCategory,
     TagSource,
     UserNotebookEntry,
 )
+from cpho_cli.models.ocr import OCRBlock, OCRPageResult, OCRResult
 from cpho_cli.models.solve import DerivationStep, SolveReport
 
 from conftest import FakeLLMProvider, FakeOCRProvider, setup_workspace
@@ -25,6 +30,36 @@ def _patch_rapidocr_version(monkeypatch: pytest.MonkeyPatch, version: str = "3.0
     monkeypatch.setattr(
         "cpho_cli.core.index.builder._rapidocr_version", lambda: version
     )
+
+
+def _write_pdf(path: Path, pages: list[str]) -> None:
+    import fitz
+
+    document = fitz.open()
+    for text in pages:
+        page = document.new_page()
+        page.insert_text((72, 72), text)
+    document.save(path)
+    document.close()
+
+
+class FakePagedOCRProvider:
+    def __init__(self, pages_by_name: dict[str, list[str]]) -> None:
+        self.pages_by_name = pages_by_name
+        self.calls: list[Path] = []
+
+    def extract(self, document: Any) -> OCRResult:
+        self.calls.append(document.path)
+        pages = self.pages_by_name[document.path.name]
+        return OCRResult(
+            pages=[
+                OCRPageResult(
+                    page_number=index,
+                    blocks=[OCRBlock(text=text, page_number=index, confidence=1.0)],
+                )
+                for index, text in enumerate(pages, start=1)
+            ]
+        )
 
 
 # --- dry_run ---
@@ -73,6 +108,138 @@ def test_build_index_first_run_writes_index(
     entries = load_index(ws)
     assert len(entries) == 2
     assert stats.total_problems == 2
+
+
+def test_build_index_writes_one_entry_per_split_problem(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _patch_rapidocr_version(monkeypatch)
+    paper_path = tmp_path / "paper.pdf"
+    answer_dir = tmp_path / "answers"
+    answer_dir.mkdir()
+    answer_path = answer_dir / "paper-answer.pdf"
+    paper_pages = [f"第{i}题\nproblem {i}" for i in range(1, 6)]
+    answer_pages = [f"第{i}题\nanswer {i}" for i in range(1, 6)]
+    _write_pdf(paper_path, paper_pages)
+    _write_pdf(answer_path, answer_pages)
+    (tmp_path / "config.local.yml").write_text(
+        "provider:\n  openrouter_api_key: test-key-fake\n",
+        encoding="utf-8",
+    )
+
+    stats = build_index(
+        tmp_path,
+        config_path=tmp_path / "config.local.yml",
+        ocr_provider=FakePagedOCRProvider(
+            {"paper.pdf": paper_pages, "paper-answer.pdf": answer_pages}
+        ),
+        llm_provider=FakeLLMProvider(),
+        ocr_strategy="reuse",
+    )
+
+    entries = sorted(load_index(tmp_path), key=lambda entry: entry.problem_page_range)
+    expected_sha = sha256_file(paper_path)
+    assert [entry.problem_id for entry in entries] == [
+        make_problem_id(expected_sha, number) for number in range(1, 6)
+    ]
+    assert [entry.problem_path for entry in entries] == [Path("paper.pdf")] * 5
+    assert [entry.answer_path for entry in entries] == [Path("answers/paper-answer.pdf")] * 5
+    assert [entry.problem_page_range for entry in entries] == [
+        (1, 1),
+        (2, 2),
+        (3, 3),
+        (4, 4),
+        (5, 5),
+    ]
+    assert {entry.fingerprint.semantic.split_prompt_version for entry in entries} == {"v1"}
+    assert stats.total_problems == 5
+    assert stats.papers_split == 1
+    assert stats.problems_extracted == 5
+    assert stats.split_method_rules == 5
+    assert stats.split_method_llm == 0
+    assert stats.split_method_single == 0
+
+
+def test_build_index_image_workspace_uses_single_split_without_llm_fallback(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _patch_rapidocr_version(monkeypatch)
+    ws = setup_workspace(tmp_path, problem_names=["p1", "p2"], with_answers=False)
+    split_calls = []
+    original_split_paper = builder_module.split_paper
+
+    def recording_split_paper(*args: Any, **kwargs: Any):
+        outcome = original_split_paper(*args, **kwargs)
+        split_calls.append(outcome.split_method)
+        return outcome
+
+    monkeypatch.setattr(builder_module, "split_paper", recording_split_paper)
+
+    stats = build_index(
+        ws,
+        config_path=ws / "config.local.yml",
+        ocr_provider=FakeOCRProvider(),
+        llm_provider=FakeLLMProvider(),
+        ocr_strategy="reuse",
+    )
+
+    entries = load_index(ws)
+    assert len(entries) == 2
+    assert {entry.problem_page_range for entry in entries} == {(1, 1)}
+    assert split_calls == [SplitMethod.SINGLE, SplitMethod.SINGLE]
+    assert stats.problems_extracted == 2
+    assert stats.split_method_single == 2
+
+
+def test_build_index_discards_stale_rows_before_rebuild(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _patch_rapidocr_version(monkeypatch)
+    ws = setup_workspace(tmp_path, problem_names=["p1"], with_answers=False)
+    stale_dir = ws / ".cpho"
+    stale_dir.mkdir()
+    (stale_dir / "index.jsonl").write_text(
+        '{"problem_id":"stale-whole-paper","problem_path":"old.pdf"}\n',
+        encoding="utf-8",
+    )
+
+    build_index(
+        ws,
+        config_path=ws / "config.local.yml",
+        ocr_provider=FakeOCRProvider(),
+        llm_provider=FakeLLMProvider(),
+        ocr_strategy="reuse",
+    )
+
+    entries = load_index(ws)
+    assert [entry.problem_id for entry in entries] != ["stale-whole-paper"]
+    assert all(entry.problem_page_range == (1, 1) for entry in entries)
+
+
+def test_build_index_prompt_strategy_stale_row_rebuild_does_not_crash(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _patch_rapidocr_version(monkeypatch)
+    ws = setup_workspace(tmp_path, problem_names=["p1"], with_answers=False)
+    stale_dir = ws / ".cpho"
+    stale_dir.mkdir()
+    (stale_dir / "index.jsonl").write_text(
+        '{"problem_id":"pre-02.1","problem_path":"p1.png","indexed_at":"2026-01-01T00:00:00Z"}\n',
+        encoding="utf-8",
+    )
+
+    stats = build_index(
+        ws,
+        config_path=ws / "config.local.yml",
+        ocr_provider=FakeOCRProvider(),
+        llm_provider=FakeLLMProvider(),
+        ocr_strategy="prompt",
+    )
+
+    assert stats.tags_regenerated == 1
+    entries = load_index(ws)
+    assert len(entries) == 1
+    assert entries[0].problem_page_range == (1, 1)
 
 
 # --- skip on rerun ---
