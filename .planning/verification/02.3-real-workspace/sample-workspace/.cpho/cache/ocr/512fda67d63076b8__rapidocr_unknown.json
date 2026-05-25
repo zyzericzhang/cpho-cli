@@ -1,0 +1,205 @@
+{
+  "pages": [
+    {
+      "page_number": 1,
+      "blocks": [
+        {
+          "text": "第六套",
+          "page_number": 1,
+          "confidence": null,
+          "bbox": null,
+          "low_confidence": false
+        },
+        {
+          "text": "2023学而思物理复赛营",
+          "page_number": 1,
+          "confidence": null,
+          "bbox": null,
+          "low_confidence": false
+        },
+        {
+          "text": "4.（60分）",
+          "page_number": 1,
+          "confidence": null,
+          "bbox": null,
+          "low_confidence": false
+        },
+        {
+          "text": "易有太极，是生两仪，两仪生四象，四象生八卦一《周易·系辞》",
+          "page_number": 1,
+          "confidence": null,
+          "bbox": null,
+          "low_confidence": false
+        },
+        {
+          "text": "水平面有一个尺寸非常小的带电阴阳圆盘，四块区域分别均匀带电，各部分带电面密度如",
+          "page_number": 1,
+          "confidence": null,
+          "bbox": null,
+          "low_confidence": false
+        },
+        {
+          "text": "图所示，该圆盘质量为m（质量均匀分布），半径为R，小圆的半径为，二分之一圆弧的半",
+          "page_number": 1,
+          "confidence": null,
+          "bbox": null,
+          "low_confidence": false
+        },
+        {
+          "text": "径为、小圆圆心与圆弧圆心重合，且整个图形中心对称",
+          "page_number": 1,
+          "confidence": null,
+          "bbox": null,
+          "low_confidence": false
+        },
+        {
+          "text": "（1）求平面内（c，y）处电场，用c，y分量表示.设²+y²R²，保留至最低阶非零项",
+          "page_number": 1,
+          "confidence": null,
+          "bbox": null,
+          "low_confidence": false
+        },
+        {
+          "text": "（2）现在将圆盘竖直立在光滑水平面上（此时y轴竖直向上，轴水平，z轴水平且垂直",
+          "page_number": 1,
+          "confidence": null,
+          "bbox": null,
+          "low_confidence": false
+        },
+        {
+          "text": "于纸面向外且坐标轴固定），且面密度+o的小圆在盘心正上方、若空间中有磁场B=",
+          "page_number": 1,
+          "confidence": null,
+          "bbox": null,
+          "low_confidence": false
+        },
+        {
+          "text": "（0,0,B），电场E=（E，0,0），重力加速度g=（0,-g,0），写出圆盘平动与转动的运动方",
+          "page_number": 1,
+          "confidence": null,
+          "bbox": null,
+          "low_confidence": false
+        },
+        {
+          "text": "程、设圆盘平面不会倾斜且不会脱离，记圆盘圆心向右速度为Vo，转动的角度为",
+          "page_number": 1,
+          "confidence": null,
+          "bbox": null,
+          "low_confidence": false
+        },
+        {
+          "text": "（3）求解圆盘在平衡位置处的振动频率，设圆盘不会倾斜且不会脱离",
+          "page_number": 1,
+          "confidence": null,
+          "bbox": null,
+          "low_confidence": false
+        },
+        {
+          "text": "（40分）",
+          "page_number": 1,
+          "confidence": null,
+          "bbox": null,
+          "low_confidence": false
+        },
+        {
+          "text": "截面积为S的绝缘管道内有两质量m的光滑活塞，活塞封住一定量的单原子分子理想气",
+          "page_number": 1,
+          "confidence": null,
+          "bbox": null,
+          "low_confidence": false
+        },
+        {
+          "text": "体，分子总数为N，初始活塞间距为L，初始气体温度为T，两极板分别带正电负电士Q",
+          "page_number": 1,
+          "confidence": null,
+          "bbox": null,
+          "low_confidence": false
+        },
+        {
+          "text": "已知分子若处在外电场E中时，将会诱导出与外电场E同向的偶极矩p=αE，α为一与",
+          "page_number": 1,
+          "confidence": null,
+          "bbox": null,
+          "low_confidence": false
+        },
+        {
+          "text": "温度无关的常数.为了方便表示答案起见，引入无量纲常数c=Nα/eoSL，答案中不再出",
+          "page_number": 1,
+          "confidence": null,
+          "bbox": null,
+          "low_confidence": false
+        },
+        {
+          "text": "现Q.认为活塞面积很大，可以用电容器模型",
+          "page_number": 1,
+          "confidence": null,
+          "bbox": null,
+          "low_confidence": false
+        },
+        {
+          "text": "（1）为了准确地描述分子极化的现象，我们引入唯象地引入内势能模型，不妨设与产生偶极",
+          "page_number": 1,
+          "confidence": null,
+          "bbox": null,
+          "low_confidence": false
+        },
+        {
+          "text": "矩p有关的分子内部势能增加为E=2计算β与α的关系",
+          "page_number": 1,
+          "confidence": null,
+          "bbox": null,
+          "low_confidence": false
+        },
+        {
+          "text": "(2）当分子数密度n=N/V并不足够小时，分子的极化行为还将受到分子间相互作用的",
+          "page_number": 1,
+          "confidence": null,
+          "bbox": null,
+          "low_confidence": false
+        },
+        {
+          "text": "影响计算初始状态下气体的相对介电常数Er",
+          "page_number": 1,
+          "confidence": null,
+          "bbox": null,
+          "low_confidence": false
+        },
+        {
+          "text": "（3）若初始两活塞恰好处于静力学平衡，且活塞外为真空，计算正电负电士Q的量",
+          "page_number": 1,
+          "confidence": null,
+          "bbox": null,
+          "low_confidence": false
+        },
+        {
+          "text": "（4）试论述，若气体绝热，那么气体满足的绝热方程，仍然是正常的绝热方程",
+          "page_number": 1,
+          "confidence": null,
+          "bbox": null,
+          "low_confidence": false
+        },
+        {
+          "text": "（5）突然给正极板一个背离负极板的非常小的初速度v，计算正负极板此后速度u+，-随",
+          "page_number": 1,
+          "confidence": null,
+          "bbox": null,
+          "low_confidence": false
+        },
+        {
+          "text": "时间的变化",
+          "page_number": 1,
+          "confidence": null,
+          "bbox": null,
+          "low_confidence": false
+        },
+        {
+          "text": "学而思培优",
+          "page_number": 1,
+          "confidence": null,
+          "bbox": null,
+          "low_confidence": false
+        }
+      ]
+    }
+  ]
+}

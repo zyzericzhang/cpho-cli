@@ -1,0 +1,2910 @@
+- internal_id_suggestion: newton_second_law
+  display_zh_suggestion: newton_second_law
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'newton_second_law' for selected_physics_models but it
+    is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: quasi_static_process
+  display_zh_suggestion: quasi_static_process
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'quasi_static_process' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: energy_accounting
+  display_zh_suggestion: energy_accounting
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'energy_accounting' for selected_physics_models but it
+    is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: entropy_accounting
+  display_zh_suggestion: entropy_accounting
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'entropy_accounting' for selected_physics_models but it
+    is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: micro_to_macro_average
+  display_zh_suggestion: micro_to_macro_average
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'micro_to_macro_average' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: flux_balance
+  display_zh_suggestion: flux_balance
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'flux_balance' for selected_physics_models but it is not
+    in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: steady_state_balance
+  display_zh_suggestion: steady_state_balance
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'steady_state_balance' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: symmetry_reduction
+  display_zh_suggestion: symmetry_reduction
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'symmetry_reduction' for selected_physics_models but it
+    is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: trial_solution_ansatz
+  display_zh_suggestion: trial_solution_ansatz
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'trial_solution_ansatz' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: phase_diagram_reading
+  display_zh_suggestion: phase_diagram_reading
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'phase_diagram_reading' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: effective_spring
+  display_zh_suggestion: effective_spring
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'effective_spring' for selected_physics_models but it
+    is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: small_element_balance
+  display_zh_suggestion: small_element_balance
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'small_element_balance' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: gaussian_integral
+  display_zh_suggestion: gaussian_integral
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'gaussian_integral' for selected_physics_models but it
+    is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: gamma_function_integral
+  display_zh_suggestion: gamma_function_integral
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'gamma_function_integral' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: probability_normalization
+  display_zh_suggestion: probability_normalization
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'probability_normalization' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: spherical_integration
+  display_zh_suggestion: spherical_integration
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'spherical_integration' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: cylindrical_integration
+  display_zh_suggestion: cylindrical_integration
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'cylindrical_integration' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: series_expansion
+  display_zh_suggestion: series_expansion
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'series_expansion' for selected_physics_models but it
+    is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: differential_equation
+  display_zh_suggestion: differential_equation
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'differential_equation' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: integrating_factor
+  display_zh_suggestion: integrating_factor
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'integrating_factor' for selected_physics_models but it
+    is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: eigenmode_expansion
+  display_zh_suggestion: eigenmode_expansion
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'eigenmode_expansion' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: complex_amplitude_method
+  display_zh_suggestion: complex_amplitude_method
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'complex_amplitude_method' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: damped_oscillator_solution
+  display_zh_suggestion: damped_oscillator_solution
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'damped_oscillator_solution' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: asymptotic_matching
+  display_zh_suggestion: asymptotic_matching
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'asymptotic_matching' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 2
+  status: candidate
+- internal_id_suggestion: small_angle_linearization
+  display_zh_suggestion: small_angle_linearization
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'small_angle_linearization' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 2
+  status: candidate
+- internal_id_suggestion: high_temperature_limit
+  display_zh_suggestion: high_temperature_limit
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'high_temperature_limit' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 2
+  status: candidate
+- internal_id_suggestion: low_temperature_limit
+  display_zh_suggestion: low_temperature_limit
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'low_temperature_limit' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 2
+  status: candidate
+- internal_id_suggestion: weak_field_expansion
+  display_zh_suggestion: weak_field_expansion
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'weak_field_expansion' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 2
+  status: candidate
+- internal_id_suggestion: thin_shell_approximation
+  display_zh_suggestion: thin_shell_approximation
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'thin_shell_approximation' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 2
+  status: candidate
+- internal_id_suggestion: continuum_approximation
+  display_zh_suggestion: continuum_approximation
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'continuum_approximation' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 2
+  status: candidate
+- internal_id_suggestion: dilute_gas_approximation
+  display_zh_suggestion: dilute_gas_approximation
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'dilute_gas_approximation' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 2
+  status: candidate
+- internal_id_suggestion: mean_free_path_approximation
+  display_zh_suggestion: mean_free_path_approximation
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'mean_free_path_approximation' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 2
+  status: candidate
+- internal_id_suggestion: steady_state_approximation
+  display_zh_suggestion: steady_state_approximation
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'steady_state_approximation' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 2
+  status: candidate
+- internal_id_suggestion: quasistatic_approximation
+  display_zh_suggestion: quasistatic_approximation
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'quasistatic_approximation' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 2
+  status: candidate
+- internal_id_suggestion: linear_response
+  display_zh_suggestion: linear_response
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'linear_response' for selected_physics_models but it is
+    not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 2
+  status: candidate
+- internal_id_suggestion: far_field_approximation
+  display_zh_suggestion: far_field_approximation
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'far_field_approximation' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 2
+  status: candidate
+- internal_id_suggestion: lumped_capacity_approximation
+  display_zh_suggestion: lumped_capacity_approximation
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'lumped_capacity_approximation' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 2
+  status: candidate
+- internal_id_suggestion: negligible_radiation_loss
+  display_zh_suggestion: negligible_radiation_loss
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'negligible_radiation_loss' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 2
+  status: candidate
+- internal_id_suggestion: proper_length_identification
+  display_zh_suggestion: proper_length_identification
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'proper_length_identification' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: spacetime_event_matching
+  display_zh_suggestion: spacetime_event_matching
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'spacetime_event_matching' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: light_cone_intersection
+  display_zh_suggestion: light_cone_intersection
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'light_cone_intersection' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: retarded_time_geometry
+  display_zh_suggestion: retarded_time_geometry
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'retarded_time_geometry' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: relativistic_center_of_momentum
+  display_zh_suggestion: relativistic_center_of_momentum
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'relativistic_center_of_momentum' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: invariant_mass_method
+  display_zh_suggestion: invariant_mass_method
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'invariant_mass_method' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: low_velocity_beta_expansion
+  display_zh_suggestion: low_velocity_beta_expansion
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'low_velocity_beta_expansion' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: gravitational_impulse_method
+  display_zh_suggestion: gravitational_impulse_method
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'gravitational_impulse_method' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: orbit_equation_perturbation
+  display_zh_suggestion: orbit_equation_perturbation
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'orbit_equation_perturbation' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: effective_potential_orbit
+  display_zh_suggestion: effective_potential_orbit
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'effective_potential_orbit' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: energy_momentum_integral
+  display_zh_suggestion: energy_momentum_integral
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'energy_momentum_integral' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: impact_parameter_mapping
+  display_zh_suggestion: impact_parameter_mapping
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'impact_parameter_mapping' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: lab_cm_angle_transform
+  display_zh_suggestion: lab_cm_angle_transform
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'lab_cm_angle_transform' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: scattering_refraction_analogy
+  display_zh_suggestion: scattering_refraction_analogy
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'scattering_refraction_analogy' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: rapidity_parameterization
+  display_zh_suggestion: rapidity_parameterization
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'rapidity_parameterization' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: thomson_limit
+  display_zh_suggestion: thomson_limit
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'thomson_limit' for selected_physics_models but it is
+    not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: invariant_phase_space
+  display_zh_suggestion: invariant_phase_space
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'invariant_phase_space' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: mandelstam_invariants
+  display_zh_suggestion: mandelstam_invariants
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'mandelstam_invariants' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: action_variable_integral
+  display_zh_suggestion: action_variable_integral
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'action_variable_integral' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: wkb_quantization
+  display_zh_suggestion: wkb_quantization
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'wkb_quantization' for selected_physics_models but it
+    is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: langer_correction
+  display_zh_suggestion: langer_correction
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'langer_correction' for selected_physics_models but it
+    is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: thomas_half_factor
+  display_zh_suggestion: thomas_half_factor
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'thomas_half_factor' for selected_physics_models but it
+    is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: perturbation_energy_shift
+  display_zh_suggestion: perturbation_energy_shift
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'perturbation_energy_shift' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: decay_product_angle_limit
+  display_zh_suggestion: decay_product_angle_limit
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'decay_product_angle_limit' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: two_body_decay_frame
+  display_zh_suggestion: two_body_decay_frame
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'two_body_decay_frame' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: lab_to_com_collision
+  display_zh_suggestion: lab_to_com_collision
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'lab_to_com_collision' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: photon_energy_extrema
+  display_zh_suggestion: photon_energy_extrema
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'photon_energy_extrema' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: affine_parameter_elimination
+  display_zh_suggestion: affine_parameter_elimination
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'affine_parameter_elimination' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: successive_approximation
+  display_zh_suggestion: successive_approximation
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'successive_approximation' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: far_field_radiation
+  display_zh_suggestion: far_field_radiation
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'far_field_radiation' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: oscillator_frequency_shift
+  display_zh_suggestion: oscillator_frequency_shift
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'oscillator_frequency_shift' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: slow_amplitude_evolution
+  display_zh_suggestion: slow_amplitude_evolution
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'slow_amplitude_evolution' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: radiation_power_average
+  display_zh_suggestion: radiation_power_average
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'radiation_power_average' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: particle_state_from_force_fit
+  display_zh_suggestion: particle_state_from_force_fit
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'particle_state_from_force_fit' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: covariant_energy_conservation
+  display_zh_suggestion: covariant_energy_conservation
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'covariant_energy_conservation' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: current_wire_frame_choice
+  display_zh_suggestion: current_wire_frame_choice
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'current_wire_frame_choice' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: field_invariant_analysis
+  display_zh_suggestion: field_invariant_analysis
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'field_invariant_analysis' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: massless_particle_limit
+  display_zh_suggestion: massless_particle_limit
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'massless_particle_limit' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: small_recoil_approximation
+  display_zh_suggestion: small_recoil_approximation
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'small_recoil_approximation' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: decay_chain_rate_equations
+  display_zh_suggestion: decay_chain_rate_equations
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'decay_chain_rate_equations' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: excited_state_population_peak
+  display_zh_suggestion: excited_state_population_peak
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'excited_state_population_peak' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: mirror_nuclei_radius
+  display_zh_suggestion: mirror_nuclei_radius
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'mirror_nuclei_radius' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: fission_energy_balance
+  display_zh_suggestion: fission_energy_balance
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'fission_energy_balance' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: fermi_sphere_filling
+  display_zh_suggestion: fermi_sphere_filling
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'fermi_sphere_filling' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: polarized_sphere_regularization
+  display_zh_suggestion: polarized_sphere_regularization
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'polarized_sphere_regularization' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: phase_portrait_analysis
+  display_zh_suggestion: phase_portrait_analysis
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'phase_portrait_analysis' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: small_oscillation_linearization
+  display_zh_suggestion: small_oscillation_linearization
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'small_oscillation_linearization' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: normal_mode_decomposition
+  display_zh_suggestion: normal_mode_decomposition
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'normal_mode_decomposition' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: eigenfrequency_equation
+  display_zh_suggestion: eigenfrequency_equation
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'eigenfrequency_equation' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: slowly_varying_amplitude
+  display_zh_suggestion: slowly_varying_amplitude
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'slowly_varying_amplitude' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: action_angle_variable
+  display_zh_suggestion: action_angle_variable
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'action_angle_variable' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: lagrangian_multiplier_constraint
+  display_zh_suggestion: lagrangian_multiplier_constraint
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'lagrangian_multiplier_constraint' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: generalized_coordinates
+  display_zh_suggestion: generalized_coordinates
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'generalized_coordinates' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: cyclic_coordinate
+  display_zh_suggestion: cyclic_coordinate
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'cyclic_coordinate' for selected_physics_models but it
+    is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: non_inertial_pseudo_force
+  display_zh_suggestion: non_inertial_pseudo_force
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'non_inertial_pseudo_force' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: relative_motion_frame
+  display_zh_suggestion: relative_motion_frame
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'relative_motion_frame' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: instantaneous_center
+  display_zh_suggestion: instantaneous_center
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'instantaneous_center' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: variable_contact_condition
+  display_zh_suggestion: variable_contact_condition
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'variable_contact_condition' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: friction_direction_self_consistency
+  display_zh_suggestion: friction_direction_self_consistency
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'friction_direction_self_consistency' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: angular_momentum_about_contact
+  display_zh_suggestion: angular_momentum_about_contact
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'angular_momentum_about_contact' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: fast_top_approximation
+  display_zh_suggestion: fast_top_approximation
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'fast_top_approximation' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: stability_by_energy_extremum
+  display_zh_suggestion: stability_by_energy_extremum
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'stability_by_energy_extremum' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: binet_equation
+  display_zh_suggestion: binet_equation
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'binet_equation' for selected_physics_models but it is
+    not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: orbit_transfer_energy
+  display_zh_suggestion: orbit_transfer_energy
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'orbit_transfer_energy' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: perturbative_orbit_precession
+  display_zh_suggestion: perturbative_orbit_precession
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'perturbative_orbit_precession' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: moving_mass_system
+  display_zh_suggestion: moving_mass_system
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'moving_mass_system' for selected_physics_models but it
+    is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: calculus_of_variations
+  display_zh_suggestion: calculus_of_variations
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'calculus_of_variations' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: envelope_method
+  display_zh_suggestion: envelope_method
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'envelope_method' for selected_physics_models but it is
+    not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: scaling_law_method
+  display_zh_suggestion: scaling_law_method
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'scaling_law_method' for selected_physics_models but it
+    is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: small_parameter_expansion
+  display_zh_suggestion: small_parameter_expansion
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'small_parameter_expansion' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: dominant_balance
+  display_zh_suggestion: dominant_balance
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'dominant_balance' for selected_physics_models but it
+    is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: singular_perturbation
+  display_zh_suggestion: singular_perturbation
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'singular_perturbation' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: energy_landscape_method
+  display_zh_suggestion: energy_landscape_method
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'energy_landscape_method' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: impulse_approximation
+  display_zh_suggestion: impulse_approximation
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'impulse_approximation' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: variable_acceleration_integration
+  display_zh_suggestion: variable_acceleration_integration
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'variable_acceleration_integration' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: moving_pulley_constraint
+  display_zh_suggestion: moving_pulley_constraint
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'moving_pulley_constraint' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: mathieu_equation
+  display_zh_suggestion: mathieu_equation
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'mathieu_equation' for selected_physics_models but it
+    is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: pendulum_large_angle_integral
+  display_zh_suggestion: pendulum_large_angle_integral
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'pendulum_large_angle_integral' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: elliptic_integral_period
+  display_zh_suggestion: elliptic_integral_period
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'elliptic_integral_period' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: nonlinear_frequency_shift
+  display_zh_suggestion: nonlinear_frequency_shift
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'nonlinear_frequency_shift' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: continuum_limit_chain
+  display_zh_suggestion: continuum_limit_chain
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'continuum_limit_chain' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: dimensional_boundary_layer
+  display_zh_suggestion: dimensional_boundary_layer
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'dimensional_boundary_layer' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: reynolds_number_scaling
+  display_zh_suggestion: reynolds_number_scaling
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'reynolds_number_scaling' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: poisson_bracket_conservation
+  display_zh_suggestion: poisson_bracket_conservation
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'poisson_bracket_conservation' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: canonical_transformation
+  display_zh_suggestion: canonical_transformation
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'canonical_transformation' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: hamilton_jacobi_method
+  display_zh_suggestion: hamilton_jacobi_method
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'hamilton_jacobi_method' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: separable_coordinates
+  display_zh_suggestion: separable_coordinates
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'separable_coordinates' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: constraint_force_elimination
+  display_zh_suggestion: constraint_force_elimination
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'constraint_force_elimination' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: smart_origin_torque
+  display_zh_suggestion: smart_origin_torque
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'smart_origin_torque' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: center_of_mass_separation
+  display_zh_suggestion: center_of_mass_separation
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'center_of_mass_separation' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: reduced_mass_method
+  display_zh_suggestion: reduced_mass_method
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'reduced_mass_method' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: elliptic_orbit_time
+  display_zh_suggestion: elliptic_orbit_time
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'elliptic_orbit_time' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: hodograph_method
+  display_zh_suggestion: hodograph_method
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'hodograph_method' for selected_physics_models but it
+    is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: inverse_problem_central_force
+  display_zh_suggestion: inverse_problem_central_force
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'inverse_problem_central_force' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: stable_circular_orbit_condition
+  display_zh_suggestion: stable_circular_orbit_condition
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'stable_circular_orbit_condition' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: energy_dissipation_stability
+  display_zh_suggestion: energy_dissipation_stability
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'energy_dissipation_stability' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: parametric_constraint_differentiation
+  display_zh_suggestion: parametric_constraint_differentiation
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'parametric_constraint_differentiation' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: instantaneous_power_method
+  display_zh_suggestion: instantaneous_power_method
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'instantaneous_power_method' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: center_of_mass_constraint
+  display_zh_suggestion: center_of_mass_constraint
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'center_of_mass_constraint' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: many_body_symmetry_reduction
+  display_zh_suggestion: many_body_symmetry_reduction
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'many_body_symmetry_reduction' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: continuum_mass_element
+  display_zh_suggestion: continuum_mass_element
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'continuum_mass_element' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: variable_density_inertia
+  display_zh_suggestion: variable_density_inertia
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'variable_density_inertia' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: center_of_mass_integral
+  display_zh_suggestion: center_of_mass_integral
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'center_of_mass_integral' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: tensor_inertia_integration
+  display_zh_suggestion: tensor_inertia_integration
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'tensor_inertia_integration' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: perturbative_equilibrium_shift
+  display_zh_suggestion: perturbative_equilibrium_shift
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'perturbative_equilibrium_shift' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: second_variation_stability
+  display_zh_suggestion: second_variation_stability
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'second_variation_stability' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: bifurcation_analysis
+  display_zh_suggestion: bifurcation_analysis
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'bifurcation_analysis' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: elliptic_stability_matrix
+  display_zh_suggestion: elliptic_stability_matrix
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'elliptic_stability_matrix' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: constrained_energy_minimization
+  display_zh_suggestion: constrained_energy_minimization
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'constrained_energy_minimization' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: variational_boundary_condition
+  display_zh_suggestion: variational_boundary_condition
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'variational_boundary_condition' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: bending_energy_minimization
+  display_zh_suggestion: bending_energy_minimization
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'bending_energy_minimization' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: continuum_rod_force_balance
+  display_zh_suggestion: continuum_rod_force_balance
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'continuum_rod_force_balance' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: static_indeterminacy
+  display_zh_suggestion: static_indeterminacy
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'static_indeterminacy' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: elastic_energy_method
+  display_zh_suggestion: elastic_energy_method
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'elastic_energy_method' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: principal_stress_analysis
+  display_zh_suggestion: principal_stress_analysis
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'principal_stress_analysis' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: mohr_circle
+  display_zh_suggestion: mohr_circle
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'mohr_circle' for selected_physics_models but it is not
+    in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: rotational_energy_partition
+  display_zh_suggestion: rotational_energy_partition
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'rotational_energy_partition' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: instantaneous_axis_rotation
+  display_zh_suggestion: instantaneous_axis_rotation
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'instantaneous_axis_rotation' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: no_slip_constraint_graph
+  display_zh_suggestion: no_slip_constraint_graph
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'no_slip_constraint_graph' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: time_average_effective_potential
+  display_zh_suggestion: time_average_effective_potential
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'time_average_effective_potential' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: multiple_scale_method
+  display_zh_suggestion: multiple_scale_method
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'multiple_scale_method' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: secular_term_removal
+  display_zh_suggestion: secular_term_removal
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'secular_term_removal' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: resonance_width_estimate
+  display_zh_suggestion: resonance_width_estimate
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'resonance_width_estimate' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: energy_phase_plane
+  display_zh_suggestion: energy_phase_plane
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'energy_phase_plane' for selected_physics_models but it
+    is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: turning_point_analysis
+  display_zh_suggestion: turning_point_analysis
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'turning_point_analysis' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: scattering_angle_integral
+  display_zh_suggestion: scattering_angle_integral
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'scattering_angle_integral' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: small_angle_scattering
+  display_zh_suggestion: small_angle_scattering
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'small_angle_scattering' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 2
+  status: candidate
+- internal_id_suggestion: transverse_impulse_method
+  display_zh_suggestion: transverse_impulse_method
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'transverse_impulse_method' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: two_stage_motion_split
+  display_zh_suggestion: two_stage_motion_split
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'two_stage_motion_split' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: event_sequence_tracking
+  display_zh_suggestion: event_sequence_tracking
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'event_sequence_tracking' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: root_selection_physical
+  display_zh_suggestion: root_selection_physical
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'root_selection_physical' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: nondimensionalization
+  display_zh_suggestion: nondimensionalization
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'nondimensionalization' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: conserved_quantity_hunting
+  display_zh_suggestion: conserved_quantity_hunting
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'conserved_quantity_hunting' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: hidden_symmetry
+  display_zh_suggestion: hidden_symmetry
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'hidden_symmetry' for selected_physics_models but it is
+    not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: problem_frame_switching
+  display_zh_suggestion: problem_frame_switching
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'problem_frame_switching' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: image_charge_method
+  display_zh_suggestion: image_charge_method
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'image_charge_method' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: multipole_expansion
+  display_zh_suggestion: multipole_expansion
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'multipole_expansion' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: laplace_equation_separation
+  display_zh_suggestion: laplace_equation_separation
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'laplace_equation_separation' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: poisson_equation_solution
+  display_zh_suggestion: poisson_equation_solution
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'poisson_equation_solution' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: green_function_electrostatics
+  display_zh_suggestion: green_function_electrostatics
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'green_function_electrostatics' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: boundary_condition_matching
+  display_zh_suggestion: boundary_condition_matching
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'boundary_condition_matching' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: capacitance_energy_method
+  display_zh_suggestion: capacitance_energy_method
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'capacitance_energy_method' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: virtual_work_electrostatics
+  display_zh_suggestion: virtual_work_electrostatics
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'virtual_work_electrostatics' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: constant_voltage_energy
+  display_zh_suggestion: constant_voltage_energy
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'constant_voltage_energy' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: constant_charge_energy
+  display_zh_suggestion: constant_charge_energy
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'constant_charge_energy' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: electrostatic_stability
+  display_zh_suggestion: electrostatic_stability
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'electrostatic_stability' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: conformal_mapping
+  display_zh_suggestion: conformal_mapping
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'conformal_mapping' for selected_physics_models but it
+    is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: complex_potential_method
+  display_zh_suggestion: complex_potential_method
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'complex_potential_method' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: fringing_field_approximation
+  display_zh_suggestion: fringing_field_approximation
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'fringing_field_approximation' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: kirchhoff_network_reduction
+  display_zh_suggestion: kirchhoff_network_reduction
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'kirchhoff_network_reduction' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: node_potential_method
+  display_zh_suggestion: node_potential_method
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'node_potential_method' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: mesh_current_method
+  display_zh_suggestion: mesh_current_method
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'mesh_current_method' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: thevenin_equivalent
+  display_zh_suggestion: thevenin_equivalent
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'thevenin_equivalent' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: norton_equivalent
+  display_zh_suggestion: norton_equivalent
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'norton_equivalent' for selected_physics_models but it
+    is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: symmetry_circuit_shortcut
+  display_zh_suggestion: symmetry_circuit_shortcut
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'symmetry_circuit_shortcut' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: self_similarity_circuit
+  display_zh_suggestion: self_similarity_circuit
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'self_similarity_circuit' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: impedance_matching
+  display_zh_suggestion: impedance_matching
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'impedance_matching' for selected_physics_models but it
+    is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: magnetic_scalar_potential
+  display_zh_suggestion: magnetic_scalar_potential
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'magnetic_scalar_potential' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: vector_potential_method
+  display_zh_suggestion: vector_potential_method
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'vector_potential_method' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: ampere_symmetry
+  display_zh_suggestion: ampere_symmetry
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'ampere_symmetry' for selected_physics_models but it is
+    not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: magnetic_circuit_analogy
+  display_zh_suggestion: magnetic_circuit_analogy
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'magnetic_circuit_analogy' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: air_gap_fringing
+  display_zh_suggestion: air_gap_fringing
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'air_gap_fringing' for selected_physics_models but it
+    is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: inductance_energy_method
+  display_zh_suggestion: inductance_energy_method
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'inductance_energy_method' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: rlc_damping_regime
+  display_zh_suggestion: rlc_damping_regime
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'rlc_damping_regime' for selected_physics_models but it
+    is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: phasor_method
+  display_zh_suggestion: phasor_method
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'phasor_method' for selected_physics_models but it is
+    not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: complex_impedance
+  display_zh_suggestion: complex_impedance
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'complex_impedance' for selected_physics_models but it
+    is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: lenz_law_direction
+  display_zh_suggestion: lenz_law_direction
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'lenz_law_direction' for selected_physics_models but it
+    is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: coupled_electromechanical_ode
+  display_zh_suggestion: coupled_electromechanical_ode
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'coupled_electromechanical_ode' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: quasi_static_induction
+  display_zh_suggestion: quasi_static_induction
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'quasi_static_induction' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: mode_orthogonality
+  display_zh_suggestion: mode_orthogonality
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'mode_orthogonality' for selected_physics_models but it
+    is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: boundary_value_eigenmode
+  display_zh_suggestion: boundary_value_eigenmode
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'boundary_value_eigenmode' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: antenna_far_field
+  display_zh_suggestion: antenna_far_field
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'antenna_far_field' for selected_physics_models but it
+    is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: near_field_reactive_zone
+  display_zh_suggestion: near_field_reactive_zone
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'near_field_reactive_zone' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: guiding_center_approximation
+  display_zh_suggestion: guiding_center_approximation
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'guiding_center_approximation' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: electromagnetic_gauge_choice
+  display_zh_suggestion: electromagnetic_gauge_choice
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'electromagnetic_gauge_choice' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: boundary_layer_current
+  display_zh_suggestion: boundary_layer_current
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'boundary_layer_current' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: paul_trap_pseudopotential
+  display_zh_suggestion: paul_trap_pseudopotential
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'paul_trap_pseudopotential' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: mathieu_stability_em
+  display_zh_suggestion: mathieu_stability_em
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'mathieu_stability_em' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: small_signal_linearization
+  display_zh_suggestion: small_signal_linearization
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'small_signal_linearization' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: slowly_varying_envelope_em
+  display_zh_suggestion: slowly_varying_envelope_em
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'slowly_varying_envelope_em' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: paraxial_wave_approximation
+  display_zh_suggestion: paraxial_wave_approximation
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'paraxial_wave_approximation' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: diffraction_integral
+  display_zh_suggestion: diffraction_integral
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'diffraction_integral' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: fourier_optics
+  display_zh_suggestion: fourier_optics
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'fourier_optics' for selected_physics_models but it is
+    not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: polarization_jones_vector
+  display_zh_suggestion: polarization_jones_vector
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'polarization_jones_vector' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: electromagnetic_duality
+  display_zh_suggestion: electromagnetic_duality
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'electromagnetic_duality' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: dimensional_analysis_em
+  display_zh_suggestion: dimensional_analysis_em
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'dimensional_analysis_em' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: dominant_balance_em
+  display_zh_suggestion: dominant_balance_em
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'dominant_balance_em' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: asymptotic_field_region
+  display_zh_suggestion: asymptotic_field_region
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'asymptotic_field_region' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: small_gap_approximation
+  display_zh_suggestion: small_gap_approximation
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'small_gap_approximation' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: long_solenoid_approximation
+  display_zh_suggestion: long_solenoid_approximation
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'long_solenoid_approximation' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: infinite_plane_approximation
+  display_zh_suggestion: infinite_plane_approximation
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'infinite_plane_approximation' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: dipole_approximation
+  display_zh_suggestion: dipole_approximation
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'dipole_approximation' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: radiation_zone_approximation
+  display_zh_suggestion: radiation_zone_approximation
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'radiation_zone_approximation' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: quasi_neutral_approximation
+  display_zh_suggestion: quasi_neutral_approximation
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'quasi_neutral_approximation' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: perfect_dielectric_approximation
+  display_zh_suggestion: perfect_dielectric_approximation
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'perfect_dielectric_approximation' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: superconducting_image_current
+  display_zh_suggestion: superconducting_image_current
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'superconducting_image_current' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: electric_field_line_mapping
+  display_zh_suggestion: electric_field_line_mapping
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'electric_field_line_mapping' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: equipotential_surface_method
+  display_zh_suggestion: equipotential_surface_method
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'equipotential_surface_method' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: variational_capacitance_bound
+  display_zh_suggestion: variational_capacitance_bound
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'variational_capacitance_bound' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: conformal_capacitance
+  display_zh_suggestion: conformal_capacitance
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'conformal_capacitance' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: rail_contact_resistance
+  display_zh_suggestion: rail_contact_resistance
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'rail_contact_resistance' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: finite_conductivity_correction
+  display_zh_suggestion: finite_conductivity_correction
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'finite_conductivity_correction' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: small_signal_equivalent_circuit
+  display_zh_suggestion: small_signal_equivalent_circuit
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'small_signal_equivalent_circuit' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: electrostatic_force_inverse_problem
+  display_zh_suggestion: electrostatic_force_inverse_problem
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'electrostatic_force_inverse_problem' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: effective_medium_approximation
+  display_zh_suggestion: effective_medium_approximation
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'effective_medium_approximation' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: homogenization_method
+  display_zh_suggestion: homogenization_method
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'homogenization_method' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: perturbative_boundary_deformation
+  display_zh_suggestion: perturbative_boundary_deformation
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'perturbative_boundary_deformation' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: small_hole_perturbation
+  display_zh_suggestion: small_hole_perturbation
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'small_hole_perturbation' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: induced_charge_conservation
+  display_zh_suggestion: induced_charge_conservation
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'induced_charge_conservation' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: charge_sharing_equal_potential
+  display_zh_suggestion: charge_sharing_equal_potential
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'charge_sharing_equal_potential' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: grounded_vs_isolated_choice
+  display_zh_suggestion: grounded_vs_isolated_choice
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'grounded_vs_isolated_choice' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: moving_boundary_emf
+  display_zh_suggestion: moving_boundary_emf
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'moving_boundary_emf' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: sign_convention_induction
+  display_zh_suggestion: sign_convention_induction
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'sign_convention_induction' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: piecewise_circuit_switching
+  display_zh_suggestion: piecewise_circuit_switching
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'piecewise_circuit_switching' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 2
+  status: candidate
+- internal_id_suggestion: impulse_voltage_current
+  display_zh_suggestion: impulse_voltage_current
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'impulse_voltage_current' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: laplace_transform_circuit
+  display_zh_suggestion: laplace_transform_circuit
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'laplace_transform_circuit' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: frequency_response
+  display_zh_suggestion: frequency_response
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'frequency_response' for selected_physics_models but it
+    is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: resonance_phase_analysis
+  display_zh_suggestion: resonance_phase_analysis
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'resonance_phase_analysis' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 2
+  status: candidate
+- internal_id_suggestion: electromagnetic_similarity_scaling
+  display_zh_suggestion: electromagnetic_similarity_scaling
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'electromagnetic_similarity_scaling' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 2
+  status: candidate
+- internal_id_suggestion: limiting_case_check_em
+  display_zh_suggestion: limiting_case_check_em
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'limiting_case_check_em' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 2
+  status: candidate
+- internal_id_suggestion: field_superposition_strategy
+  display_zh_suggestion: field_superposition_strategy
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'field_superposition_strategy' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 2
+  status: candidate
+- internal_id_suggestion: reciprocal_problem_mapping
+  display_zh_suggestion: reciprocal_problem_mapping
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'reciprocal_problem_mapping' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 2
+  status: candidate
+- internal_id_suggestion: symmetry_axis_expansion
+  display_zh_suggestion: symmetry_axis_expansion
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'symmetry_axis_expansion' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: local_field_approximation
+  display_zh_suggestion: local_field_approximation
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'local_field_approximation' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 2
+  status: candidate
+- internal_id_suggestion: perturbative_force_from_energy
+  display_zh_suggestion: perturbative_force_from_energy
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'perturbative_force_from_energy' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 2
+  status: candidate
+- internal_id_suggestion: induced_emf_energy_balance
+  display_zh_suggestion: induced_emf_energy_balance
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'induced_emf_energy_balance' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 2
+  status: candidate
+- internal_id_suggestion: pure_electric_frame
+  display_zh_suggestion: pure_electric_frame
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'pure_electric_frame' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 2
+  status: candidate
+- internal_id_suggestion: pure_magnetic_frame
+  display_zh_suggestion: pure_magnetic_frame
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'pure_magnetic_frame' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 2
+  status: candidate
+- internal_id_suggestion: drift_frame_transform
+  display_zh_suggestion: drift_frame_transform
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'drift_frame_transform' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 2
+  status: candidate
+- internal_id_suggestion: poisson_boltzmann_equation
+  display_zh_suggestion: poisson_boltzmann_equation
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'poisson_boltzmann_equation' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: exponential_screening
+  display_zh_suggestion: exponential_screening
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'exponential_screening' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: small_potential_linearization
+  display_zh_suggestion: small_potential_linearization
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'small_potential_linearization' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: green_reciprocity
+  display_zh_suggestion: green_reciprocity
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'green_reciprocity' for selected_physics_models but it
+    is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: time_averaged_em_force
+  display_zh_suggestion: time_averaged_em_force
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'time_averaged_em_force' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: field_energy_partition
+  display_zh_suggestion: field_energy_partition
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'field_energy_partition' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: stress_tensor_surface_choice
+  display_zh_suggestion: stress_tensor_surface_choice
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'stress_tensor_surface_choice' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: gaussian_surface_choice
+  display_zh_suggestion: gaussian_surface_choice
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'gaussian_surface_choice' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: amperian_loop_choice
+  display_zh_suggestion: amperian_loop_choice
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'amperian_loop_choice' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: superposition_with_uniform_field
+  display_zh_suggestion: superposition_with_uniform_field
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'superposition_with_uniform_field' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: equivalent_surface_charge
+  display_zh_suggestion: equivalent_surface_charge
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'equivalent_surface_charge' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: equivalent_surface_current
+  display_zh_suggestion: equivalent_surface_current
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'equivalent_surface_current' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: multipole_selection_by_symmetry
+  display_zh_suggestion: multipole_selection_by_symmetry
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'multipole_selection_by_symmetry' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: leading_order_far_field
+  display_zh_suggestion: leading_order_far_field
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'leading_order_far_field' for selected_physics_models
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: near_axis_expansion
+  display_zh_suggestion: near_axis_expansion
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'near_axis_expansion' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: envelope_equation_beam
+  display_zh_suggestion: envelope_equation_beam
+  category: physics_model
+  proposed_aliases: []
+  rationale: LLM emitted id 'envelope_equation_beam' for selected_physics_models but
+    it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: filter_cutoff_frequency
+  display_zh_suggestion: filter_cutoff_frequency
+  category: math_technique
+  proposed_aliases: []
+  rationale: LLM emitted id 'filter_cutoff_frequency' for selected_math_techniques
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: moving_charge_field_transform
+  display_zh_suggestion: moving_charge_field_transform
+  category: math_technique
+  proposed_aliases: []
+  rationale: LLM emitted id 'moving_charge_field_transform' for selected_math_techniques
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: current_wire_relativity
+  display_zh_suggestion: current_wire_relativity
+  category: math_technique
+  proposed_aliases: []
+  rationale: LLM emitted id 'current_wire_relativity' for selected_math_techniques
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: field_tensor_transform
+  display_zh_suggestion: field_tensor_transform
+  category: math_technique
+  proposed_aliases: []
+  rationale: LLM emitted id 'field_tensor_transform' for selected_math_techniques
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: electromagnetic_invariants
+  display_zh_suggestion: electromagnetic_invariants
+  category: math_technique
+  proposed_aliases: []
+  rationale: LLM emitted id 'electromagnetic_invariants' for selected_math_techniques
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: covariant_lorentz_force
+  display_zh_suggestion: covariant_lorentz_force
+  category: math_technique
+  proposed_aliases: []
+  rationale: LLM emitted id 'covariant_lorentz_force' for selected_math_techniques
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: relativistic_particle_in_field
+  display_zh_suggestion: relativistic_particle_in_field
+  category: math_technique
+  proposed_aliases: []
+  rationale: LLM emitted id 'relativistic_particle_in_field' for selected_math_techniques
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 1
+  status: candidate
+- internal_id_suggestion: floating_conductor_condition
+  display_zh_suggestion: floating_conductor_condition
+  category: heuristic
+  proposed_aliases: []
+  rationale: LLM emitted id 'floating_conductor_condition' for selected_heuristics
+    but it is not in the controlled vocabulary.
+  first_seen_problem_id: 512fda67d63076b8940391e2595a4f1a621afb114548214c814e3f2ba984135f:01
+  first_seen_at: '2026-05-25T16:52:38.877498Z'
+  occurrences: 2
+  status: candidate

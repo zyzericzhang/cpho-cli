@@ -9,6 +9,7 @@ from cpho_cli.core.index.ocr_cache import (
     OcrUpgradeDecisionRequired,
     detect_ocr_engine_upgrade,
 )
+from cpho_cli.core.index.hashing import TAG_SCHEMA_VERSION
 from cpho_cli.core.index.storage import write_index
 from cpho_cli.models.index import (
     FileFingerprint,
@@ -46,7 +47,7 @@ def _make_entry(
                 ocr_config_hash=ocr_config_hash,
                 tag_prompt_version="v1",
                 split_prompt_version="v1",
-                tag_schema_version="v2",
+                tag_schema_version=TAG_SCHEMA_VERSION,
                 model_name="m",
                 model_temperature=0.0,
                 vocabulary_version="builtin-v0.1",
