@@ -62,10 +62,15 @@ def test_discovers_chinese_paper_answer_pairs(tmp_path: Path) -> None:
 def test_discovers_standalone_images_as_single_page_papers(tmp_path: Path) -> None:
     touch(tmp_path / "scan-a.png")
     touch(tmp_path / "scan-b.jpg")
+    touch(tmp_path / "scan-c.gif")
 
     result = discover_workspace(tmp_path)
 
     assert result.pairs == []
-    assert {paper.path.name for paper in result.unmatched_problems} == {"scan-a.png", "scan-b.jpg"}
+    assert {paper.path.name for paper in result.unmatched_problems} == {
+        "scan-a.png",
+        "scan-b.jpg",
+        "scan-c.gif",
+    }
     assert all(isinstance(paper, PaperFile) for paper in result.unmatched_problems)
     assert all(paper.total_pages == 1 for paper in result.unmatched_problems)

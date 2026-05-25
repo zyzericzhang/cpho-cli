@@ -226,6 +226,16 @@ def fetch_openrouter_model_capabilities(
     return capabilities
 
 
+def detect_model_capabilities(
+    provider: LLMProvider,
+    model_name: str | None,
+) -> ModelCapabilities:
+    get_model_capabilities = getattr(provider, "get_model_capabilities", None)
+    if not callable(get_model_capabilities):
+        return ModelCapabilities()
+    return get_model_capabilities(model_name)
+
+
 _PROVIDER_REGISTRY: dict[str, type[_OpenAICompatibleProvider]] = {
     "openrouter": OpenRouterProvider,
     "deepseek": DeepSeekProvider,

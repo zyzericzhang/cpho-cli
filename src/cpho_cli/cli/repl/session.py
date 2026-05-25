@@ -8,6 +8,7 @@ from pathlib import Path
 from cpho_cli.core.index import IndexNotFoundError
 from cpho_cli.core.index.storage import load_index
 from cpho_cli.models.config import AppConfig, StrictModel
+from cpho_cli.models.llm import ModelCapabilities
 from pydantic import ConfigDict
 
 
@@ -33,6 +34,7 @@ class SessionState:
     current_problem_id: str | None = None
     max_results: int = 20
     output_format: str = "compact"
+    model_capabilities: ModelCapabilities = field(default_factory=ModelCapabilities)
     prompt_session: object | None = None
 
 

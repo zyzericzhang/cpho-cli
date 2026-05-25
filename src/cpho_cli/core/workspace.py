@@ -10,11 +10,11 @@ from cpho_cli.models.documents import (
     WorkspaceDiscoveryResult,
 )
 
-SUPPORTED_EXTENSIONS = {".pdf", ".png", ".jpg", ".jpeg", ".webp", ".tif", ".tiff"}
+SUPPORTED_EXTENSIONS = {".pdf", ".png", ".jpg", ".jpeg", ".webp", ".gif", ".tif", ".tiff"}
 ANSWER_MARKERS = ("answer", "answers", "solution", "solutions", "ans", "key", "答案", "解析")
 ANSWER_DIRS = {"answer", "answers", "solutions", "答案"}
 PROBLEM_MARKERS = ("problem", "problems", "question", "questions", "试题", "试卷", "题目")
-IMAGE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".webp", ".tif", ".tiff"}
+IMAGE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".webp", ".gif", ".tif", ".tiff"}
 
 
 def _is_supported(path: Path) -> bool:

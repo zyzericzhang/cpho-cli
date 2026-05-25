@@ -8,6 +8,7 @@ from pydantic import ValidationError
 from cpho_cli.cli.repl.session import IndexMeta, SessionState, load_index_meta
 from cpho_cli.core.index.storage import write_index
 from cpho_cli.models.config import AppConfig
+from cpho_cli.models.llm import ModelCapabilities
 from conftest import make_index_entry
 
 
@@ -19,6 +20,7 @@ def test_session_state_defaults_and_mutability(tmp_path: Path) -> None:
     assert session.current_problem_id is None
     assert session.max_results == 20
     assert session.output_format == "compact"
+    assert session.model_capabilities == ModelCapabilities()
 
     session.last_search_query = "力学"
     assert session.last_search_query == "力学"

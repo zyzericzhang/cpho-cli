@@ -4,7 +4,7 @@ from pathlib import Path
 
 from cpho_cli.models.documents import DocumentInput, DocumentPage
 
-IMAGE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".webp", ".tif", ".tiff"}
+IMAGE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".webp", ".gif", ".tif", ".tiff"}
 
 
 def load_document(path: Path) -> DocumentInput:
@@ -33,4 +33,3 @@ def load_document(path: Path) -> DocumentInput:
         return DocumentInput(path=path, pages=pages)
 
     raise ValueError(f"Unsupported document type: {path.suffix}")
-

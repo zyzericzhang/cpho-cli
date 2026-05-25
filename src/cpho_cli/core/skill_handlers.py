@@ -8,7 +8,7 @@ from typing import Any
 import jinja2
 from pydantic import BaseModel, ValidationError
 
-from cpho_cli.core.llm import LLMProvider, LLMProviderError
+from cpho_cli.core.llm import LLMProvider, LLMProviderError, detect_model_capabilities
 from cpho_cli.core.multimodal import build_multimodal_content
 from cpho_cli.core.runtime import SkillRuntimeError, StepHandler
 from cpho_cli.models.config import ModelParams
@@ -27,13 +27,10 @@ def _resolve_capabilities(
     provider_capabilities = getattr(provider, "capabilities", None)
     if isinstance(provider_capabilities, ModelCapabilities):
         return provider_capabilities
-    get_model_capabilities = getattr(provider, "get_model_capabilities", None)
-    if callable(get_model_capabilities):
-        try:
-            return get_model_capabilities(params.name)
-        except LLMProviderError:
-            return ModelCapabilities()
-    return ModelCapabilities()
+    try:
+        return detect_model_capabilities(provider, params.name)
+    except LLMProviderError:
+        return ModelCapabilities()
 
 
 def make_llm_handler(

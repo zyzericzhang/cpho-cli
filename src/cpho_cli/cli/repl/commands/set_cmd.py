@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 from prompt_toolkit.completion import Completer, Completion
@@ -10,7 +11,14 @@ from cpho_cli.cli.repl import display
 from cpho_cli.cli.repl.commands import Command
 from cpho_cli.cli.repl.persistence import write_session
 from cpho_cli.cli.repl.session import load_index_meta
-from cpho_cli.core.llm import supported_provider_kinds
+from cpho_cli.core.config import resolve_model_params, resolve_provider_config
+from cpho_cli.core.llm import (
+    LLMProviderError,
+    create_llm_provider,
+    detect_model_capabilities,
+    supported_provider_kinds,
+)
+from cpho_cli.models.llm import ModelCapabilities
 
 ALLOWED_KEYS = ("workspace", "max_results", "output_format", "provider")
 
@@ -73,6 +81,7 @@ async def do_set(session, args: list[str]) -> None:  # type: ignore[no-untyped-d
             return
         session.provider_name = value
         _apply_provider_default_model(session, value)
+        _refresh_model_capabilities(session)
     write_session(session)
     print(f"已更新 {key}: {_current_value(session, key)}")
 
@@ -108,6 +117,22 @@ def _apply_provider_default_model(session, name: str) -> None:  # type: ignore[n
     profile = session.config.providers.get(name)
     if profile is not None and profile.default_model:
         session.config.model.name = profile.default_model
+
+
+def _refresh_model_capabilities(session) -> None:  # type: ignore[no-untyped-def]
+    try:
+        provider_config = resolve_provider_config(session.config, os.environ, session.provider_name)
+        params = resolve_model_params(session.config, "solve", provider_name=session.provider_name)
+        provider = create_llm_provider(
+            kind=provider_config.kind,
+            api_key=provider_config.api_key,
+            base_url=provider_config.base_url,
+            timeout=provider_config.timeout,
+        )
+        session.model_capabilities = detect_model_capabilities(provider, params.name)
+    except (LLMProviderError, ValueError) as exc:
+        session.model_capabilities = ModelCapabilities()
+        display.warn(f"模型能力检测失败，已使用文本模式: {exc}")
 
 
 def _configured_providers_hint(providers: dict) -> str:  # type: ignore[no-untyped-def]
