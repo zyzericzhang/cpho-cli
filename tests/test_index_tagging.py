@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -14,7 +15,7 @@ from cpho_cli.core.index.tagging import (
 from cpho_cli.core.index.vocabulary import normalize_alias
 from cpho_cli.models.config import AppConfig, ModelParams, ResolvedProviderConfig, SkillConfig
 from cpho_cli.models.index import CanonicalTag, TagCategory, TagSource, Vocabulary
-from cpho_cli.models.llm import LLMResponse, LLMUsage
+from cpho_cli.models.llm import LLMResponse, LLMUsage, ModelCapabilities
 
 
 class FakeLLMProvider:
@@ -27,13 +28,13 @@ class FakeLLMProvider:
         self.response_payload = response_payload
         self.raise_with = raise_with
         self.raw_content = raw_content
-        self.last_messages: list[dict[str, str]] | None = None
+        self.last_messages: list[dict[str, Any]] | None = None
         self.last_params: ModelParams | None = None
         self.last_response_model_name: str | None = None
 
     def complete(
         self,
-        messages: list[dict[str, str]],
+        messages: list[dict[str, Any]],
         params: ModelParams,
         response_model: type[TagRefinementOutput] | None = None,
     ) -> LLMResponse:
@@ -82,6 +83,8 @@ def _refine(
     trace_path: Path | None = None,
     ocr_text: str = "Use F=ma.",
     provider_config: ResolvedProviderConfig | None = None,
+    source_file: Path | None = None,
+    source_capabilities: ModelCapabilities | None = None,
 ):
     return refine_tags(
         problem_id="p1",
@@ -91,6 +94,8 @@ def _refine(
         provider_config=provider_config or _provider_config(),
         llm_provider=fake,
         trace_path=trace_path,
+        source_file=source_file,
+        source_capabilities=source_capabilities,
     )
 
 
@@ -206,6 +211,71 @@ def test_refine_tags_prompt_uses_ocr_and_vocabulary_only(tmp_path: Path) -> None
     assert "solve_report" not in prompt
     assert "newton_second_law" in prompt
     assert "Use F=ma." in prompt
+
+
+def test_refine_tags_default_uses_text_prompt_not_blocks(tmp_path: Path) -> None:
+    fake = FakeLLMProvider(TagRefinementOutput())
+
+    _refine(fake, tmp_path)
+
+    assert fake.last_messages is not None
+    assert isinstance(fake.last_messages[1]["content"], str)
+
+
+def test_refine_tags_vision_pdf_sends_file_block(tmp_path: Path) -> None:
+    fake = FakeLLMProvider(TagRefinementOutput())
+    source = tmp_path / "problem.pdf"
+    source.write_bytes(b"%PDF-1.7\nfake")
+
+    _refine(
+        fake,
+        tmp_path,
+        source_file=source,
+        source_capabilities=ModelCapabilities(input_modalities={"text", "file"}),
+    )
+
+    assert fake.last_messages is not None
+    content = fake.last_messages[1]["content"]
+    assert isinstance(content, list)
+    assert any(block["type"] == "file" for block in content)
+    assert not any(block["type"] == "image_url" for block in content)
+
+
+def test_refine_tags_vision_image_sends_image_block(tmp_path: Path) -> None:
+    fake = FakeLLMProvider(TagRefinementOutput())
+    source = tmp_path / "problem.png"
+    source.write_bytes(b"\x89PNG\r\n\x1a\nfake")
+
+    _refine(
+        fake,
+        tmp_path,
+        source_file=source,
+        source_capabilities=ModelCapabilities(input_modalities={"text", "image"}),
+    )
+
+    assert fake.last_messages is not None
+    content = fake.last_messages[1]["content"]
+    assert isinstance(content, list)
+    assert any(block["type"] == "image_url" for block in content)
+
+
+def test_refine_tags_vision_text_only_falls_back_to_ocr_prompt(tmp_path: Path) -> None:
+    fake = FakeLLMProvider(TagRefinementOutput())
+    source = tmp_path / "problem.pdf"
+    source.write_bytes(b"%PDF-1.7\nfake")
+
+    _refine(
+        fake,
+        tmp_path,
+        source_file=source,
+        source_capabilities=ModelCapabilities(input_modalities={"text"}),
+    )
+
+    assert fake.last_messages is not None
+    content = fake.last_messages[1]["content"]
+    assert isinstance(content, str)
+    assert "Use F=ma." in content
+    assert "file_data" not in content
 
 
 def test_load_tag_prompt_version_reads_manifest() -> None:

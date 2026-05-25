@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -12,6 +13,7 @@ from cpho_cli.core.config import resolve_model_params
 from cpho_cli.core.index import IndexBuildError
 from cpho_cli.core.index.vocabulary import normalize_alias
 from cpho_cli.core.llm import LLMProvider, create_llm_provider
+from cpho_cli.core.multimodal import build_multimodal_content
 from cpho_cli.core.runtime import redact_secrets
 from cpho_cli.models.config import AppConfig, ResolvedProviderConfig, StrictModel
 from cpho_cli.models.index import (
@@ -23,6 +25,7 @@ from cpho_cli.models.index import (
     TagStatus,
     Vocabulary,
 )
+from cpho_cli.models.llm import ModelCapabilities
 from cpho_cli.models.runtime import TraceRecord
 
 
@@ -269,6 +272,8 @@ def refine_tags(
     llm_provider: LLMProvider | None = None,
     trace_path: Path | None = None,
     source: TagSource = TagSource.OCR_FALLBACK,
+    source_file: Path | None = None,
+    source_capabilities: ModelCapabilities | None = None,
 ) -> CanonicalMappingResult:
     started = datetime.now(timezone.utc)
     provider = llm_provider or create_llm_provider(
@@ -281,12 +286,23 @@ def refine_tags(
     user_prompt = _render_user_prompt(problem_id, ocr_text, vocabulary)
     input_keys = ["ocr_text", f"vocabulary_{vocabulary.version}"]
     output_keys = ["tag_refinement"]
+    user_content: str | list[dict[str, Any]] = user_prompt
+    if source_file is not None:
+        if source_capabilities is not None:
+            user_content = (
+                build_multimodal_content(user_prompt, [source_file], source_capabilities)
+                or user_prompt
+            )
+        if isinstance(user_content, str):
+            logging.getLogger(__name__).warning(
+                "Vision tag refinement fell back to OCR text for %s.", problem_id
+            )
 
     try:
         response = provider.complete(
             messages=[
                 {"role": "system", "content": SYSTEM_PROMPT},
-                {"role": "user", "content": user_prompt},
+                {"role": "user", "content": user_content},
             ],
             params=params,
             response_model=TagRefinementOutput,

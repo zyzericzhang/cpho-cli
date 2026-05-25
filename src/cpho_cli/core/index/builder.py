@@ -41,12 +41,17 @@ from cpho_cli.core.index.vocabulary import (
     load_merged_vocabulary,
     normalize_alias,
 )
-from cpho_cli.core.llm import LLMProvider, create_llm_provider
+from cpho_cli.core.llm import (
+    LLMProvider,
+    LLMProviderError,
+    create_llm_provider,
+    detect_model_capabilities,
+)
 from cpho_cli.core.ocr import OCRProvider, RapidOCRProvider
 from cpho_cli.core.splitting import split_paper
 from cpho_cli.core.splitting.llm import load_split_prompt_version
 from cpho_cli.core.workspace import discover_workspace
-from cpho_cli.models.config import ResolvedProviderConfig
+from cpho_cli.models.config import ModelParams, ResolvedProviderConfig
 from cpho_cli.models.documents import PaperFile, SplitMethod
 from cpho_cli.models.index import (
     CandidateTag,
@@ -54,6 +59,7 @@ from cpho_cli.models.index import (
     IndexRunStats,
     UserNotebookEntry,
 )
+from cpho_cli.models.llm import ModelCapabilities
 
 
 class IndexProgress(TypedDict, total=False):
@@ -87,6 +93,22 @@ def _ensure_llm_provider(
         base_url=provider_config.base_url,
         timeout=provider_config.timeout,
     )
+
+
+def _resolve_vision_capabilities(
+    provider: LLMProvider,
+    params: ModelParams,
+) -> ModelCapabilities:
+    provider_capabilities = getattr(provider, "capabilities", None)
+    if isinstance(provider_capabilities, ModelCapabilities):
+        return provider_capabilities
+    try:
+        return detect_model_capabilities(provider, params.name)
+    except LLMProviderError as exc:
+        logging.getLogger(__name__).warning(
+            "Vision capability detection failed; falling back to OCR text: %s", exc
+        )
+        return ModelCapabilities()
 
 
 def _merge_candidates(workspace_root: Path, new_candidates: list[CandidateTag]) -> int:
@@ -135,6 +157,7 @@ def build_index(
     llm_provider: LLMProvider | None = None,
     target_subpath: Path | None = None,
     on_progress: Callable[[IndexProgress], None] | None = None,
+    vision: bool = False,
 ) -> IndexRunStats:
     """Orchestrate workspace indexing.
 
@@ -174,6 +197,10 @@ def build_index(
     config = load_config(config_path)
     provider_config = resolve_provider_config(config, os.environ, provider_name)
     active_llm_provider = _ensure_llm_provider(llm_provider, provider_config)
+    params = resolve_model_params(config, "index", provider_name=provider_name)
+    vision_capabilities = (
+        _resolve_vision_capabilities(active_llm_provider, params) if vision else None
+    )
     vocabulary = load_merged_vocabulary(workspace_root)
 
     # Load topic taxonomy (non-blocking: failure disables topic assignment)
@@ -205,7 +232,6 @@ def build_index(
 
     tag_prompt_version = load_tag_prompt_version()
     split_prompt_version = load_split_prompt_version()
-    params = resolve_model_params(config, "index", provider_name=provider_name)
 
     index_path = workspace_root / ".cpho" / "index.jsonl"
     existing_entries: dict[str, IndexEntry] = {}
@@ -363,6 +389,8 @@ def build_index(
                 provider_config,
                 llm_provider=active_llm_provider,
                 trace_path=trace_path,
+                source_file=problem_entry.paper_path if vision else None,
+                source_capabilities=vision_capabilities,
             )
 
             all_candidates.extend(mapping.candidates)
@@ -379,6 +407,8 @@ def build_index(
                         provider_config,
                         llm_provider=active_llm_provider,
                         trace_path=trace_path,
+                        source_file=problem_entry.paper_path if vision else None,
+                        source_capabilities=vision_capabilities,
                     )
                     topic_path = topic_result.topic_path
                 except Exception:

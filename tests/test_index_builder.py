@@ -21,7 +21,7 @@ from cpho_cli.models.index import (
     UserTagEntry,
     UserNotebookEntry,
 )
-from cpho_cli.models.llm import LLMResponse, LLMUsage
+from cpho_cli.models.llm import LLMResponse, LLMUsage, ModelCapabilities
 from cpho_cli.models.ocr import OCRBlock, OCRPageResult, OCRResult
 
 from conftest import FakeLLMProvider, FakeOCRProvider, setup_workspace
@@ -109,6 +109,121 @@ def test_build_index_first_run_writes_index(
     entries = load_index(ws)
     assert len(entries) == 2
     assert stats.total_problems == 2
+
+
+def test_build_index_default_sends_text_only_tag_prompts(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _patch_rapidocr_version(monkeypatch)
+    ws = setup_workspace(tmp_path, problem_names=["p1"])
+    llm = FakeLLMProvider()
+
+    build_index(
+        ws,
+        config_path=ws / "config.local.yml",
+        ocr_provider=FakeOCRProvider(),
+        llm_provider=llm,
+        ocr_strategy="reuse",
+    )
+
+    assert llm.calls
+    assert all(
+        isinstance(message.get("content"), str)
+        for call in llm.calls
+        for message in call["messages"]
+    )
+
+
+def test_build_index_vision_image_sends_image_blocks(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _patch_rapidocr_version(monkeypatch)
+    ws = setup_workspace(tmp_path, problem_names=["p1"])
+    llm = FakeLLMProvider()
+    llm.capabilities = ModelCapabilities(input_modalities={"text", "image"})
+
+    build_index(
+        ws,
+        config_path=ws / "config.local.yml",
+        ocr_provider=FakeOCRProvider(),
+        llm_provider=llm,
+        ocr_strategy="reuse",
+        vision=True,
+    )
+
+    user_contents = [
+        message.get("content")
+        for call in llm.calls
+        for message in call["messages"]
+        if message.get("role") == "user"
+    ]
+    assert any(
+        isinstance(content, list)
+        and any(block["type"] == "image_url" for block in content)
+        for content in user_contents
+    )
+
+
+def test_build_index_vision_pdf_sends_file_blocks(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _patch_rapidocr_version(monkeypatch)
+    paper_path = tmp_path / "paper.pdf"
+    _write_pdf(paper_path, ["standalone problem"])
+    (tmp_path / "config.local.yml").write_text(
+        "provider:\n  openrouter_api_key: test-key-fake\n",
+        encoding="utf-8",
+    )
+    llm = FakeLLMProvider()
+    llm.capabilities = ModelCapabilities(input_modalities={"text", "file"})
+
+    build_index(
+        tmp_path,
+        config_path=tmp_path / "config.local.yml",
+        ocr_provider=FakePagedOCRProvider({"paper.pdf": ["standalone problem"]}),
+        llm_provider=llm,
+        ocr_strategy="reuse",
+        vision=True,
+    )
+
+    user_contents = [
+        message.get("content")
+        for call in llm.calls
+        for message in call["messages"]
+        if message.get("role") == "user"
+    ]
+    assert any(
+        isinstance(content, list)
+        and any(block["type"] == "file" for block in content)
+        for content in user_contents
+    )
+
+
+def test_build_index_vision_text_only_falls_back_to_ocr_prompt(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _patch_rapidocr_version(monkeypatch)
+    ws = setup_workspace(tmp_path, problem_names=["p1"])
+    llm = FakeLLMProvider()
+    llm.capabilities = ModelCapabilities(input_modalities={"text"})
+
+    build_index(
+        ws,
+        config_path=ws / "config.local.yml",
+        ocr_provider=FakeOCRProvider(default_text="fallback ocr text"),
+        llm_provider=llm,
+        ocr_strategy="reuse",
+        vision=True,
+    )
+
+    user_contents = [
+        message.get("content")
+        for call in llm.calls
+        for message in call["messages"]
+        if message.get("role") == "user"
+    ]
+    assert all(isinstance(content, str) for content in user_contents)
+    assert any("题目 OCR 文本" in content for content in user_contents if isinstance(content, str))
 
 
 def test_build_index_writes_one_entry_per_split_problem(

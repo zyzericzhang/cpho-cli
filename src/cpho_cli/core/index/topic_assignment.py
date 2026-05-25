@@ -2,8 +2,10 @@
 
 from __future__ import annotations
 
+import logging
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Any
 
 from pydantic import ValidationError
 
@@ -11,8 +13,10 @@ from cpho_cli.core.config import resolve_model_params
 from cpho_cli.core.index import IndexBuildError
 from cpho_cli.core.index.tagging import _build_jinja_env, append_trace
 from cpho_cli.core.llm import LLMProvider, create_llm_provider
+from cpho_cli.core.multimodal import build_multimodal_content
 from cpho_cli.core.runtime import redact_secrets
 from cpho_cli.models.config import AppConfig, ResolvedProviderConfig, StrictModel
+from cpho_cli.models.llm import ModelCapabilities
 from cpho_cli.models.runtime import TraceRecord
 from cpho_cli.models.topic import TopicTaxonomy
 
@@ -50,6 +54,8 @@ def assign_topic(
     provider_config: ResolvedProviderConfig,
     llm_provider: LLMProvider | None = None,
     trace_path: Path | None = None,
+    source_file: Path | None = None,
+    source_capabilities: ModelCapabilities | None = None,
 ) -> TopicAssignmentOutput:
     """Assign a single topic path to a problem via LLM classification."""
     started = datetime.now(timezone.utc)
@@ -63,12 +69,23 @@ def assign_topic(
     user_prompt = _render_topic_prompt(problem_id, ocr_text, taxonomy)
     input_keys = ["ocr_text", f"taxonomy_{taxonomy.version}"]
     output_keys = ["topic_assignment"]
+    user_content: str | list[dict[str, Any]] = user_prompt
+    if source_file is not None:
+        if source_capabilities is not None:
+            user_content = (
+                build_multimodal_content(user_prompt, [source_file], source_capabilities)
+                or user_prompt
+            )
+        if isinstance(user_content, str):
+            logging.getLogger(__name__).warning(
+                "Vision topic assignment fell back to OCR text for %s.", problem_id
+            )
 
     try:
         response = provider.complete(
             messages=[
                 {"role": "system", "content": TOPIC_SYSTEM_PROMPT},
-                {"role": "user", "content": user_prompt},
+                {"role": "user", "content": user_content},
             ],
             params=params,
             response_model=TopicAssignmentOutput,

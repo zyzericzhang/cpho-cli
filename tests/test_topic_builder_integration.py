@@ -13,7 +13,7 @@ from cpho_cli.core.index.storage import load_index
 from cpho_cli.core.index.tagging import TagRefinementOutput
 from cpho_cli.core.index.topic_assignment import TopicAssignmentOutput
 from cpho_cli.models.config import ModelParams
-from cpho_cli.models.llm import LLMResponse, LLMUsage
+from cpho_cli.models.llm import LLMResponse, LLMUsage, ModelCapabilities
 
 from conftest import FakeOCRProvider, setup_workspace
 
@@ -41,7 +41,7 @@ class FakeLLMProviderWithTopic:
 
     def complete(
         self,
-        messages: list[dict[str, str]],
+        messages: list[dict[str, Any]],
         params: ModelParams,
         response_model: type[Any] | None = None,
     ) -> LLMResponse:
@@ -80,6 +80,60 @@ def test_build_index_assigns_topic_path(
     entries = load_index(ws)
     assert len(entries) == 1
     assert entries[0].topic_path == "力学/天体运动/轨道理论"
+
+
+def test_build_index_topic_default_uses_text_prompt(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _patch_rapidocr_version(monkeypatch)
+    ws = setup_workspace(tmp_path, problem_names=["p1"])
+    llm = FakeLLMProviderWithTopic()
+
+    build_index(
+        ws,
+        config_path=ws / "config.local.yml",
+        ocr_provider=FakeOCRProvider(),
+        llm_provider=llm,
+        ocr_strategy="reuse",
+    )
+
+    topic_calls = [
+        call
+        for call in llm.calls
+        if call["response_model"] is not None
+        and call["response_model"].__name__ == "TopicAssignmentOutput"
+    ]
+    assert topic_calls
+    assert isinstance(topic_calls[0]["messages"][1]["content"], str)
+
+
+def test_build_index_topic_vision_receives_image_context(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _patch_rapidocr_version(monkeypatch)
+    ws = setup_workspace(tmp_path, problem_names=["p1"])
+    llm = FakeLLMProviderWithTopic()
+    llm.capabilities = ModelCapabilities(input_modalities={"text", "image"})
+
+    build_index(
+        ws,
+        config_path=ws / "config.local.yml",
+        ocr_provider=FakeOCRProvider(),
+        llm_provider=llm,
+        ocr_strategy="reuse",
+        vision=True,
+    )
+
+    topic_calls = [
+        call
+        for call in llm.calls
+        if call["response_model"] is not None
+        and call["response_model"].__name__ == "TopicAssignmentOutput"
+    ]
+    assert topic_calls
+    content = topic_calls[0]["messages"][1]["content"]
+    assert isinstance(content, list)
+    assert any(block["type"] == "image_url" for block in content)
 
 
 def test_build_index_topic_preserved_on_skip(
@@ -128,6 +182,33 @@ def test_build_index_topic_failure_non_blocking(
     entries = load_index(ws)
     assert len(entries) == 1
     # topic_path is None because assignment failed, but tags are still present
+    assert entries[0].topic_path is None
+    assert len(entries[0].physics_model_tags) > 0
+
+
+def test_build_index_topic_vision_failure_non_blocking(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _patch_rapidocr_version(monkeypatch)
+    ws = setup_workspace(tmp_path, problem_names=["p1"])
+    llm = FakeLLMProviderWithTopic()
+    llm.capabilities = ModelCapabilities(input_modalities={"text", "image"})
+
+    monkeypatch.setattr(
+        "cpho_cli.core.index.builder.assign_topic",
+        lambda *a, **kw: (_ for _ in ()).throw(IndexBuildError("topic fail")),
+    )
+
+    build_index(
+        ws,
+        config_path=ws / "config.local.yml",
+        ocr_provider=FakeOCRProvider(),
+        llm_provider=llm,
+        ocr_strategy="reuse",
+        vision=True,
+    )
+    entries = load_index(ws)
+    assert len(entries) == 1
     assert entries[0].topic_path is None
     assert len(entries[0].physics_model_tags) > 0
 
