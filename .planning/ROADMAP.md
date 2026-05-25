@@ -111,6 +111,8 @@ Plans:
   4. 提供 `cpho index tag-set` / `tag-add` / `tag-remove` CLI 子命令，skills 可以读写 index 标签。
   5. skill 写入的标签与 LLM 机打标签分离存储，`cpho index --force` 重建只覆盖机打标签，保留 skill 写入的标签。
   6. 标签写入记录出处（provenance）：哪个 skill、什么时间、基于什么推理。
+  7. `cpho solve` 支持图片/PDF 多模态输入（通过 OpenRouter Universal PDF Support），模型不支持多模态时自动降级到 OCR 文本路径。
+  8. `cpho index` 支持 `--vision` 选项启用多模态索引（默认仍用 OCR）。
 
 **Plans**: TBD
 
