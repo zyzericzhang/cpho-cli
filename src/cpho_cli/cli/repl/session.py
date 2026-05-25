@@ -24,6 +24,7 @@ class IndexMeta(StrictModel):
 class SessionState:
     workspace_path: Path
     config: AppConfig
+    config_path: Path | None = None
     provider_name: str | None = None
     index_path: Path | None = None
     index_meta: IndexMeta | None = None

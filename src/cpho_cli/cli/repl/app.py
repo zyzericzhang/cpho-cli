@@ -74,6 +74,7 @@ class ReplApp:
         self.session = SessionState(
             workspace_path=resolved_workspace,
             config=config,
+            config_path=config_path,
             provider_name=provider_name,
             index_path=resolved_workspace / ".cpho" / "index.jsonl",
             index_meta=load_index_meta(resolved_workspace),

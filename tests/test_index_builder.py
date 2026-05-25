@@ -292,7 +292,11 @@ def test_build_index_constructs_provider_for_split_fallback_without_network(
                 raw={},
             )
 
-    monkeypatch.setattr(builder_module, "OpenRouterProvider", ConstructedProvider, raising=False)
+    monkeypatch.setattr(
+        builder_module,
+        "create_llm_provider",
+        lambda *, kind, api_key, base_url, timeout=120.0: ConstructedProvider(api_key, base_url),
+    )
 
     stats = build_index(
         tmp_path,

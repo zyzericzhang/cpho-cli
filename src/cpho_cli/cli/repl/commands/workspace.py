@@ -245,6 +245,7 @@ async def do_index(session: SessionState, args: list[str]) -> None:
         if show_preview:
             preview = build_index(
                 session.workspace_path,
+                config_path=session.config_path,
                 provider_name=session.provider_name,
                 force=ns.force,
                 only_new=ns.only_new,
@@ -254,8 +255,7 @@ async def do_index(session: SessionState, args: list[str]) -> None:
             )
             display.info(
                 "索引预览: "
-                f"扫描 {preview.total_problems} 个输入，试卷 {preview.papers_split} 份，"
-                f"将提取 {preview.problems_extracted} 道题。"
+                f"扫描 {preview.total_problems} 个输入；真实题目数将在 OCR/切分后确定。"
             )
             if ns.dry_run:
                 return
@@ -264,6 +264,7 @@ async def do_index(session: SessionState, args: list[str]) -> None:
                 return
             result = build_index(
                 session.workspace_path,
+                config_path=session.config_path,
                 provider_name=session.provider_name,
                 force=ns.force,
                 only_new=ns.only_new,
@@ -274,6 +275,7 @@ async def do_index(session: SessionState, args: list[str]) -> None:
         else:
             result = build_index(
                 session.workspace_path,
+                config_path=session.config_path,
                 provider_name=session.provider_name,
                 force=ns.force,
                 only_new=ns.only_new,

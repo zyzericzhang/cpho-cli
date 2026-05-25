@@ -1,12 +1,12 @@
 import httpx
 import pytest
 
-from cpho_cli.core.llm import LLMProviderError, OpenRouterProvider
+from cpho_cli.core.llm import DeepSeekProvider, LLMProviderError, OpenRouterProvider
 from cpho_cli.models.config import ModelParams
 from cpho_cli.models.solve import DerivationStep
 
 
-def test_openrouter_request_includes_tool_call_for_structured_output() -> None:
+def test_openrouter_request_forces_tool_call_for_structured_output() -> None:
     captured = {}
 
     def handler(request: httpx.Request) -> httpx.Response:
@@ -38,7 +38,8 @@ def test_openrouter_request_includes_tool_call_for_structured_output() -> None:
 
     assert '"tools"' in captured["json"]
     assert "derivation_step" in captured["json"]
-    assert "tool_choice" not in captured["json"]
+    assert '"tool_choice"' in captured["json"]
+    assert '"response_format"' not in captured["json"]
 
 
 def test_openrouter_request_extracts_from_content_when_no_tool_calls() -> None:
@@ -63,8 +64,43 @@ def test_openrouter_request_extracts_from_content_when_no_tool_calls() -> None:
         response_model=DerivationStep,
     )
 
-    assert "tool_choice" not in captured["json"]
+    assert "tool_choice" in captured["json"]
     assert "t" in result.content
+
+
+def test_deepseek_request_uses_tool_call_not_json_mode() -> None:
+    captured = {}
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        captured["json"] = request.read().decode()
+        return httpx.Response(
+            200,
+            json={
+                "choices": [{
+                    "message": {
+                        "tool_calls": [{
+                            "function": {"arguments": '{"reasoning": "test", "expression": "x", "official_answer_refs": ["a"]}'}
+                        }]
+                    }
+                }],
+                "usage": {},
+            },
+        )
+
+    provider = DeepSeekProvider(
+        api_key="sk-test-secret",
+        client=httpx.Client(transport=httpx.MockTransport(handler)),
+    )
+
+    provider.complete(
+        messages=[{"role": "user", "content": "derive"}],
+        params=ModelParams(name="test-model"),
+        response_model=DerivationStep,
+    )
+
+    assert '"tools"' in captured["json"]
+    assert '"tool_choice"' in captured["json"]
+    assert '"response_format"' not in captured["json"]
 
 
 def test_provider_error_redacts_api_key() -> None:
@@ -80,4 +116,3 @@ def test_provider_error_redacts_api_key() -> None:
         provider.complete(messages=[], params=ModelParams(name="test-model"))
 
     assert "sk-test-secret" not in str(exc.value)
-

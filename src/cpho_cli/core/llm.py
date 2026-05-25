@@ -61,17 +61,7 @@ class _OpenAICompatibleProvider:
         if params.max_tokens is not None:
             payload["max_tokens"] = params.max_tokens
         if response_model is not None:
-            schema_name = re.sub(r"(?<!^)(?=[A-Z])", "_", response_model.__name__).lower()
-            payload["tools"] = [
-                {
-                    "type": "function",
-                    "function": {
-                        "name": schema_name,
-                        "description": f"Return a {response_model.__name__} structured object.",
-                        "parameters": response_model.model_json_schema(),
-                    },
-                }
-            ]
+            self._add_structured_output(payload, response_model)
 
         headers = {"Authorization": f"Bearer {self.api_key}"}
         last_error: Exception | None = None
@@ -120,6 +110,19 @@ class _OpenAICompatibleProvider:
             redact_secrets(f"{self.label} request failed: {last_error}", [self.api_key])
         )
 
+    def _add_structured_output(
+        self,
+        payload: dict[str, Any],
+        response_model: type[ResponseModel],
+    ) -> None:
+        schema_name = _schema_name(response_model)
+        payload["tools"] = [_tool_schema(schema_name, response_model)]
+        payload["tool_choice"] = {
+            "type": "function",
+            "function": {"name": schema_name},
+        }
+        payload["parallel_tool_calls"] = False
+
 
 class OpenRouterProvider(_OpenAICompatibleProvider):
     def __init__(
@@ -143,6 +146,21 @@ class DeepSeekProvider(_OpenAICompatibleProvider):
         timeout: float = 120.0,
     ) -> None:
         super().__init__(api_key, base_url, client, max_retries, label="DeepSeek", timeout=timeout)
+
+
+def _schema_name(response_model: type[BaseModel]) -> str:
+    return re.sub(r"(?<!^)(?=[A-Z])", "_", response_model.__name__).lower().lstrip("_")
+
+
+def _tool_schema(schema_name: str, response_model: type[BaseModel]) -> dict[str, Any]:
+    return {
+        "type": "function",
+        "function": {
+            "name": schema_name,
+            "description": f"Return a {response_model.__name__} structured object.",
+            "parameters": response_model.model_json_schema(),
+        },
+    }
 
 
 _PROVIDER_REGISTRY: dict[str, type[_OpenAICompatibleProvider]] = {

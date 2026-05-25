@@ -13,6 +13,7 @@ import yaml
 
 from cpho_cli.core.config import load_config, resolve_model_params, resolve_provider_config
 from cpho_cli.core.documents import load_document
+from cpho_cli.core.index import IndexBuildError
 from cpho_cli.core.index.hashing import (
     TAG_SCHEMA_VERSION,
     compose_file_fingerprint,
@@ -263,15 +264,18 @@ def build_index(
                 total_files=len(papers),
             ))
 
-        split_outcome = split_paper(
-            paper_ocr,
-            answer_ocr,
-            paper_file=paper_file,
-            answer_file=answer_file,
-            paper_sha256=file_fp.problem_sha256,
-            llm_provider=active_llm_provider,
-            llm_params=params,
-        )
+        try:
+            split_outcome = split_paper(
+                paper_ocr,
+                answer_ocr,
+                paper_file=paper_file,
+                answer_file=answer_file,
+                paper_sha256=file_fp.problem_sha256,
+                llm_provider=active_llm_provider,
+                llm_params=params,
+            )
+        except Exception as exc:
+            raise IndexBuildError(f"试卷切分失败: {paper_file.path}: {exc}") from exc
         stats.papers_split += 1
         stats.problems_extracted += len(split_outcome.problems)
         stats.total_problems += len(split_outcome.problems)
