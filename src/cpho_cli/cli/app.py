@@ -5,7 +5,6 @@ import click
 import typer
 
 from cpho_cli.core.config import ConfigError
-from cpho_cli.core.eval import EvalConfigError, run_eval
 from cpho_cli.core.index import (
     add_problem_tags,
     IndexBuildError,
@@ -72,36 +71,6 @@ def solve(
     typer.echo(f"Report JSON: {result.report_json}")
     if result.report_markdown is not None:
         typer.echo(f"Report Markdown: {result.report_markdown}")
-
-
-@app.command(name="eval")
-def eval_command(
-    golden_root: Path = typer.Argument(..., help="Golden tests root directory."),
-    config: Optional[Path] = typer.Option(None, "--config", "-c", help="Local YAML config path."),
-    provider: Optional[str] = typer.Option(
-        None, "--provider", "-p", help="Provider profile name from config."
-    ),
-    output_dir: Path = typer.Option(
-        Path("eval-output"), "--output-dir", "-o", help="Evaluation output directory."
-    ),
-    dry_run: bool = typer.Option(False, "--dry-run", help="Validate cases without LLM calls."),
-) -> None:
-    """Run golden evaluation cases."""
-    try:
-        result = run_eval(
-            golden_root,
-            config_path=config,
-            provider_name=provider,
-            output_dir=output_dir,
-            dry_run=dry_run,
-        )
-    except EvalConfigError as exc:
-        raise typer.BadParameter(str(exc)) from exc
-
-    typer.echo(
-        f"Evaluation complete: total={result.total} passed={result.passed} "
-        f"failed={result.failed} skipped={result.skipped}"
-    )
 
 
 def _index_progress_cli(event: dict) -> None:

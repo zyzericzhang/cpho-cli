@@ -11,7 +11,7 @@ from cpho_cli.models.documents import PaperFile, PaperKind
 from cpho_cli.models.ocr import OCRResult
 
 
-FIXTURE_DIR = Path("golden_tests/splitting")
+FIXTURE_DIR = Path("tests/fixtures/splitting")
 EXPECTED_PATH = FIXTURE_DIR / "ipho_style_multi_problem.expected.json"
 
 

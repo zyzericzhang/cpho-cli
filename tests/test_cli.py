@@ -8,7 +8,9 @@ def test_help_lists_commands() -> None:
 
     assert result.exit_code == 0
     assert "solve" in result.output
-    assert "eval" in result.output
+    assert "index" in result.output
+    assert "topic" in result.output
+    assert "eval" not in result.output
 
 
 def test_solve_help_lists_options() -> None:
@@ -22,9 +24,7 @@ def test_solve_help_lists_options() -> None:
     assert "--dry-run" in result.output
 
 
-def test_eval_help_lists_root_argument() -> None:
+def test_removed_eval_command_is_unavailable() -> None:
     result = CliRunner().invoke(app, ["eval", "--help"])
 
-    assert result.exit_code == 0
-    assert "golden" in result.output.lower()
-    assert "--provider" in result.output
+    assert result.exit_code != 0
