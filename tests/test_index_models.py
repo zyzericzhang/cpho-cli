@@ -53,13 +53,12 @@ def _index_entry(**overrides: object) -> IndexEntry:
         "answer_path": None,
         "indexed_at": datetime.now(timezone.utc),
         "physics_model_tags": [
-            TaggedReference(internal_id="newton_second_law", source=TagSource.SOLVE_REPORT)
+            TaggedReference(internal_id="newton_second_law", source=TagSource.OCR_FALLBACK)
         ],
         "math_technique_tags": [],
         "heuristic_tags": [],
         "difficulty_aspects": [],
         "fingerprint": _fingerprint(),
-        "solve_report_path": None,
         "ocr_cache_path": None,
         "ocr_text_length": 0,
         "tag_prompt_version": "v1",
@@ -82,6 +81,18 @@ def test_index_entry_rejects_unknown_fields() -> None:
 
     with pytest.raises(ValidationError):
         IndexEntry.model_validate(data)
+
+
+def test_index_entry_rejects_legacy_report_path() -> None:
+    data = _index_entry().model_dump(mode="json")
+    data["solve_" + "report_path"] = "output/p1-report.json"
+
+    with pytest.raises(ValidationError):
+        IndexEntry.model_validate(data)
+
+
+def test_tag_source_does_not_include_solve_report() -> None:
+    assert "solve_report" not in {source.value for source in TagSource}
 
 
 def test_index_entry_requires_problem_page_range() -> None:

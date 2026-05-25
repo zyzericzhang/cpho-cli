@@ -50,10 +50,10 @@ def test_known_internal_id_passes_through() -> None:
     vocab = _vocab(("newton_second_law", "牛顿第二定律", TagCategory.PHYSICS_MODEL, []))
     output = TagRefinementOutput(selected_physics_models=["newton_second_law"])
 
-    result = canonical_mapping_pass(output, vocab, "p1", TagSource.SOLVE_REPORT)
+    result = canonical_mapping_pass(output, vocab, "p1", TagSource.OCR_FALLBACK)
 
     assert [tag.internal_id for tag in result.physics_model_tags] == ["newton_second_law"]
-    assert result.physics_model_tags[0].source is TagSource.SOLVE_REPORT
+    assert result.physics_model_tags[0].source is TagSource.OCR_FALLBACK
 
 
 def test_physics_bucket_accepts_law_and_model_categories() -> None:
@@ -65,7 +65,7 @@ def test_physics_bucket_accepts_law_and_model_categories() -> None:
         selected_physics_models=["momentum_conservation", "rainbow_scattering_model"]
     )
 
-    result = canonical_mapping_pass(output, vocab, "p1", TagSource.SOLVE_REPORT)
+    result = canonical_mapping_pass(output, vocab, "p1", TagSource.OCR_FALLBACK)
 
     assert [tag.internal_id for tag in result.physics_model_tags] == [
         "momentum_conservation",
@@ -78,7 +78,7 @@ def test_unknown_internal_id_becomes_candidate() -> None:
     vocab = _vocab(("newton_second_law", "牛顿第二定律", TagCategory.PHYSICS_MODEL, []))
     output = TagRefinementOutput(selected_physics_models=["newton_third_law"])
 
-    result = canonical_mapping_pass(output, vocab, "p1", TagSource.SOLVE_REPORT)
+    result = canonical_mapping_pass(output, vocab, "p1", TagSource.OCR_FALLBACK)
 
     assert result.physics_model_tags == []
     assert len(result.candidates) == 1
@@ -90,7 +90,7 @@ def test_alias_resolved_to_canonical() -> None:
     vocab = _vocab(("newton_second_law", "牛顿第二定律", TagCategory.PHYSICS_MODEL, ["F=ma"]))
     output = TagRefinementOutput(selected_physics_models=["F=ma"])
 
-    result = canonical_mapping_pass(output, vocab, "p1", TagSource.SOLVE_REPORT)
+    result = canonical_mapping_pass(output, vocab, "p1", TagSource.OCR_FALLBACK)
 
     assert [tag.internal_id for tag in result.physics_model_tags] == ["newton_second_law"]
 
@@ -101,7 +101,7 @@ def test_chinese_alias_resolved() -> None:
     )
     output = TagRefinementOutput(selected_physics_models=["牛顿第二"])
 
-    result = canonical_mapping_pass(output, vocab, "p1", TagSource.SOLVE_REPORT)
+    result = canonical_mapping_pass(output, vocab, "p1", TagSource.OCR_FALLBACK)
 
     assert [tag.internal_id for tag in result.physics_model_tags] == ["newton_second_law"]
 
@@ -110,7 +110,7 @@ def test_category_misassignment_becomes_candidate() -> None:
     vocab = _vocab(("newton_second_law", "牛顿第二定律", TagCategory.PHYSICS_MODEL, []))
     output = TagRefinementOutput(selected_math_techniques=["newton_second_law"])
 
-    result = canonical_mapping_pass(output, vocab, "p1", TagSource.SOLVE_REPORT)
+    result = canonical_mapping_pass(output, vocab, "p1", TagSource.OCR_FALLBACK)
 
     assert result.physics_model_tags == []
     assert result.math_technique_tags == []
@@ -127,7 +127,7 @@ def test_heuristics_bucket_accepts_two_categories() -> None:
         selected_heuristics=["approximation_to_first_order", "free_body_diagram"]
     )
 
-    result = canonical_mapping_pass(output, vocab, "p1", TagSource.SOLVE_REPORT)
+    result = canonical_mapping_pass(output, vocab, "p1", TagSource.OCR_FALLBACK)
 
     assert [tag.internal_id for tag in result.heuristic_tags] == [
         "approximation_to_first_order",
@@ -141,7 +141,7 @@ def test_duplicate_ids_within_bucket_deduplicated() -> None:
         selected_physics_models=["newton_second_law", "newton_second_law"]
     )
 
-    result = canonical_mapping_pass(output, vocab, "p1", TagSource.SOLVE_REPORT)
+    result = canonical_mapping_pass(output, vocab, "p1", TagSource.OCR_FALLBACK)
 
     assert [tag.internal_id for tag in result.physics_model_tags] == ["newton_second_law"]
 
@@ -160,7 +160,7 @@ def test_llm_candidates_passed_through_with_metadata() -> None:
         ]
     )
 
-    result = canonical_mapping_pass(output, vocab, "p1", TagSource.SOLVE_REPORT)
+    result = canonical_mapping_pass(output, vocab, "p1", TagSource.OCR_FALLBACK)
 
     assert len(result.candidates) == 1
     assert result.candidates[0].occurrences == 1
@@ -174,7 +174,7 @@ def test_difficulty_aspects_passed_through_unchanged() -> None:
         TagRefinementOutput(difficulty_aspects=aspects),
         _vocab(("newton_second_law", "牛顿第二定律", TagCategory.PHYSICS_MODEL, [])),
         "p1",
-        TagSource.SOLVE_REPORT,
+        TagSource.OCR_FALLBACK,
     )
 
     assert result.difficulty_aspects == aspects
@@ -187,8 +187,8 @@ def test_canonical_mapping_pass_deterministic() -> None:
         difficulty_aspects=["难点"],
     )
 
-    result1 = canonical_mapping_pass(output, vocab, "p1", TagSource.SOLVE_REPORT)
-    result2 = canonical_mapping_pass(output, vocab, "p1", TagSource.SOLVE_REPORT)
+    result1 = canonical_mapping_pass(output, vocab, "p1", TagSource.OCR_FALLBACK)
+    result2 = canonical_mapping_pass(output, vocab, "p1", TagSource.OCR_FALLBACK)
 
     assert result1.physics_model_tags == result2.physics_model_tags
     assert result1.math_technique_tags == result2.math_technique_tags
@@ -210,17 +210,17 @@ def test_source_tag_propagates() -> None:
     )
 
     fallback_result = canonical_mapping_pass(output, vocab, "p1", TagSource.OCR_FALLBACK)
-    solve_result = canonical_mapping_pass(output, vocab, "p1", TagSource.SOLVE_REPORT)
+    user_result = canonical_mapping_pass(output, vocab, "p1", TagSource.USER_NOTE)
 
     fallback_refs = (
         fallback_result.physics_model_tags
         + fallback_result.math_technique_tags
         + fallback_result.heuristic_tags
     )
-    solve_refs = (
-        solve_result.physics_model_tags
-        + solve_result.math_technique_tags
-        + solve_result.heuristic_tags
+    user_refs = (
+        user_result.physics_model_tags
+        + user_result.math_technique_tags
+        + user_result.heuristic_tags
     )
     assert {tag.source for tag in fallback_refs} == {TagSource.OCR_FALLBACK}
-    assert {tag.source for tag in solve_refs} == {TagSource.SOLVE_REPORT}
+    assert {tag.source for tag in user_refs} == {TagSource.USER_NOTE}

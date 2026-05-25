@@ -27,7 +27,7 @@ from cpho_cli.models.runtime import TraceRecord
 
 
 SYSTEM_PROMPT = (
-    "你是物理竞赛题目标签归一化助手。给定题目 OCR 文本和 SolveReport 的自由格式标签，"
+    "你是物理竞赛题目标签归一化助手。给定题目 OCR 文本和受控词表，"
     "从受控词表中选出最匹配的 canonical tag internal_id。"
     "严格仅从提供的 internal_id 列表中选择。"
     "如果发现需要的概念不在列表里，仅在 candidates 数组里提议新 tag，不要编造词表外的 id 放入 selected_* 字段。"
@@ -91,7 +91,6 @@ def append_trace(trace_path: Path, record: TraceRecord, secrets: list[str]) -> N
 def _render_user_prompt(
     problem_id: str,
     problem_text: str,
-    solve_report_tags: dict[str, list[str]],
     vocabulary: Vocabulary,
 ) -> str:
     env = _build_jinja_env()
@@ -108,7 +107,6 @@ def _render_user_prompt(
     return template.render(
         problem_id=problem_id,
         problem_text=problem_text[:3000],
-        solve_report_tags=solve_report_tags,
         controlled_vocabulary=controlled_vocabulary,
     )
 
@@ -265,13 +263,12 @@ def canonical_mapping_pass(
 def refine_tags(
     problem_id: str,
     ocr_text: str,
-    solve_report_tags: dict[str, list[str]],
     vocabulary: Vocabulary,
     config: AppConfig,
     provider_config: ResolvedProviderConfig,
     llm_provider: LLMProvider | None = None,
     trace_path: Path | None = None,
-    source: TagSource = TagSource.SOLVE_REPORT,
+    source: TagSource = TagSource.OCR_FALLBACK,
 ) -> CanonicalMappingResult:
     started = datetime.now(timezone.utc)
     provider = llm_provider or create_llm_provider(
@@ -281,8 +278,8 @@ def refine_tags(
         timeout=provider_config.timeout,
     )
     params = resolve_model_params(config, "index", provider_name=provider_config.name)
-    user_prompt = _render_user_prompt(problem_id, ocr_text, solve_report_tags, vocabulary)
-    input_keys = ["ocr_text", "solve_report_tags", f"vocabulary_{vocabulary.version}"]
+    user_prompt = _render_user_prompt(problem_id, ocr_text, vocabulary)
+    input_keys = ["ocr_text", f"vocabulary_{vocabulary.version}"]
     output_keys = ["tag_refinement"]
 
     try:

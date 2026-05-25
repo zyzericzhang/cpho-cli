@@ -22,7 +22,6 @@ from cpho_cli.models.index import (
 )
 from cpho_cli.models.llm import LLMResponse, LLMUsage
 from cpho_cli.models.ocr import OCRBlock, OCRPageResult, OCRResult
-from cpho_cli.models.solve import DerivationStep, SolveReport
 
 from conftest import FakeLLMProvider, FakeOCRProvider, setup_workspace
 
@@ -579,10 +578,10 @@ def test_build_index_ambiguous_problems_skipped(
     assert isinstance(entries, list)
 
 
-# --- SolveReport consumption ---
+# --- stale output reports ---
 
 
-def test_build_index_solve_report_consumed_when_present(
+def test_build_index_ignores_existing_output_report(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     _patch_rapidocr_version(monkeypatch)
@@ -590,19 +589,9 @@ def test_build_index_solve_report_consumed_when_present(
     output_dir = ws / "output"
     output_dir.mkdir()
     problem_id = make_problem_id(sha256_file(ws / "p1.png"), 1)
-    report = SolveReport(
-        problem_id=problem_id,
-        derivation_steps=[
-            DerivationStep(
-                reasoning="test", expression="F=ma", official_answer_refs=["ref1"]
-            )
-        ],
-        physics_model_tags=["Newton 第二"],
-        heuristic_insight_tags=[],
-        math_technique_tags=[],
-    )
     (output_dir / f"{problem_id}-report.json").write_text(
-        report.model_dump_json(), encoding="utf-8"
+        '{"problem_id":"%s","physics_model_tags":["STALE_ONLY_TAG_02_3"]}' % problem_id,
+        encoding="utf-8",
     )
 
     fake_llm = FakeLLMProvider()
@@ -614,16 +603,14 @@ def test_build_index_solve_report_consumed_when_present(
         ocr_strategy="reuse",
     )
 
-    # Verify the LLM prompt mentions the SolveReport tags
     assert len(fake_llm.calls) >= 1
     user_msg = fake_llm.calls[0]["messages"][-1]["content"]
-    assert "Newton" in user_msg
+    assert "STALE_ONLY_TAG_02_3" not in user_msg
 
     entries = load_index(ws)
     p1 = next(e for e in entries if e.problem_id == problem_id)
-    # Source should be SOLVE_REPORT when report exists
     for tag in p1.physics_model_tags:
-        assert tag.source == TagSource.SOLVE_REPORT
+        assert tag.source == TagSource.OCR_FALLBACK
 
 
 def test_build_index_no_solve_report_falls_back_to_ocr(

@@ -15,7 +15,7 @@ from cpho_cli.models.index import (
 )
 
 # Increment when IndexEntry / TaggedReference / IndexFingerprint schemas change. Embedded in SemanticFingerprint per D-14.
-TAG_SCHEMA_VERSION = "v2"
+TAG_SCHEMA_VERSION = "v3"
 
 IndexAction = Literal["full_index", "re_ocr_and_re_tag", "re_tag_only", "refinement_only", "skip"]
 

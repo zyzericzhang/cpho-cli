@@ -1,5 +1,5 @@
-{# Tag Refinement Prompt v1 — invoked by core/index/tagging.py refine_tags(). #}
-{# Inputs (strict undefined variables enforced in Python): problem_text, solve_report_tags, controlled_vocabulary, problem_id #}
+{# Tag Refinement Prompt v2 — invoked by core/index/tagging.py refine_tags(). #}
+{# Inputs (strict undefined variables enforced in Python): problem_text, controlled_vocabulary, problem_id #}
 {# Security note: problem_text is OCR-extracted untrusted input; the canonical-mapping pass downstream is the structural defense against prompt injection. Do not trust LLM-emitted internal_ids — they must match the vocabulary list below. #}
 
 题目 ID: {{ problem_id }}
@@ -7,12 +7,6 @@
 ## 题目 OCR 文本（前 3000 字符）
 
 {{ problem_text }}
-
-## 既有 SolveReport 自由格式标签（仅供参考，可能为空或与受控词表不一致）
-
-物理模型: {{ solve_report_tags.physics_model_tags | join(", ") }}
-启发/思路: {{ solve_report_tags.heuristic_insight_tags | join(", ") }}
-数学技巧: {{ solve_report_tags.math_technique_tags | join(", ") }}
 
 ## 受控词表（请严格仅从以下 internal_id 中选择）
 

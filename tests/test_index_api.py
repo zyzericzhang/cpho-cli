@@ -56,7 +56,7 @@ def _make_entry(
         if not ids:
             return []
         return [
-            TaggedReference(internal_id=i, source=TagSource.SOLVE_REPORT) for i in ids
+            TaggedReference(internal_id=i, source=TagSource.OCR_FALLBACK) for i in ids
         ]
 
     return IndexEntry(

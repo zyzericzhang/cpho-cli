@@ -47,7 +47,7 @@ def _make_entry(
     physics: list[str] | None = None,
 ) -> IndexEntry:
     refs = [
-        TaggedReference(internal_id=i, source=TagSource.SOLVE_REPORT) for i in (physics or [])
+        TaggedReference(internal_id=i, source=TagSource.OCR_FALLBACK) for i in (physics or [])
     ]
     return IndexEntry(
         problem_id=problem_id,

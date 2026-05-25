@@ -51,7 +51,7 @@ def _make_entry(
     def _refs(ids: list[str] | None) -> list[TaggedReference]:
         if not ids:
             return []
-        return [TaggedReference(internal_id=i, source=TagSource.SOLVE_REPORT) for i in ids]
+        return [TaggedReference(internal_id=i, source=TagSource.OCR_FALLBACK) for i in ids]
 
     return IndexEntry(
         problem_id=problem_id,

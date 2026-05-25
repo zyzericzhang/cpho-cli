@@ -120,3 +120,37 @@ def test_load_existing_index_for_rebuild_discards_pre_021_rows(tmp_path: Path) -
     assert result.entries == []
     assert result.stale_reason is not None
     assert "stale" in result.stale_reason
+
+
+def test_load_existing_index_for_rebuild_discards_legacy_report_path(
+    tmp_path: Path,
+) -> None:
+    path = tmp_path / ".cpho" / "index.jsonl"
+    entry = _entry().model_dump(mode="json")
+    entry["solve_" + "report_path"] = "output/p1-report.json"
+    path.parent.mkdir(parents=True)
+    path.write_text(json.dumps(entry) + "\n", encoding="utf-8")
+
+    result = load_existing_index_for_rebuild(tmp_path, expected_schema_version="v3")
+
+    assert result.entries == []
+    assert result.stale_reason is not None
+    assert "stale" in result.stale_reason
+
+
+def test_load_existing_index_for_rebuild_discards_legacy_report_source(
+    tmp_path: Path,
+) -> None:
+    path = tmp_path / ".cpho" / "index.jsonl"
+    entry = _entry().model_dump(mode="json")
+    entry["physics_model_tags"] = [
+        {"internal_id": "newton_second_law", "source": "solve_report", "confidence": None}
+    ]
+    path.parent.mkdir(parents=True)
+    path.write_text(json.dumps(entry) + "\n", encoding="utf-8")
+
+    result = load_existing_index_for_rebuild(tmp_path, expected_schema_version="v3")
+
+    assert result.entries == []
+    assert result.stale_reason is not None
+    assert "stale" in result.stale_reason

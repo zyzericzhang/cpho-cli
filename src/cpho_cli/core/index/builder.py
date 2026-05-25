@@ -52,10 +52,8 @@ from cpho_cli.models.index import (
     CandidateTag,
     IndexEntry,
     IndexRunStats,
-    TagSource,
     UserNotebookEntry,
 )
-from cpho_cli.models.solve import SolveReport
 
 
 class IndexProgress(TypedDict, total=False):
@@ -71,27 +69,6 @@ class IndexProgress(TypedDict, total=False):
     math_count: int
     heuristic_count: int
     topic_path: str
-
-
-def _load_solve_report(workspace_root: Path, problem_id: str) -> SolveReport | None:
-    path = workspace_root / "output" / f"{problem_id}-report.json"
-    if not path.exists():
-        return None
-    return SolveReport.model_validate_json(path.read_text(encoding="utf-8"))
-
-
-def _solve_report_tag_dict(report: SolveReport | None) -> dict[str, list[str]]:
-    if report is None:
-        return {
-            "physics_model_tags": [],
-            "heuristic_insight_tags": [],
-            "math_technique_tags": [],
-        }
-    return {
-        "physics_model_tags": report.physics_model_tags,
-        "heuristic_insight_tags": report.heuristic_insight_tags,
-        "math_technique_tags": report.math_technique_tags,
-    }
 
 
 def _ocr_config() -> dict[str, object]:
@@ -367,9 +344,6 @@ def build_index(
 
             # re_tag_only, re_ocr_and_re_tag, full_index all need tagging.
             ocr_text = problem_entry.problem_text
-            report = _load_solve_report(workspace_root, problem_id)
-            solve_report_tags = _solve_report_tag_dict(report)
-            source = TagSource.SOLVE_REPORT if report else TagSource.OCR_FALLBACK
 
             if on_progress is not None:
                 on_progress(IndexProgress(
@@ -381,13 +355,11 @@ def build_index(
             mapping: CanonicalMappingResult = refine_tags(
                 problem_id,
                 ocr_text,
-                solve_report_tags,
                 vocabulary,
                 config,
                 provider_config,
                 llm_provider=active_llm_provider,
                 trace_path=trace_path,
-                source=source,
             )
 
             all_candidates.extend(mapping.candidates)
@@ -428,7 +400,6 @@ def build_index(
                 user_confirmed_key_points=notebook.key_points if notebook else [],
                 user_confirmed_stuck_points=notebook.stuck_points if notebook else [],
                 fingerprint=fingerprint,
-                solve_report_path=Path("output") / f"{problem_id}-report.json" if report else None,
                 ocr_text_length=len(ocr_text),
                 tag_prompt_version=tag_prompt_version,
                 topic_path=topic_path,

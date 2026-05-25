@@ -37,7 +37,6 @@ class TagLayer(str, Enum):
 
 class TagSource(str, Enum):
     USER_NOTE = "user_note"
-    SOLVE_REPORT = "solve_report"
     QA_HISTORY = "qa_history"
     OCR_FALLBACK = "ocr_fallback"
 
@@ -132,7 +131,6 @@ class IndexEntry(StrictModel):
     user_confirmed_key_points: list[str] = Field(default_factory=list)
     user_confirmed_stuck_points: list[str] = Field(default_factory=list)
     fingerprint: IndexFingerprint
-    solve_report_path: Path | None = None
     ocr_cache_path: Path | None = None
     ocr_text_length: int
     tag_prompt_version: str

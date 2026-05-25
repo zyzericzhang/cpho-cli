@@ -13,7 +13,7 @@ from cpho_cli.core.index.tagging import (
 )
 from cpho_cli.core.index.vocabulary import normalize_alias
 from cpho_cli.models.config import AppConfig, ModelParams, ResolvedProviderConfig, SkillConfig
-from cpho_cli.models.index import CanonicalTag, TagCategory, Vocabulary
+from cpho_cli.models.index import CanonicalTag, TagCategory, TagSource, Vocabulary
 from cpho_cli.models.llm import LLMResponse, LLMUsage
 
 
@@ -86,11 +86,6 @@ def _refine(
     return refine_tags(
         problem_id="p1",
         ocr_text=ocr_text,
-        solve_report_tags={
-            "physics_model_tags": [],
-            "heuristic_insight_tags": [],
-            "math_technique_tags": [],
-        },
         vocabulary=_vocab(),
         config=config or AppConfig(),
         provider_config=provider_config or _provider_config(),
@@ -197,7 +192,21 @@ def test_refine_tags_canonical_mapping_integrated(tmp_path: Path) -> None:
     result = _refine(fake, tmp_path)
 
     assert [tag.internal_id for tag in result.physics_model_tags] == ["newton_second_law"]
+    assert result.physics_model_tags[0].source is TagSource.OCR_FALLBACK
+
+
+def test_refine_tags_prompt_uses_ocr_and_vocabulary_only(tmp_path: Path) -> None:
+    fake = FakeLLMProvider(TagRefinementOutput())
+
+    _refine(fake, tmp_path)
+
+    assert fake.last_messages is not None
+    prompt = fake.last_messages[1]["content"]
+    assert "Solve" + "Report" not in prompt
+    assert "solve_report" not in prompt
+    assert "newton_second_law" in prompt
+    assert "Use F=ma." in prompt
 
 
 def test_load_tag_prompt_version_reads_manifest() -> None:
-    assert load_tag_prompt_version() == "v1"
+    assert load_tag_prompt_version() == "v2"
