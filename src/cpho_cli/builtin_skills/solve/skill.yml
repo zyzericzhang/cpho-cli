@@ -3,6 +3,8 @@ inputs:
   - problem_text
   - answer_text
   - ocr_warnings
+  - problem_file
+  - answer_file
 outputs:
   - solve_report
 steps:
@@ -12,31 +14,31 @@ steps:
     output_keys: [raw_problem, raw_answer]
   - id: normalize_problem
     kind: llm
-    input_keys: [raw_problem]
+    input_keys: [raw_problem, problem_file, answer_file]
     output_keys: [normalized_problem]
     prompt_template: normalize.md.j2
   - id: validate_answer_structure
     kind: llm
-    input_keys: [raw_answer]
+    input_keys: [raw_answer, problem_file, answer_file]
     output_keys: [answer_structure]
     prompt_template: answer_structure.md.j2
   - id: derive_subproblems
     kind: llm
-    input_keys: [normalized_problem, answer_structure]
+    input_keys: [normalized_problem, answer_structure, problem_file, answer_file]
     output_keys: [subproblem_derivations]
     prompt_template: derive.md.j2
   - id: cross_check_official_answer
     kind: llm
-    input_keys: [subproblem_derivations, answer_structure]
+    input_keys: [subproblem_derivations, answer_structure, problem_file, answer_file]
     output_keys: [answer_cross_check]
     prompt_template: cross_check.md.j2
   - id: mark_discrepancies
     kind: llm
-    input_keys: [answer_cross_check, ocr_warnings]
+    input_keys: [answer_cross_check, ocr_warnings, problem_file, answer_file]
     output_keys: [discrepancies]
     prompt_template: discrepancies.md.j2
   - id: assemble_final_report
     kind: llm
-    input_keys: [normalized_problem, subproblem_derivations, answer_cross_check, discrepancies, ocr_warnings]
+    input_keys: [normalized_problem, subproblem_derivations, answer_cross_check, discrepancies, ocr_warnings, problem_file, answer_file]
     output_keys: [solve_report]
     prompt_template: final_report.md.j2

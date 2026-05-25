@@ -8,11 +8,32 @@ from typing import Any
 import jinja2
 from pydantic import BaseModel, ValidationError
 
-from cpho_cli.core.llm import LLMProvider
+from cpho_cli.core.llm import LLMProvider, LLMProviderError
+from cpho_cli.core.multimodal import build_multimodal_content
 from cpho_cli.core.runtime import SkillRuntimeError, StepHandler
 from cpho_cli.models.config import ModelParams
+from cpho_cli.models.llm import ModelCapabilities
 from cpho_cli.models.skills import SkillStep
 from cpho_cli.models.solve import SolveReport
+
+
+def _resolve_capabilities(
+    provider: LLMProvider,
+    params: ModelParams,
+    capabilities: ModelCapabilities | None,
+) -> ModelCapabilities:
+    if capabilities is not None:
+        return capabilities
+    provider_capabilities = getattr(provider, "capabilities", None)
+    if isinstance(provider_capabilities, ModelCapabilities):
+        return provider_capabilities
+    get_model_capabilities = getattr(provider, "get_model_capabilities", None)
+    if callable(get_model_capabilities):
+        try:
+            return get_model_capabilities(params.name)
+        except LLMProviderError:
+            return ModelCapabilities()
+    return ModelCapabilities()
 
 
 def make_llm_handler(
@@ -20,8 +41,10 @@ def make_llm_handler(
     params: ModelParams,
     skill_dir: Path,
     response_models: Mapping[str, type[BaseModel]] | None = None,
+    capabilities: ModelCapabilities | None = None,
 ) -> StepHandler:
     models_by_output = {"solve_report": SolveReport, **(response_models or {})}
+    active_capabilities = _resolve_capabilities(provider, params, capabilities)
     env = jinja2.Environment(
         loader=jinja2.FileSystemLoader(str(skill_dir / "prompts")),
         undefined=jinja2.StrictUndefined,
@@ -41,13 +64,21 @@ def make_llm_handler(
             if len(step.output_keys) == 1
             else None
         )
+        content: str | list[dict[str, Any]] = prompt
+        file_paths = [
+            Path(value)
+            for key in ("problem_file", "answer_file")
+            if (value := values.get(key)) is not None
+        ]
+        if file_paths:
+            content = build_multimodal_content(prompt, file_paths, active_capabilities) or prompt
         response = provider.complete(
             messages=[
                 {
                     "role": "system",
                     "content": "Return strict JSON containing exactly the requested output keys.",
                 },
-                {"role": "user", "content": prompt},
+                {"role": "user", "content": content},
             ],
             params=params,
             response_model=output_model,

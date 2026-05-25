@@ -9,9 +9,10 @@ from pydantic import BaseModel
 
 from cpho_cli.core.runtime import redact_secrets
 from cpho_cli.models.config import ModelParams
-from cpho_cli.models.llm import LLMResponse, LLMUsage
+from cpho_cli.models.llm import ChatMessage, LLMResponse, LLMUsage, ModelCapabilities
 
 ResponseModel = TypeVar("ResponseModel", bound=BaseModel)
+_CAPABILITY_CACHE: dict[tuple[str, str, str], ModelCapabilities] = {}
 
 
 class LLMProviderError(RuntimeError):
@@ -21,7 +22,7 @@ class LLMProviderError(RuntimeError):
 class LLMProvider(Protocol):
     def complete(
         self,
-        messages: list[dict[str, str]],
+        messages: list[ChatMessage],
         params: ModelParams,
         response_model: type[ResponseModel] | None = None,
     ) -> LLMResponse:
@@ -48,7 +49,7 @@ class _OpenAICompatibleProvider:
 
     def complete(
         self,
-        messages: list[dict[str, str]],
+        messages: list[ChatMessage],
         params: ModelParams,
         response_model: type[ResponseModel] | None = None,
     ) -> LLMResponse:
@@ -135,6 +136,17 @@ class OpenRouterProvider(_OpenAICompatibleProvider):
     ) -> None:
         super().__init__(api_key, base_url, client, max_retries, label="OpenRouter", timeout=timeout)
 
+    def get_model_capabilities(self, model_name: str | None) -> ModelCapabilities:
+        if not model_name:
+            return ModelCapabilities()
+        return fetch_openrouter_model_capabilities(
+            client=self.client,
+            base_url=self.base_url,
+            api_key=self.api_key,
+            provider_label=self.label,
+            model_name=model_name,
+        )
+
 
 class DeepSeekProvider(_OpenAICompatibleProvider):
     def __init__(
@@ -161,6 +173,57 @@ def _tool_schema(schema_name: str, response_model: type[BaseModel]) -> dict[str,
             "parameters": response_model.model_json_schema(),
         },
     }
+
+
+def _capability_from_model_metadata(model_data: dict[str, Any]) -> ModelCapabilities:
+    architecture = model_data.get("architecture") or {}
+    input_modalities = architecture.get("input_modalities") or ["text"]
+    supported_parameters = model_data.get("supported_parameters") or []
+    return ModelCapabilities(
+        input_modalities=set(input_modalities),
+        supported_parameters=set(supported_parameters),
+    )
+
+
+def fetch_openrouter_model_capabilities(
+    *,
+    client: httpx.Client,
+    base_url: str,
+    api_key: str,
+    provider_label: str,
+    model_name: str,
+) -> ModelCapabilities:
+    cache_key = (provider_label, base_url.rstrip("/"), model_name)
+    if cache_key in _CAPABILITY_CACHE:
+        return _CAPABILITY_CACHE[cache_key]
+
+    try:
+        response = client.get(
+            f"{base_url.rstrip('/')}/models",
+            headers={"Authorization": f"Bearer {api_key}"},
+        )
+        if response.status_code >= 400:
+            raise LLMProviderError(
+                redact_secrets(
+                    f"{provider_label} model metadata failed: {response.status_code} {response.text}",
+                    [api_key],
+                )
+            )
+        data = response.json()
+    except httpx.TransportError as exc:
+        raise LLMProviderError(
+            redact_secrets(f"{provider_label} model metadata failed: {exc}", [api_key])
+        ) from exc
+
+    for model_data in data.get("data", []):
+        if model_data.get("id") == model_name:
+            capabilities = _capability_from_model_metadata(model_data)
+            _CAPABILITY_CACHE[cache_key] = capabilities
+            return capabilities
+
+    capabilities = ModelCapabilities()
+    _CAPABILITY_CACHE[cache_key] = capabilities
+    return capabilities
 
 
 _PROVIDER_REGISTRY: dict[str, type[_OpenAICompatibleProvider]] = {

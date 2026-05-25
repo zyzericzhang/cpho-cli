@@ -6,9 +6,71 @@ import pytest
 from cpho_cli.core.skills import load_skill
 from cpho_cli.core.solve import solve_problem
 from cpho_cli.models.config import ModelParams
-from cpho_cli.models.llm import LLMResponse
+from cpho_cli.models.llm import LLMResponse, ModelCapabilities
 from cpho_cli.models.ocr import OCRBlock, OCRPageResult, OCRResult
 from cpho_cli.models.solve import DerivationStep, SolveReport
+
+
+class CaptureSolveProvider:
+    def __init__(self, capabilities: ModelCapabilities | None = None) -> None:
+        self.capabilities = capabilities
+        self.calls: list[dict[str, object]] = []
+
+    def complete(self, messages, params: ModelParams, response_model=None):  # type: ignore[no-untyped-def]
+        self.calls.append({"messages": messages, "response_model": response_model})
+        responses = [
+            {"normalized_problem": "normalized problem"},
+            {"answer_structure": "answer structure"},
+            {"subproblem_derivations": "F=ma derivation"},
+            {"answer_cross_check": "answer refs checked"},
+            {"discrepancies": []},
+        ]
+        if len(self.calls) <= len(responses):
+            return LLMResponse(content=json.dumps(responses[len(self.calls) - 1]))
+        return LLMResponse(
+            content=SolveReport(
+                problem_id="p1",
+                derivation_steps=[
+                    DerivationStep(
+                        reasoning="Use Newton second law",
+                        expression="F=ma",
+                        official_answer_refs=["answer:1"],
+                    )
+                ],
+                discrepancies=[],
+                ocr_warnings=[],
+                physics_model_tags=["newton"],
+                heuristic_insight_tags=["force-balance"],
+                math_technique_tags=["algebra"],
+            ).model_dump_json()
+        )
+
+
+class ConstantOCR:
+    def extract(self, document):  # type: ignore[no-untyped-def]
+        return OCRResult(
+            pages=[
+                OCRPageResult(
+                    page_number=1,
+                    blocks=[
+                        OCRBlock(
+                            text="problem or answer text",
+                            page_number=1,
+                            confidence=1.0,
+                        )
+                    ],
+                )
+            ]
+        )
+
+
+def write_minimal_pdf(path: Path) -> None:
+    import fitz
+
+    document = fitz.open()
+    document.new_page()
+    document.save(path)
+    document.close()
 
 
 def test_builtin_solve_skill_loads() -> None:
@@ -156,3 +218,75 @@ def test_solve_non_dry_run_executes_builtin_skill_steps(tmp_path: Path) -> None:
     assert provider.response_models[-1] is SolveReport
     assert result.report_json is not None
     assert "answer:1" in result.report_json.read_text(encoding="utf-8")
+
+
+def test_solve_pdf_multimodal_sends_file_blocks(tmp_path: Path) -> None:
+    problem = tmp_path / "p1.pdf"
+    answer = tmp_path / "p1-answer.pdf"
+    config = tmp_path / "config.yml"
+    write_minimal_pdf(problem)
+    write_minimal_pdf(answer)
+    config.write_text("provider:\n  openrouter_api_key: sk-test\n", encoding="utf-8")
+    provider = CaptureSolveProvider(ModelCapabilities(input_modalities={"text", "file"}))
+
+    solve_problem(
+        problem,
+        answer_path=answer,
+        config_path=config,
+        output_dir=tmp_path / "out",
+        ocr_provider=ConstantOCR(),
+        llm_provider=provider,
+    )
+
+    first_content = provider.calls[0]["messages"][-1]["content"]  # type: ignore[index]
+    assert isinstance(first_content, list)
+    assert any(block["type"] == "file" for block in first_content)
+    assert not any(block["type"] == "image_url" for block in first_content)
+
+
+def test_solve_image_multimodal_sends_image_blocks(tmp_path: Path) -> None:
+    problem = tmp_path / "p1.png"
+    answer = tmp_path / "p1-answer.png"
+    config = tmp_path / "config.yml"
+    problem.write_bytes(b"\x89PNG\r\n\x1a\nproblem")
+    answer.write_bytes(b"\x89PNG\r\n\x1a\nanswer")
+    config.write_text("provider:\n  openrouter_api_key: sk-test\n", encoding="utf-8")
+    provider = CaptureSolveProvider(ModelCapabilities(input_modalities={"text", "image"}))
+
+    solve_problem(
+        problem,
+        answer_path=answer,
+        config_path=config,
+        output_dir=tmp_path / "out",
+        ocr_provider=ConstantOCR(),
+        llm_provider=provider,
+    )
+
+    first_content = provider.calls[0]["messages"][-1]["content"]  # type: ignore[index]
+    assert isinstance(first_content, list)
+    assert any(block["type"] == "image_url" for block in first_content)
+
+
+def test_solve_text_only_model_uses_ocr_prompt_fallback(tmp_path: Path) -> None:
+    problem = tmp_path / "p1.pdf"
+    answer = tmp_path / "p1-answer.pdf"
+    config = tmp_path / "config.yml"
+    write_minimal_pdf(problem)
+    write_minimal_pdf(answer)
+    config.write_text("provider:\n  openrouter_api_key: sk-test\n", encoding="utf-8")
+    provider = CaptureSolveProvider(ModelCapabilities(input_modalities={"text"}))
+
+    solve_problem(
+        problem,
+        answer_path=answer,
+        config_path=config,
+        output_dir=tmp_path / "out",
+        ocr_provider=ConstantOCR(),
+        llm_provider=provider,
+    )
+
+    first_content = provider.calls[0]["messages"][-1]["content"]  # type: ignore[index]
+    assert isinstance(first_content, str)
+    assert "problem or answer text" in first_content
+    assert "file_data" not in first_content
+    assert "image_url" not in first_content

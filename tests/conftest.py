@@ -66,7 +66,7 @@ class FakeLLMProvider:
 
     def complete(
         self,
-        messages: list[dict[str, str]],
+        messages: list[dict[str, Any]],
         params: ModelParams,
         response_model: type[Any] | None = None,
     ) -> LLMResponse:
@@ -75,7 +75,7 @@ class FakeLLMProvider:
         user_content = ""
         for msg in messages:
             if msg.get("role") == "user":
-                user_content = msg.get("content", "")
+                user_content = str(msg.get("content", ""))
                 break
 
         output = self.fixed_output

@@ -102,6 +102,8 @@ def solve_problem(
                 "ocr_warnings": warnings,
                 "problem_path": str(problem_path),
                 "answer_path": str(answer_path),
+                "problem_file": problem_path,
+                "answer_file": answer_path,
             },
         )
         raw_report = result.blackboard["solve_report"]
