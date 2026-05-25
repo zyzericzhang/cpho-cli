@@ -19,6 +19,7 @@ def test_index_help_lists_options() -> None:
     assert result.exit_code == 0
     assert "--force" in result.output
     assert "--force-all" in result.output
+    assert "--vision" in result.output
     assert "--only-new" in result.output
     assert "--dry-run" in result.output
     assert "--ocr-strategy" in result.output
@@ -26,6 +27,29 @@ def test_index_help_lists_options() -> None:
     assert "--quiet" in result.output
     assert "工作空间" in result.output
     assert "强制重建全部索引" in result.output
+    assert "默认使用 OCR" in result.output
+
+
+def test_index_forwards_vision_and_force_all(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    called = {}
+
+    def fake_build_index(workspace_root, **kwargs):  # type: ignore[no-untyped-def]
+        called.update(workspace_root=workspace_root, **kwargs)
+        return IndexRunStats(total_problems=1)
+
+    monkeypatch.setattr("cpho_cli.cli.app.build_index", fake_build_index)
+
+    result = runner.invoke(
+        app,
+        ["index", str(tmp_path), "--vision", "--force-all", "--quiet"],
+    )
+
+    assert result.exit_code == 0
+    assert called["workspace_root"] == tmp_path
+    assert called["vision"] is True
+    assert called["force_all"] is True
 
 
 def test_index_tag_subcommand_help() -> None:

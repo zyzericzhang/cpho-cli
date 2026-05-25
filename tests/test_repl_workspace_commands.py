@@ -39,6 +39,8 @@ async def test_workspace_status_config_and_register(
     assert "索引状态: 未建立" in output
     assert "api_key" not in output.lower()
     assert {"/workspace", "/status", "/config", "/index", "/reload-index", "/resume"} <= set(registry)
+    assert "--vision" in registry["/index"].usage
+    assert "--force-all" in registry["/index"].usage
 
 
 @pytest.mark.asyncio
@@ -79,6 +81,36 @@ async def test_index_dry_run_cancel_and_success(
     await do_index(session, ["--all"])
 
     assert calls == [True, False]
+
+
+@pytest.mark.asyncio
+async def test_index_forwards_vision_and_force_all(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    calls: list[dict[str, object]] = []
+
+    def fake_build_index(*args, **kwargs):  # type: ignore[no-untyped-def]
+        calls.append(kwargs)
+        from cpho_cli.models.index import IndexRunStats
+
+        return IndexRunStats(total_problems=2, papers_split=1, problems_extracted=2)
+
+    monkeypatch.setattr("cpho_cli.cli.repl.commands.workspace.build_index", fake_build_index)
+
+    async def fake_confirm(*args, **kwargs):  # type: ignore[no-untyped-def]
+        return True
+
+    monkeypatch.setattr(
+        "cpho_cli.cli.repl.commands.workspace._confirm_index_run", fake_confirm
+    )
+    session = SessionState(workspace_path=tmp_path, config=AppConfig())
+
+    await do_index(session, ["--all", "--vision", "--force-all"])
+
+    assert [call["dry_run"] for call in calls] == [True, False]
+    assert all(call["vision"] is True for call in calls)
+    assert all(call["force_all"] is True for call in calls)
 
 
 @pytest.mark.asyncio

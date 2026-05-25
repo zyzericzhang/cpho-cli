@@ -196,7 +196,9 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--path", default=None)
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--force", action="store_true")
+    parser.add_argument("--force-all", action="store_true")
     parser.add_argument("--only-new", action="store_true")
+    parser.add_argument("--vision", action="store_true")
     parser.add_argument(
         "--ocr-strategy", default="prompt", choices=("prompt", "reuse", "rebuild", "new-only")
     )
@@ -209,7 +211,9 @@ async def do_index(session: SessionState, args: list[str]) -> None:
     except SystemExit:
         display.error(
             "参数无效。用法: /index [--all] [--path PATH] [--dry-run] [--force]"
-            " [--only-new] [--ocr-strategy prompt|reuse|rebuild|new-only]\n"
+            " [--force-all] [--only-new] [--vision]"
+            " [--ocr-strategy prompt|reuse|rebuild|new-only]\n"
+            "  --vision 默认关闭；开启后可能上传 PDF/图片到配置的 provider。\n"
             "  PATH 支持相对路径或绝对路径（必须在工作空间内）"
         )
         return
@@ -248,6 +252,8 @@ async def do_index(session: SessionState, args: list[str]) -> None:
                 config_path=session.config_path,
                 provider_name=session.provider_name,
                 force=ns.force,
+                force_all=ns.force_all,
+                vision=ns.vision,
                 only_new=ns.only_new,
                 dry_run=True,
                 ocr_strategy=ns.ocr_strategy,
@@ -267,6 +273,8 @@ async def do_index(session: SessionState, args: list[str]) -> None:
                 config_path=session.config_path,
                 provider_name=session.provider_name,
                 force=ns.force,
+                force_all=ns.force_all,
+                vision=ns.vision,
                 only_new=ns.only_new,
                 dry_run=False,
                 ocr_strategy=ns.ocr_strategy,
@@ -278,6 +286,8 @@ async def do_index(session: SessionState, args: list[str]) -> None:
                 config_path=session.config_path,
                 provider_name=session.provider_name,
                 force=ns.force,
+                force_all=ns.force_all,
+                vision=ns.vision,
                 only_new=ns.only_new,
                 dry_run=False,
                 ocr_strategy=ns.ocr_strategy,
@@ -355,7 +365,7 @@ def register(registry: dict[str, Command]) -> None:
     registry["/workspace"] = Command("/workspace", "查看或切换工作空间", "/workspace [path]", do_workspace, category="工作空间")
     registry["/status"] = Command("/status", "显示当前工作空间与索引状态", "/status", do_status, category="工作空间")
     registry["/config"] = Command("/config", "显示安全配置摘要", "/config", do_config, category="工作空间")
-    registry["/index"] = Command("/index", "预览并可确认建立索引", "/index [--all] [--path PATH] [--dry-run] [--force] [--only-new]", do_index, category="工作空间")
+    registry["/index"] = Command("/index", "预览并可确认建立索引", "/index [--all] [--path PATH] [--dry-run] [--force] [--force-all] [--only-new] [--vision]", do_index, category="工作空间")
     registry["/reload-index"] = Command("/reload-index", "刷新索引元数据和补全缓存", "/reload-index", do_reload_index, category="工作空间")
     registry["/resume"] = Command("/resume", "显式恢复上次会话上下文", "/resume", do_resume, category="工作空间")
 
