@@ -16,6 +16,7 @@ from cpho_cli.models.index import (
     TaggedReference,
     TagSource,
     TagVisibility,
+    UserTagEntry,
     UserNotebookEntry,
     Vocabulary,
 )
@@ -155,6 +156,22 @@ def test_user_notebook_entry_round_trip() -> None:
     )
 
     assert UserNotebookEntry.model_validate_json(note.model_dump_json()) == note
+
+
+def test_user_tag_entry_round_trip_with_provenance() -> None:
+    now = datetime.now(timezone.utc)
+    entry = UserTagEntry(
+        tags=["energy_conservation", "自定义标签"],
+        canonical_tags=["energy_conservation"],
+        unverified_tags=["自定义标签"],
+        skill_name="solve",
+        timestamp=now,
+        reasoning_snippet="根据解题过程追加标签。",
+    )
+
+    restored = UserTagEntry.model_validate_json(entry.model_dump_json())
+
+    assert restored == entry
 
 
 def test_index_fingerprint_round_trip() -> None:

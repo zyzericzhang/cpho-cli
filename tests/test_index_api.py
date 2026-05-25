@@ -6,7 +6,14 @@ from pathlib import Path
 import pytest
 
 from cpho_cli.core.index import IndexNotFoundError, ProblemNotIndexedError, IndexBuildError
-from cpho_cli.core.index.api import find_related_problems, get_problem_entry, query_index
+from cpho_cli.core.index.api import (
+    add_problem_tags,
+    find_related_problems,
+    get_problem_entry,
+    query_index,
+    remove_problem_tags,
+    update_problem_tags,
+)
 from cpho_cli.core.index.notebook import get_problem_notes, set_problem_notes
 from cpho_cli.core.index.storage import write_index
 from cpho_cli.models.index import (
@@ -257,3 +264,93 @@ def test_set_problem_notes_atomic_no_tmp_left(tmp_path: Path) -> None:
     set_problem_notes(tmp_path, notes)
     assert not (tmp_path / ".cpho" / "notebook" / "p1.json.tmp").exists()
     assert (tmp_path / ".cpho" / "notebook" / "p1.json").exists()
+
+
+# --- user tag write API tests ---
+
+
+def test_add_problem_tags_records_provenance_and_classification(tmp_path: Path) -> None:
+    _seed_index(tmp_path, [_make_entry("p1")])
+
+    entry = add_problem_tags(
+        tmp_path,
+        "p1",
+        ["energy_conservation", "自定义标签"],
+        skill_name="solve",
+        reasoning="根据解析补充标签。",
+    )
+
+    assert len(entry.user_tags) == 1
+    tag_entry = entry.user_tags[0]
+    assert tag_entry.tags == ["energy_conservation", "自定义标签"]
+    assert tag_entry.canonical_tags == ["energy_conservation"]
+    assert tag_entry.unverified_tags == ["自定义标签"]
+    assert tag_entry.skill_name == "solve"
+    assert tag_entry.reasoning_snippet == "根据解析补充标签。"
+    assert tag_entry.timestamp.tzinfo is not None
+
+    reloaded = get_problem_entry(tmp_path, "p1")
+    assert reloaded is not None
+    assert reloaded.user_tags == entry.user_tags
+
+
+def test_update_problem_tags_replaces_all_user_tag_entries(tmp_path: Path) -> None:
+    _seed_index(tmp_path, [_make_entry("p1")])
+    add_problem_tags(tmp_path, "p1", ["old"], skill_name="solve", reasoning="old")
+
+    entry = update_problem_tags(
+        tmp_path,
+        "p1",
+        ["free_body_diagram"],
+        skill_name="explain",
+        reasoning="替换为当前 skill 输出。",
+    )
+
+    assert len(entry.user_tags) == 1
+    assert entry.user_tags[0].tags == ["free_body_diagram"]
+    assert entry.user_tags[0].canonical_tags == ["free_body_diagram"]
+    assert entry.user_tags[0].skill_name == "explain"
+
+
+def test_remove_problem_tags_removes_matching_strings(tmp_path: Path) -> None:
+    _seed_index(tmp_path, [_make_entry("p1")])
+    add_problem_tags(
+        tmp_path,
+        "p1",
+        ["energy_conservation", "自定义标签"],
+        skill_name="solve",
+        reasoning="根据解析补充标签。",
+    )
+
+    entry = remove_problem_tags(tmp_path, "p1", ["自定义标签"])
+
+    assert len(entry.user_tags) == 1
+    assert entry.user_tags[0].tags == ["energy_conservation"]
+    assert entry.user_tags[0].canonical_tags == ["energy_conservation"]
+    assert entry.user_tags[0].unverified_tags == []
+
+
+def test_add_problem_tags_missing_problem_raises(tmp_path: Path) -> None:
+    _seed_index(tmp_path, [_make_entry("p1")])
+
+    with pytest.raises(ProblemNotIndexedError):
+        add_problem_tags(
+            tmp_path,
+            "missing",
+            ["energy_conservation"],
+            skill_name="solve",
+            reasoning="x",
+        )
+
+
+def test_add_problem_tags_rejects_path_traversal_problem_id(tmp_path: Path) -> None:
+    _seed_index(tmp_path, [_make_entry("p1")])
+
+    with pytest.raises(IndexBuildError, match="Invalid problem_id"):
+        add_problem_tags(
+            tmp_path,
+            "../escape",
+            ["energy_conservation"],
+            skill_name="solve",
+            reasoning="x",
+        )

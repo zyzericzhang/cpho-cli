@@ -18,6 +18,7 @@ def test_index_help_lists_options() -> None:
     result = runner.invoke(app, ["index", "--help"])
     assert result.exit_code == 0
     assert "--force" in result.output
+    assert "--force-all" in result.output
     assert "--only-new" in result.output
     assert "--dry-run" in result.output
     assert "--ocr-strategy" in result.output
@@ -25,6 +26,133 @@ def test_index_help_lists_options() -> None:
     assert "--quiet" in result.output
     assert "工作空间" in result.output
     assert "强制重建全部索引" in result.output
+
+
+def test_index_tag_subcommand_help() -> None:
+    for command in ("tag-add", "tag-remove", "tag-set"):
+        result = runner.invoke(app, ["index", command, "--help"])
+        assert result.exit_code == 0
+        assert "--problem-id" in result.output
+        assert "--tag" in result.output
+
+
+def test_index_tag_add_calls_core_api(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    called = {}
+
+    def fake_add(workspace_root, problem_id, tags, *, skill_name, reasoning):
+        called.update(
+            workspace_root=workspace_root,
+            problem_id=problem_id,
+            tags=tags,
+            skill_name=skill_name,
+            reasoning=reasoning,
+        )
+
+    monkeypatch.setattr("cpho_cli.cli.app.add_problem_tags", fake_add)
+
+    result = runner.invoke(
+        app,
+        [
+            "index",
+            "tag-add",
+            "--workspace",
+            str(tmp_path),
+            "--problem-id",
+            "p1",
+            "--tag",
+            "energy_conservation",
+            "--tag",
+            "自定义标签",
+            "--skill-name",
+            "solve",
+            "--reasoning",
+            "根据解析追加",
+            "--quiet",
+        ],
+    )
+
+    assert result.exit_code == 0
+    assert called == {
+        "workspace_root": tmp_path,
+        "problem_id": "p1",
+        "tags": ["energy_conservation", "自定义标签"],
+        "skill_name": "solve",
+        "reasoning": "根据解析追加",
+    }
+
+
+def test_index_tag_remove_calls_core_api(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    called = {}
+
+    def fake_remove(workspace_root, problem_id, tags):
+        called.update(workspace_root=workspace_root, problem_id=problem_id, tags=tags)
+
+    monkeypatch.setattr("cpho_cli.cli.app.remove_problem_tags", fake_remove)
+
+    result = runner.invoke(
+        app,
+        [
+            "index",
+            "tag-remove",
+            "--workspace",
+            str(tmp_path),
+            "--problem-id",
+            "p1",
+            "--tag",
+            "自定义标签",
+            "--quiet",
+        ],
+    )
+
+    assert result.exit_code == 0
+    assert called == {
+        "workspace_root": tmp_path,
+        "problem_id": "p1",
+        "tags": ["自定义标签"],
+    }
+
+
+def test_index_tag_set_calls_core_api(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    called = {}
+
+    def fake_update(workspace_root, problem_id, tags, *, skill_name, reasoning):
+        called.update(
+            workspace_root=workspace_root,
+            problem_id=problem_id,
+            tags=tags,
+            skill_name=skill_name,
+            reasoning=reasoning,
+        )
+
+    monkeypatch.setattr("cpho_cli.cli.app.update_problem_tags", fake_update)
+
+    result = runner.invoke(
+        app,
+        [
+            "index",
+            "tag-set",
+            "--workspace",
+            str(tmp_path),
+            "--problem-id",
+            "p1",
+            "--tag",
+            "free_body_diagram",
+            "--skill-name",
+            "explain",
+            "--reasoning",
+            "替换 skill 标签",
+            "--quiet",
+        ],
+    )
+
+    assert result.exit_code == 0
+    assert called == {
+        "workspace_root": tmp_path,
+        "problem_id": "p1",
+        "tags": ["free_body_diagram"],
+        "skill_name": "explain",
+        "reasoning": "替换 skill 标签",
+    }
 
 
 def test_index_dry_run_no_llm(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:

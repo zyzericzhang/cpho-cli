@@ -18,6 +18,7 @@ from cpho_cli.models.documents import SplitMethod, make_problem_id
 from cpho_cli.models.index import (
     TagCategory,
     TagSource,
+    UserTagEntry,
     UserNotebookEntry,
 )
 from cpho_cli.models.llm import LLMResponse, LLMUsage
@@ -355,6 +356,78 @@ def test_build_index_force_rebuilds_all(
     build_index(ws, **kwargs)
     stats2 = build_index(ws, force=True, **kwargs)
     assert stats2.tags_regenerated == 2
+
+
+def test_build_index_force_preserves_user_tags(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _patch_rapidocr_version(monkeypatch)
+    ws = setup_workspace(tmp_path, problem_names=["p1"])
+    kwargs = dict(
+        config_path=ws / "config.local.yml",
+        ocr_provider=FakeOCRProvider(),
+        llm_provider=FakeLLMProvider(),
+        ocr_strategy="reuse",
+    )
+    build_index(ws, **kwargs)
+    entry = load_index(ws)[0]
+    entry = entry.model_copy(
+        update={
+            "user_tags": [
+                UserTagEntry(
+                    tags=["energy_conservation"],
+                    canonical_tags=["energy_conservation"],
+                    unverified_tags=[],
+                    skill_name="solve",
+                    reasoning_snippet="manual",
+                )
+            ]
+        }
+    )
+    from cpho_cli.core.index.storage import write_index
+
+    write_index(ws / ".cpho" / "index.jsonl", [entry])
+
+    build_index(ws, force=True, **kwargs)
+
+    rebuilt = load_index(ws)[0]
+    assert rebuilt.user_tags == entry.user_tags
+
+
+def test_build_index_force_all_clears_user_tags(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _patch_rapidocr_version(monkeypatch)
+    ws = setup_workspace(tmp_path, problem_names=["p1"])
+    kwargs = dict(
+        config_path=ws / "config.local.yml",
+        ocr_provider=FakeOCRProvider(),
+        llm_provider=FakeLLMProvider(),
+        ocr_strategy="reuse",
+    )
+    build_index(ws, **kwargs)
+    entry = load_index(ws)[0]
+    entry = entry.model_copy(
+        update={
+            "user_tags": [
+                UserTagEntry(
+                    tags=["energy_conservation"],
+                    canonical_tags=["energy_conservation"],
+                    unverified_tags=[],
+                    skill_name="solve",
+                    reasoning_snippet="manual",
+                )
+            ]
+        }
+    )
+    from cpho_cli.core.index.storage import write_index
+
+    write_index(ws / ".cpho" / "index.jsonl", [entry])
+
+    build_index(ws, force_all=True, **kwargs)
+
+    rebuilt = load_index(ws)[0]
+    assert rebuilt.user_tags == []
 
 
 # --- only_new ---

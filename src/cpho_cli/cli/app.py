@@ -1,23 +1,43 @@
 from pathlib import Path
 from typing import Optional
 
+import click
 import typer
 
 from cpho_cli.core.config import ConfigError
 from cpho_cli.core.eval import EvalConfigError, run_eval
 from cpho_cli.core.index import (
+    add_problem_tags,
     IndexBuildError,
     IndexNotFoundError,
     OcrUpgradeDecisionRequired,
     VocabularyError,
     build_index,
     list_pending_candidates,
+    remove_problem_tags,
+    update_problem_tags,
 )
 from cpho_cli.core.solve import SolveError, solve_problem
 
 app = typer.Typer(help="CPHO local physics analysis CLI.")
 topic_app = typer.Typer(help="主题分类浏览。")
+
+
+class IndexGroup(typer.core.TyperGroup):
+    def resolve_command(self, ctx: click.Context, args: list[str]):
+        if args and not args[0].startswith("-") and args[0] not in self.commands:
+            return super().resolve_command(ctx, ["build", *args])
+        return super().resolve_command(ctx, args)
+
+
+index_app = typer.Typer(
+    help="题目索引构建与标签读写。",
+    cls=IndexGroup,
+    invoke_without_command=True,
+    context_settings={"allow_extra_args": True, "ignore_unknown_options": True},
+)
 app.add_typer(topic_app, name="topic")
+app.add_typer(index_app, name="index")
 
 _OCR_STRATEGY_CHOICES = ("prompt", "reuse", "rebuild", "new-only")
 
@@ -99,12 +119,19 @@ def _index_progress_cli(event: dict) -> None:
         typer.echo(f"  跳过 [{event['problem_id']}]: 无变化")
 
 
-@app.command(name="index")
+@index_app.callback(invoke_without_command=True)
 def index_command(
-    workspace: Path = typer.Argument(Path.cwd(), help="工作空间目录（默认: 当前目录）。"),
+    ctx: typer.Context,
+    workspace_option: Optional[Path] = typer.Option(
+        None,
+        "--workspace",
+        "-w",
+        help="工作空间目录（默认: 当前目录；也可作为位置参数传入）。",
+    ),
     config: Optional[Path] = typer.Option(None, "--config", "-c", help="本地 YAML 配置文件路径。"),
     provider: Optional[str] = typer.Option(None, "--provider", "-p", help="配置中的 provider 名称。"),
     force: bool = typer.Option(False, "--force", help="强制重建全部索引，忽略 fingerprint。"),
+    force_all: bool = typer.Option(False, "--force-all", help="强制完全重建，并清空 skill/用户写入标签。"),
     only_new: bool = typer.Option(False, "--only-new", help="仅索引新增题目，跳过已存在条目。"),
     dry_run: bool = typer.Option(False, "--dry-run", help="仅验证 workspace 与词表，不调用 LLM 不写文件。"),
     ocr_strategy: str = typer.Option("prompt", "--ocr-strategy", help="OCR 引擎升级策略: prompt|reuse|rebuild|new-only"),
@@ -112,6 +139,15 @@ def index_command(
     list_candidates_flag: bool = typer.Option(False, "--list-candidates", help="只列出 pending candidate tag，不重建索引。"),
 ) -> None:
     """对工作空间题目生成结构化索引。"""
+    if ctx.invoked_subcommand is not None:
+        return
+    extra_args = list(ctx.args)
+    if workspace_option is not None and extra_args:
+        raise typer.BadParameter("工作空间不能同时用位置参数和 --workspace 指定。")
+    if len(extra_args) > 1:
+        raise typer.BadParameter(f"未知参数: {' '.join(extra_args[1:])}")
+    workspace = workspace_option or (Path(extra_args[0]) if extra_args else Path.cwd())
+
     if ocr_strategy not in _OCR_STRATEGY_CHOICES:
         raise typer.BadParameter(
             f"--ocr-strategy must be one of {_OCR_STRATEGY_CHOICES}; got {ocr_strategy!r}"
@@ -132,6 +168,7 @@ def index_command(
             config_path=config,
             provider_name=provider,
             force=force,
+            force_all=force_all,
             only_new=only_new,
             dry_run=dry_run,
             ocr_strategy=ocr_strategy,
@@ -158,6 +195,7 @@ def index_command(
                 config_path=config,
                 provider_name=provider,
                 force=force or new_force,
+                force_all=force_all,
                 only_new=only_new,
                 dry_run=dry_run,
                 ocr_strategy=new_strategy,
@@ -198,6 +236,111 @@ def index_command(
         typer.echo(f"  累计待审:        {stats.pending_review_items}  (运行 `cpho index --list-candidates` 查看)")
         typer.echo("")
         typer.echo(f"完成. 索引: {workspace}/.cpho/index.jsonl")
+
+
+class _IndexBuildContext:
+    invoked_subcommand = None
+
+    def __init__(self, workspace: Path) -> None:
+        self.args = [str(workspace)]
+
+
+@index_app.command(name="build", hidden=True)
+def index_build_command(
+    workspace: Path = typer.Argument(Path.cwd(), help="工作空间目录（默认: 当前目录）。"),
+    config: Optional[Path] = typer.Option(None, "--config", "-c", help="本地 YAML 配置文件路径。"),
+    provider: Optional[str] = typer.Option(None, "--provider", "-p", help="配置中的 provider 名称。"),
+    force: bool = typer.Option(False, "--force", help="强制重建全部索引，忽略 fingerprint。"),
+    force_all: bool = typer.Option(False, "--force-all", help="强制完全重建，并清空 skill/用户写入标签。"),
+    only_new: bool = typer.Option(False, "--only-new", help="仅索引新增题目，跳过已存在条目。"),
+    dry_run: bool = typer.Option(False, "--dry-run", help="仅验证 workspace 与词表，不调用 LLM 不写文件。"),
+    ocr_strategy: str = typer.Option("prompt", "--ocr-strategy", help="OCR 引擎升级策略: prompt|reuse|rebuild|new-only"),
+    quiet: bool = typer.Option(False, "--quiet", "-q", help="仅输出错误。"),
+    list_candidates_flag: bool = typer.Option(False, "--list-candidates", help="只列出 pending candidate tag，不重建索引。"),
+) -> None:
+    index_command(
+        _IndexBuildContext(workspace),  # type: ignore[arg-type]
+        workspace_option=None,
+        config=config,
+        provider=provider,
+        force=force,
+        force_all=force_all,
+        only_new=only_new,
+        dry_run=dry_run,
+        ocr_strategy=ocr_strategy,
+        quiet=quiet,
+        list_candidates_flag=list_candidates_flag,
+    )
+
+
+def _require_tags(tags: list[str]) -> list[str]:
+    if not tags:
+        raise typer.BadParameter("至少提供一个 --tag/-t。")
+    return tags
+
+
+@index_app.command(name="tag-add")
+def index_tag_add(
+    workspace: Path = typer.Option(Path.cwd(), "--workspace", "-w", help="工作空间目录。"),
+    problem_id: str = typer.Option(..., "--problem-id", help="题目 ID。"),
+    tags: list[str] = typer.Option([], "--tag", "-t", help="要追加的标签，可重复。"),
+    skill_name: str = typer.Option(..., "--skill-name", help="写入标签的 skill 名称。"),
+    reasoning: str = typer.Option(..., "--reasoning", help="写入依据。"),
+    quiet: bool = typer.Option(False, "--quiet", "-q", help="仅输出错误。"),
+) -> None:
+    """追加 skill/用户标签。"""
+    try:
+        entry = add_problem_tags(
+            workspace,
+            problem_id,
+            _require_tags(tags),
+            skill_name=skill_name,
+            reasoning=reasoning,
+        )
+    except IndexBuildError as exc:
+        raise typer.BadParameter(str(exc)) from exc
+    if not quiet:
+        typer.echo(f"已追加标签: {entry.problem_id} ({len(tags)} 个)")
+
+
+@index_app.command(name="tag-remove")
+def index_tag_remove(
+    workspace: Path = typer.Option(Path.cwd(), "--workspace", "-w", help="工作空间目录。"),
+    problem_id: str = typer.Option(..., "--problem-id", help="题目 ID。"),
+    tags: list[str] = typer.Option([], "--tag", "-t", help="要移除的标签，可重复。"),
+    quiet: bool = typer.Option(False, "--quiet", "-q", help="仅输出错误。"),
+) -> None:
+    """移除 skill/用户标签。"""
+    try:
+        entry = remove_problem_tags(workspace, problem_id, _require_tags(tags))
+    except IndexBuildError as exc:
+        raise typer.BadParameter(str(exc)) from exc
+    if not quiet:
+        typer.echo(f"已移除标签: {entry.problem_id} ({len(tags)} 个)")
+
+
+@index_app.command(name="tag-set")
+def index_tag_set(
+    workspace: Path = typer.Option(Path.cwd(), "--workspace", "-w", help="工作空间目录。"),
+    problem_id: str = typer.Option(..., "--problem-id", help="题目 ID。"),
+    tags: list[str] = typer.Option([], "--tag", "-t", help="新的完整标签集合，可重复。"),
+    skill_name: str = typer.Option(..., "--skill-name", help="写入标签的 skill 名称。"),
+    reasoning: str = typer.Option(..., "--reasoning", help="写入依据。"),
+    quiet: bool = typer.Option(False, "--quiet", "-q", help="仅输出错误。"),
+) -> None:
+    """替换 skill/用户标签集合。"""
+    try:
+        entry = update_problem_tags(
+            workspace,
+            problem_id,
+            _require_tags(tags),
+            skill_name=skill_name,
+            reasoning=reasoning,
+        )
+    except IndexBuildError as exc:
+        raise typer.BadParameter(str(exc)) from exc
+    if not quiet:
+        typer.echo(f"已设置标签: {entry.problem_id} ({len(tags)} 个)")
 
 
 def _print_tree(nodes: list, level: int = 0) -> None:  # type: ignore[type-arg]

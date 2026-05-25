@@ -127,6 +127,7 @@ def build_index(
     provider_name: str | None = None,
     *,
     force: bool = False,
+    force_all: bool = False,
     only_new: bool = False,
     dry_run: bool = False,
     ocr_strategy: str = "prompt",
@@ -144,6 +145,8 @@ def build_index(
     *workspace_root*) is scanned for papers.
     """
     workspace_root = workspace_root.resolve()
+    if force_all:
+        force = True
     discovery_root = workspace_root
     if target_subpath is not None:
         discovery_root = (workspace_root / target_subpath).resolve()
@@ -399,6 +402,7 @@ def build_index(
                 difficulty_aspects=mapping.difficulty_aspects,
                 user_confirmed_key_points=notebook.key_points if notebook else [],
                 user_confirmed_stuck_points=notebook.stuck_points if notebook else [],
+                user_tags=old.user_tags if old is not None and not force_all else [],
                 fingerprint=fingerprint,
                 ocr_text_length=len(ocr_text),
                 tag_prompt_version=tag_prompt_version,

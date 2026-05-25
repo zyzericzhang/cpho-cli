@@ -2,11 +2,14 @@
 
 from __future__ import annotations
 
+from datetime import datetime, timezone
 from pathlib import Path
 
 from cpho_cli.core.index import ProblemNotIndexedError
-from cpho_cli.core.index.storage import load_index
-from cpho_cli.models.index import IndexEntry
+from cpho_cli.core.index.notebook import _validate_problem_id
+from cpho_cli.core.index.storage import load_index, write_index
+from cpho_cli.core.index.vocabulary import load_merged_vocabulary, normalize_alias
+from cpho_cli.models.index import IndexEntry, UserTagEntry
 
 
 def query_index(
@@ -77,6 +80,127 @@ def get_problem_entry(workspace_root: Path, problem_id: str) -> IndexEntry | Non
         if entry.problem_id == problem_id:
             return entry
     return None
+
+
+def _classify_user_tags(workspace_root: Path, tags: list[str]) -> tuple[list[str], list[str]]:
+    vocabulary = load_merged_vocabulary(workspace_root)
+    canonical: list[str] = []
+    unverified: list[str] = []
+    seen_canonical: set[str] = set()
+    seen_unverified: set[str] = set()
+    for tag in tags:
+        normalized = normalize_alias(tag)
+        internal_id = tag if tag in vocabulary.tags else vocabulary.alias_index.get(normalized)
+        if internal_id is not None:
+            if internal_id not in seen_canonical:
+                canonical.append(internal_id)
+                seen_canonical.add(internal_id)
+            continue
+        if tag not in seen_unverified:
+            unverified.append(tag)
+            seen_unverified.add(tag)
+    return canonical, unverified
+
+
+def _load_entry_for_mutation(
+    workspace_root: Path,
+    problem_id: str,
+) -> tuple[list[IndexEntry], int, IndexEntry]:
+    _validate_problem_id(problem_id)
+    entries = load_index(workspace_root)
+    for index, entry in enumerate(entries):
+        if entry.problem_id == problem_id:
+            return entries, index, entry
+    raise ProblemNotIndexedError(f"Not indexed: {problem_id}")
+
+
+def _write_mutated_entry(
+    workspace_root: Path,
+    entries: list[IndexEntry],
+    index: int,
+    entry: IndexEntry,
+) -> IndexEntry:
+    entries[index] = entry
+    write_index(workspace_root / ".cpho" / "index.jsonl", entries)
+    return entry
+
+
+def _make_user_tag_entry(
+    workspace_root: Path,
+    tags: list[str],
+    *,
+    skill_name: str,
+    reasoning: str,
+) -> UserTagEntry:
+    canonical, unverified = _classify_user_tags(workspace_root, tags)
+    return UserTagEntry(
+        tags=tags,
+        canonical_tags=canonical,
+        unverified_tags=unverified,
+        skill_name=skill_name,
+        timestamp=datetime.now(timezone.utc),
+        reasoning_snippet=reasoning,
+    )
+
+
+def add_problem_tags(
+    workspace_root: Path,
+    problem_id: str,
+    tags: list[str],
+    *,
+    skill_name: str,
+    reasoning: str,
+) -> IndexEntry:
+    entries, index, entry = _load_entry_for_mutation(workspace_root, problem_id)
+    user_tag = _make_user_tag_entry(
+        workspace_root,
+        tags,
+        skill_name=skill_name,
+        reasoning=reasoning,
+    )
+    updated = entry.model_copy(update={"user_tags": [*entry.user_tags, user_tag]})
+    return _write_mutated_entry(workspace_root, entries, index, updated)
+
+
+def update_problem_tags(
+    workspace_root: Path,
+    problem_id: str,
+    tags: list[str],
+    *,
+    skill_name: str,
+    reasoning: str,
+) -> IndexEntry:
+    entries, index, entry = _load_entry_for_mutation(workspace_root, problem_id)
+    user_tag = _make_user_tag_entry(
+        workspace_root,
+        tags,
+        skill_name=skill_name,
+        reasoning=reasoning,
+    )
+    updated = entry.model_copy(update={"user_tags": [user_tag]})
+    return _write_mutated_entry(workspace_root, entries, index, updated)
+
+
+def remove_problem_tags(workspace_root: Path, problem_id: str, tags: list[str]) -> IndexEntry:
+    entries, index, entry = _load_entry_for_mutation(workspace_root, problem_id)
+    removals = set(tags)
+    updated_user_tags: list[UserTagEntry] = []
+    for user_tag in entry.user_tags:
+        remaining = [tag for tag in user_tag.tags if tag not in removals]
+        if not remaining:
+            continue
+        canonical, unverified = _classify_user_tags(workspace_root, remaining)
+        updated_user_tags.append(
+            user_tag.model_copy(
+                update={
+                    "tags": remaining,
+                    "canonical_tags": canonical,
+                    "unverified_tags": unverified,
+                }
+            )
+        )
+    updated = entry.model_copy(update={"user_tags": updated_user_tags})
+    return _write_mutated_entry(workspace_root, entries, index, updated)
 
 
 def find_related_problems(

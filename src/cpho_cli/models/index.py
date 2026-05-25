@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import Enum
 from pathlib import Path
 
@@ -109,6 +109,15 @@ class TaggedReference(StrictModel):
     confidence: float | None = None
 
 
+class UserTagEntry(StrictModel):
+    tags: list[str] = Field(default_factory=list)
+    canonical_tags: list[str] = Field(default_factory=list)
+    unverified_tags: list[str] = Field(default_factory=list)
+    skill_name: str
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    reasoning_snippet: str
+
+
 class UserNotebookEntry(StrictModel):
     problem_id: str
     key_points: list[str] = Field(default_factory=list)
@@ -130,6 +139,7 @@ class IndexEntry(StrictModel):
     difficulty_aspects: list[str] = Field(default_factory=list)
     user_confirmed_key_points: list[str] = Field(default_factory=list)
     user_confirmed_stuck_points: list[str] = Field(default_factory=list)
+    user_tags: list[UserTagEntry] = Field(default_factory=list)
     fingerprint: IndexFingerprint
     ocr_cache_path: Path | None = None
     ocr_text_length: int

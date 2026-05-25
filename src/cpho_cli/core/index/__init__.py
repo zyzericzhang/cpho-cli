@@ -21,9 +21,12 @@ class VocabularyError(IndexBuildError):
 
 from cpho_cli.core.index.builder import build_index  # noqa: E402
 from cpho_cli.core.index.api import (  # noqa: E402
+    add_problem_tags,
     find_related_problems,
     get_problem_entry,
     query_index,
+    remove_problem_tags,
+    update_problem_tags,
 )
 from cpho_cli.core.index.notebook import get_problem_notes, set_problem_notes  # noqa: E402
 from cpho_cli.core.index.ocr_cache import (  # noqa: E402
@@ -57,6 +60,7 @@ from cpho_cli.models.index import (  # noqa: E402
     TagStatus,
     TagVisibility,
     UserNotebookEntry,
+    UserTagEntry,
     Vocabulary,
 )
 
@@ -72,6 +76,9 @@ __all__ = [
     "query_index",
     "get_problem_entry",
     "find_related_problems",
+    "add_problem_tags",
+    "remove_problem_tags",
+    "update_problem_tags",
     # Notebook
     "get_problem_notes",
     "set_problem_notes",
@@ -95,6 +102,7 @@ __all__ = [
     "CanonicalTag",
     "CandidateTag",
     "UserNotebookEntry",
+    "UserTagEntry",
     "TagCategory",
     "TagVisibility",
     "TagStatus",
