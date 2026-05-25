@@ -1,5 +1,6 @@
 from pathlib import Path
 
+import jinja2
 import pytest
 
 from cpho_cli.core.skills import SkillDefinitionError, load_skill
@@ -59,3 +60,21 @@ def test_rejects_duplicate_output_keys(tmp_path: Path) -> None:
     with pytest.raises(SkillDefinitionError):
         load_skill(tmp_path)
 
+
+def test_builtin_solve_llm_prompt_templates_exist_and_render() -> None:
+    loaded = load_skill(Path("src/cpho_cli/builtin_skills/solve"))
+
+    for step in loaded.spec.steps:
+        if step.kind != "llm":
+            continue
+        assert step.id in loaded.prompt_paths
+        prompt_path = loaded.prompt_paths[step.id]
+        assert prompt_path.exists()
+        template = jinja2.Environment(undefined=jinja2.StrictUndefined).from_string(
+            prompt_path.read_text(encoding="utf-8")
+        )
+        values = {key: f"{key}-value" for key in step.input_keys}
+
+        rendered = template.render(values)
+
+        assert rendered.strip()

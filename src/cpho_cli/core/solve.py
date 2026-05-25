@@ -10,6 +10,8 @@ from cpho_cli.core.config import load_config, resolve_model_params, resolve_prov
 from cpho_cli.core.documents import load_document
 from cpho_cli.core.llm import LLMProvider, create_llm_provider
 from cpho_cli.core.ocr import OCRProvider, RapidOCRProvider
+from cpho_cli.core.runtime import SkillRuntime, SkillRuntimeError
+from cpho_cli.core.skill_handlers import make_llm_handler, python_tool_handler
 from cpho_cli.core.skills import load_skill
 from cpho_cli.models.solve import SolveReport, SolveRunResult
 
@@ -83,31 +85,34 @@ def solve_problem(
         timeout=provider_config.timeout,
     )
     params = resolve_model_params(config, "solve", provider_name=provider_name)
-    response = provider.complete(
-        messages=[
-            {
-                "role": "system",
-                "content": (
-                    "Return strict JSON for SolveReport. Every derivation step must cite "
-                    "official_answer_refs from the supplied answer key."
-                ),
-            },
-            {
-                "role": "user",
-                "content": (
-                    f"Problem OCR text:\n{problem_ocr.text}\n\n"
-                    f"Answer OCR text:\n{answer_ocr.text}\n\n"
-                    f"OCR warnings:\n{warnings}"
-                ),
-            },
-        ],
-        params=params,
-        response_model=SolveReport,
+    skill = load_skill(_builtin_solve_skill_dir())
+    runtime = SkillRuntime(
+        handlers={
+            "python_tool": python_tool_handler,
+            "llm": make_llm_handler(provider, params, skill.root),
+        },
+        secrets=[provider_config.api_key],
     )
     try:
-        report = SolveReport.model_validate_json(response.content)
-    except ValidationError as exc:
-        raise SolveError(f"LLM response failed SolveReport validation: {exc}") from exc
+        result = runtime.run(
+            skill.spec,
+            {
+                "problem_text": problem_ocr.text,
+                "answer_text": answer_ocr.text,
+                "ocr_warnings": warnings,
+                "problem_path": str(problem_path),
+                "answer_path": str(answer_path),
+            },
+        )
+        raw_report = result.blackboard["solve_report"]
+        if isinstance(raw_report, SolveReport):
+            report = raw_report
+        elif isinstance(raw_report, str):
+            report = SolveReport.model_validate_json(raw_report)
+        else:
+            report = SolveReport.model_validate(raw_report)
+    except (SkillRuntimeError, ValidationError) as exc:
+        raise SolveError(f"Solve skill failed: {exc}") from exc
     if warnings:
         report.ocr_warnings = sorted(set(report.ocr_warnings + warnings))
     return _write_report(report, output_dir)

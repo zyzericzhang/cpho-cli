@@ -1,0 +1,84 @@
+from __future__ import annotations
+
+import json
+from collections.abc import Mapping
+from pathlib import Path
+from typing import Any
+
+import jinja2
+from pydantic import BaseModel, ValidationError
+
+from cpho_cli.core.llm import LLMProvider
+from cpho_cli.core.runtime import SkillRuntimeError, StepHandler
+from cpho_cli.models.config import ModelParams
+from cpho_cli.models.skills import SkillStep
+from cpho_cli.models.solve import SolveReport
+
+
+def make_llm_handler(
+    provider: LLMProvider,
+    params: ModelParams,
+    skill_dir: Path,
+    response_models: Mapping[str, type[BaseModel]] | None = None,
+) -> StepHandler:
+    models_by_output = {"solve_report": SolveReport, **(response_models or {})}
+    env = jinja2.Environment(
+        loader=jinja2.FileSystemLoader(str(skill_dir / "prompts")),
+        undefined=jinja2.StrictUndefined,
+        autoescape=False,
+    )
+
+    def handler(step: SkillStep, values: Mapping[str, Any]) -> Mapping[str, Any]:
+        if step.prompt_template is None:
+            raise SkillRuntimeError(f"Step {step.id} is missing prompt_template")
+        try:
+            prompt = env.get_template(step.prompt_template).render(**values)
+        except jinja2.TemplateError as exc:
+            raise SkillRuntimeError(f"Step {step.id} prompt render failed: {exc}") from exc
+
+        output_model = (
+            models_by_output.get(step.output_keys[0])
+            if len(step.output_keys) == 1
+            else None
+        )
+        response = provider.complete(
+            messages=[
+                {
+                    "role": "system",
+                    "content": "Return strict JSON containing exactly the requested output keys.",
+                },
+                {"role": "user", "content": prompt},
+            ],
+            params=params,
+            response_model=output_model,
+        )
+
+        if output_model is not None:
+            try:
+                return {step.output_keys[0]: output_model.model_validate_json(response.content)}
+            except ValidationError as exc:
+                raise SkillRuntimeError(
+                    f"Step {step.id} output failed {output_model.__name__} validation: {exc}"
+                ) from exc
+
+        try:
+            parsed = json.loads(response.content)
+        except json.JSONDecodeError as exc:
+            raise SkillRuntimeError(f"Step {step.id} returned invalid JSON: {exc}") from exc
+        if not isinstance(parsed, dict):
+            raise SkillRuntimeError(f"Step {step.id} returned non-object JSON")
+        missing = [key for key in step.output_keys if key not in parsed]
+        if missing:
+            raise SkillRuntimeError(f"Step {step.id} missing output keys: {missing}")
+        return {key: parsed[key] for key in step.output_keys}
+
+    return handler
+
+
+def python_tool_handler(step: SkillStep, values: Mapping[str, Any]) -> Mapping[str, Any]:
+    if step.id != "extract_problem_answer":
+        raise SkillRuntimeError(f"Unsupported python_tool step: {step.id}")
+    return {
+        "raw_problem": values["problem_text"],
+        "raw_answer": values["answer_text"],
+    }

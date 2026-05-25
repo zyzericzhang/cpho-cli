@@ -1,8 +1,5 @@
-Problem text:
-{{ problem_text | default(raw_problem, true) }}
+Problem OCR text:
+{{ raw_problem }}
 
-Answer text:
-{{ answer_text | default(raw_answer, true) }}
-
-Return strict JSON matching the requested schema.
-
+Normalize the problem statement. Preserve quantities, units, diagrams described in OCR, and the requested unknowns.
+Return strict JSON with key "normalized_problem".

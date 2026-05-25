@@ -19,7 +19,7 @@ steps:
     kind: llm
     input_keys: [raw_answer]
     output_keys: [answer_structure]
-    prompt_template: normalize.md.j2
+    prompt_template: answer_structure.md.j2
   - id: derive_subproblems
     kind: llm
     input_keys: [normalized_problem, answer_structure]
@@ -34,10 +34,9 @@ steps:
     kind: llm
     input_keys: [answer_cross_check, ocr_warnings]
     output_keys: [discrepancies]
-    prompt_template: cross_check.md.j2
+    prompt_template: discrepancies.md.j2
   - id: assemble_final_report
     kind: llm
     input_keys: [normalized_problem, subproblem_derivations, answer_cross_check, discrepancies, ocr_warnings]
     output_keys: [solve_report]
     prompt_template: final_report.md.j2
-

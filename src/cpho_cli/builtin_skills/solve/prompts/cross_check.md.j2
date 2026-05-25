@@ -1,11 +1,8 @@
 Derivations:
-{{ subproblem_derivations | default('', true) }}
+{{ subproblem_derivations }}
 
 Official answer:
-{{ answer_structure | default('', true) }}
+{{ answer_structure }}
 
-OCR warnings:
-{{ ocr_warnings | default([], true) }}
-
-Flag discrepancies and likely source.
-
+Cross-check each derivation against the official answer structure and identify cited answer references.
+Return strict JSON with key "answer_cross_check".
