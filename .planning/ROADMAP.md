@@ -114,7 +114,19 @@ Plans:
   7. `cpho solve` 支持图片/PDF 多模态输入（通过 OpenRouter Universal PDF Support），模型不支持多模态时自动降级到 OCR 文本路径。
   8. `cpho index` 支持 `--vision` 选项启用多模态索引（默认仍用 OCR）。
 
-**Plans**: TBD
+**Plans**: 10 plans
+
+Plans:
+- [ ] 02.3-01-PLAN.md — Remove SolveReport from index schema and tag-normalization contract
+- [ ] 02.3-02-PLAN.md — Remove remaining SolveReport loading from build_index
+- [ ] 02.3-03-PLAN.md — Add index tag write API, provenance model, and CLI wrappers
+- [ ] 02.3-04-PLAN.md — Delete eval/golden_tests while preserving splitting fixture coverage
+- [ ] 02.3-05-PLAN.md — Route text-path solve through SkillRuntime handlers
+- [ ] 02.3-06-PLAN.md — Add neutral multimodal LLM helpers and solve multimodal routing
+- [ ] 02.3-07-PLAN.md — Align workspace suffix support and refresh REPL model capabilities
+- [ ] 02.3-08-PLAN.md — Add core index --vision behavior behind OCR-default fallback
+- [ ] 02.3-09-PLAN.md — Expose index vision in CLI/REPL and add phase acceptance gates
+- [ ] 02.3-10-PLAN.md — Run final real uv verification and write Chinese verification manual
 
 ### Phase 3: Skill System + Core Skills
 **Goal**: Users can run Explanation and Quiz analysis modes on indexed problems (individual ProblemEntries split from exam papers), and extend the system with custom YAML-defined skills that are auto-discovered from a skills directory.
@@ -150,6 +162,6 @@ Phases execute in numeric order: 1 → 2 → 2.1 → 2.2 → 2.3 → 3 → 4
 | 2. Tag Indexing | 7/7 | Complete   | 2026-05-23 |
 | 02.1. Paper Splitting | 5/5 | Complete | 2026-05-24 |
 | 02.2. TUI REPL 骨架 | 6/6 | Complete   | 2026-05-24 |
-| 02.3. Index 读写分离 + Solve 降级 | 0/TBD | Not started | - |
+| 02.3. Index 读写分离 + Solve 降级 | 0/10 | Planned | - |
 | 3. Skill System + Core Skills | 0/TBD | Not started | - |
 | 4. Knowledge Network + Ecosystem | 0/TBD | Not started | - |
