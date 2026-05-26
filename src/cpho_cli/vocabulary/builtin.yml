@@ -1,0 +1,400 @@
+version: v0.1
+tags:
+- internal_id: newton_second_law
+  display_zh: 牛顿第二定律
+  category: heuristic
+  aliases:
+  - F=ma
+  - 动力学基本方程
+  description: 连接受力与加速度的基本方程。
+  status: canonical
+  visibility: public
+  layer: builtin
+- internal_id: momentum_conservation
+  display_zh: 动量守恒
+  category: physics_law
+  aliases:
+  - conservation of momentum
+  - p 守恒
+  description: 系统合外力为零时动量不变。
+  status: canonical
+  visibility: public
+  layer: builtin
+- internal_id: energy_conservation
+  display_zh: 能量守恒
+  category: physics_law
+  aliases:
+  - 机械能守恒
+  - conservation of energy
+  description: 用能量转化约束过程始末。
+  status: canonical
+  visibility: public
+  layer: builtin
+- internal_id: angular_momentum_conservation
+  display_zh: 角动量守恒
+  category: physics_law
+  aliases:
+  - L 守恒
+  description: 合外力矩为零时角动量不变。
+  status: canonical
+  visibility: public
+  layer: builtin
+- internal_id: circular_motion
+  display_zh: 圆周运动
+  category: physics_model
+  aliases:
+  - uniform circular motion
+  - 向心力
+  description: 用向心加速度描述曲线运动。
+  status: canonical
+  visibility: public
+  layer: builtin
+- internal_id: simple_harmonic_motion
+  display_zh: 简谐振动
+  category: physics_model
+  aliases:
+  - SHM
+  - 谐振子
+  description: 回复力正比位移的周期运动。
+  status: canonical
+  visibility: public
+  layer: builtin
+- internal_id: rigid_body_rotation
+  display_zh: 刚体定轴转动
+  category: physics_model
+  aliases:
+  - rotational dynamics
+  description: 用转动惯量和力矩建模。
+  status: canonical
+  visibility: public
+  layer: builtin
+- internal_id: ideal_gas_law
+  display_zh: 理想气体状态方程
+  category: physics_law
+  aliases:
+  - PV=nRT
+  description: 联系气体压强体积温度。
+  status: canonical
+  visibility: public
+  layer: builtin
+- internal_id: first_law_thermo
+  display_zh: 热力学第一定律
+  category: physics_law
+  aliases:
+  - Q=ΔU+W
+  description: 表达内能热量与做功关系。
+  status: canonical
+  visibility: public
+  layer: builtin
+- internal_id: second_law_thermo
+  display_zh: 热力学第二定律
+  category: physics_law
+  aliases:
+  - 熵增
+  - entropy
+  description: 判断热过程方向与可逆性。
+  status: canonical
+  visibility: public
+  layer: builtin
+- internal_id: electrostatics_gauss
+  display_zh: 高斯定律
+  category: physics_law
+  aliases:
+  - Gauss's law
+  - 通量定理
+  description: 用电通量求对称电场。
+  status: canonical
+  visibility: public
+  layer: builtin
+- internal_id: circuit_kirchhoff
+  display_zh: 基尔霍夫定律
+  category: physics_law
+  aliases:
+  - KVL
+  - KCL
+  - 节点电压
+  description: 建立电路节点和回路方程。
+  status: canonical
+  visibility: public
+  layer: builtin
+- internal_id: electromagnetic_induction
+  display_zh: 电磁感应
+  category: physics_law
+  aliases:
+  - 法拉第定律
+  - EMF
+  description: 磁通变化产生感应电动势。
+  status: canonical
+  visibility: public
+  layer: builtin
+- internal_id: geometric_optics
+  display_zh: 几何光学
+  category: physics_model
+  aliases:
+  - 折射
+  - 反射
+  - 透镜公式
+  description: 用光线近似分析成像。
+  status: canonical
+  visibility: public
+  layer: builtin
+- internal_id: wave_interference
+  display_zh: 波动干涉
+  category: physics_law
+  aliases:
+  - 相位差
+  - 路径差
+  description: 由相位差判断叠加强弱。
+  status: canonical
+  visibility: public
+  layer: builtin
+- internal_id: dimensional_analysis
+  display_zh: 量纲分析
+  category: math_technique
+  aliases:
+  - 量纲法
+  description: 用单位维度约束表达式。
+  status: canonical
+  visibility: public
+  layer: builtin
+- internal_id: small_angle_approximation
+  display_zh: 小角近似
+  category: math_technique
+  aliases:
+  - sinθ≈θ
+  - 一阶展开
+  description: 小量角度下线性化三角函数。
+  status: canonical
+  visibility: public
+  layer: builtin
+- internal_id: taylor_expansion
+  display_zh: 泰勒展开
+  category: math_technique
+  aliases:
+  - 级数展开
+  description: 在局部用多项式近似函数。
+  status: canonical
+  visibility: public
+  layer: builtin
+- internal_id: separation_of_variables
+  display_zh: 分离变量
+  category: math_technique
+  aliases:
+  - ODE 分离变量法
+  description: 将变量分离后积分求解。
+  status: canonical
+  visibility: public
+  layer: builtin
+- internal_id: ode_first_order
+  display_zh: 一阶常微分方程
+  category: math_technique
+  aliases:
+  - first-order ODE
+  description: 处理一阶导数控制的演化。
+  status: canonical
+  visibility: public
+  layer: builtin
+- internal_id: ode_second_order
+  display_zh: 二阶常微分方程
+  category: math_technique
+  aliases:
+  - second-order ODE
+  description: 处理含二阶导数的运动方程。
+  status: canonical
+  visibility: public
+  layer: builtin
+- internal_id: vector_decomposition
+  display_zh: 矢量分解
+  category: math_technique
+  aliases:
+  - 正交分解
+  description: 将矢量投影到方便方向。
+  status: canonical
+  visibility: public
+  layer: builtin
+- internal_id: coordinate_transform
+  display_zh: 坐标变换
+  category: math_technique
+  aliases:
+  - polar/cartesian 切换
+  description: 换用坐标简化变量关系。
+  status: canonical
+  visibility: public
+  layer: builtin
+- internal_id: calculus_integral
+  display_zh: 积分计算
+  category: math_technique
+  aliases:
+  - 定积分
+  - 不定积分
+  description: 累积连续量或求总效应。
+  status: canonical
+  visibility: public
+  layer: builtin
+- internal_id: binomial_approximation
+  display_zh: 二项式近似
+  category: math_technique
+  aliases:
+  - (1+x)^n≈1+nx
+  description: 小量幂函数的一阶近似。
+  status: canonical
+  visibility: public
+  layer: builtin
+- internal_id: symmetry_argument
+  display_zh: 对称性论证
+  category: math_technique
+  aliases:
+  - symmetry analysis
+  description: 用对称关系减少未知量。
+  status: canonical
+  visibility: public
+  layer: builtin
+- internal_id: limit_analysis
+  display_zh: 极限分析
+  category: math_technique
+  aliases:
+  - 取极限验证
+  - 极限情况
+  description: 考察极端情形检验结果。
+  status: canonical
+  visibility: public
+  layer: builtin
+- internal_id: system_selection
+  display_zh: 研究对象选择
+  category: heuristic
+  aliases:
+  - 选什么系统
+  - 整体法/隔离法
+  description: 决定把哪些物体作为系统。
+  status: canonical
+  visibility: public
+  layer: builtin
+- internal_id: reference_frame_choice
+  display_zh: 参考系选择
+  category: heuristic
+  aliases:
+  - 惯性系/非惯性系切换
+  description: 选择便于描述运动的观察系。
+  status: canonical
+  visibility: public
+  layer: builtin
+- internal_id: conservation_law_selection
+  display_zh: 守恒律选择
+  category: heuristic
+  aliases:
+  - 选用能量/动量/角动量
+  description: 判断应使用哪种守恒量。
+  status: canonical
+  visibility: public
+  layer: builtin
+- internal_id: coordinate_system_choice
+  display_zh: 坐标系选择
+  category: heuristic
+  aliases:
+  - 极坐标/直角坐标
+  description: 选取让方程最简的坐标。
+  status: canonical
+  visibility: public
+  layer: builtin
+- internal_id: free_body_diagram
+  display_zh: 受力分析
+  category: heuristic
+  aliases:
+  - FBD
+  - 力图
+  description: 分离物体并列出全部受力。
+  status: canonical
+  visibility: public
+  layer: builtin
+- internal_id: approximation_to_first_order
+  display_zh: 一阶近似
+  category: approximation
+  aliases:
+  - 线性近似
+  description: 忽略二阶及更高小量。
+  status: canonical
+  visibility: public
+  layer: builtin
+- internal_id: approximation_to_second_order
+  display_zh: 二阶近似
+  category: approximation
+  aliases:
+  - 保留二阶项
+  description: 保留二阶小量修正效应。
+  status: canonical
+  visibility: public
+  layer: builtin
+- internal_id: identify_constraint
+  display_zh: 识别约束
+  category: heuristic
+  aliases:
+  - 约束方程
+  description: 找出运动或几何限制关系。
+  status: canonical
+  visibility: public
+  layer: builtin
+- internal_id: symmetry_recognition
+  display_zh: 对称性识别
+  category: heuristic
+  aliases:
+  - 利用对称简化
+  description: 发现可减少计算的对称性。
+  status: canonical
+  visibility: public
+  layer: builtin
+- internal_id: limiting_case_check
+  display_zh: 极限情形校验
+  category: heuristic
+  aliases:
+  - sanity check
+  - 极限验证
+  description: 用特殊极限检查答案合理性。
+  status: canonical
+  visibility: public
+  layer: builtin
+- internal_id: boundary_condition_setup
+  display_zh: 边界条件设置
+  category: heuristic
+  aliases:
+  - BC
+  - 初始条件
+  description: 明确初末或边界处约束。
+  status: canonical
+  visibility: public
+  layer: builtin
+- internal_id: variable_substitution
+  display_zh: 变量替换
+  category: heuristic
+  aliases:
+  - u 代换
+  description: 换元以简化方程形式。
+  status: canonical
+  visibility: public
+  layer: builtin
+- internal_id: equivalent_circuit
+  display_zh: 等效电路
+  category: heuristic
+  aliases:
+  - 戴维南/诺顿
+  description: 用等效模型简化电路。
+  status: canonical
+  visibility: public
+  layer: builtin
+- internal_id: superposition_principle
+  display_zh: 叠加原理
+  category: heuristic
+  aliases:
+  - superposition
+  description: 将线性响应分解后相加。
+  status: canonical
+  visibility: public
+  layer: builtin
+- internal_id: analogy_mapping
+  display_zh: 类比映射
+  category: heuristic
+  aliases:
+  - 力学-电学类比
+  description: 借相似结构迁移解法。
+  status: canonical
+  visibility: public
+  layer: builtin

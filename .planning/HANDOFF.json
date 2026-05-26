@@ -1,0 +1,84 @@
+{
+  "version": "1.0",
+  "timestamp": "2026-05-23T11:52:43.468Z",
+  "phase": "02",
+  "phase_name": "tag-indexing",
+  "phase_dir": ".planning/phases/02-tag-indexing",
+  "plan": "02-05",
+  "task": null,
+  "total_tasks": 4,
+  "status": "paused",
+  "completed_tasks": [
+    {
+      "id": "02-01",
+      "name": "Index data models, JSONL storage, vocabulary foundation",
+      "status": "done",
+      "commit": "c2e3587"
+    },
+    {
+      "id": "02-02",
+      "name": "Hashing, fingerprints, action decision",
+      "status": "done",
+      "commit": "a16315d"
+    },
+    {
+      "id": "02-06",
+      "name": "Builtin vocabulary, split board files, manual",
+      "status": "done",
+      "commit": "f452024"
+    },
+    {
+      "id": "02-03",
+      "name": "OCR cache wrapper and engine upgrade detection",
+      "status": "done",
+      "commit": "be03ec8"
+    },
+    {
+      "id": "02-04",
+      "name": "LLM tagging pipeline and canonical mapping",
+      "status": "done",
+      "commit": "17dc1cd"
+    }
+  ],
+  "remaining_tasks": [
+    {
+      "id": "02-05",
+      "name": "Index builder, CLI, API, notebook stubs, golden fixture",
+      "status": "not_started"
+    },
+    {
+      "id": "02-07",
+      "name": "Topic hierarchy classification",
+      "status": "not_planned",
+      "note": "Design handoff exists in .planning/notes/topic-hierarchy-design.md; this is not part of the current phase-plan index yet."
+    }
+  ],
+  "blockers": [],
+  "human_actions_pending": [
+    {
+      "action": "Review duplicate builtin tags listed in docs/builtin-vocabulary-manual.md",
+      "context": "The split builtin vocabulary intentionally preserves cross-board duplicate internal_ids with deterministic last-file-wins merge order.",
+      "blocking": false
+    }
+  ],
+  "decisions": [
+    {
+      "decision": "Adopt redesigned TagCategory values",
+      "rationale": "User supplied topic-hierarchy handoff: physics_law, physics_model, math_technique, heuristic, approximation; system_selection folds into heuristic.",
+      "phase": "02"
+    },
+    {
+      "decision": "Keep tags and topics separate",
+      "rationale": "Tags are flat and multiple per problem; topics are a single tree path per problem and belong to 02-07.",
+      "phase": "02"
+    },
+    {
+      "decision": "Split builtin vocabulary into board files",
+      "rationale": "User provided multiple version-separated vocabulary blocks and requested classification by content board.",
+      "phase": "02"
+    }
+  ],
+  "uncommitted_files": [],
+  "next_action": "Resume with plan 02-05 only after reading .planning/notes/topic-hierarchy-design.md and all Phase 2 summaries; do not start 02-07 until a PLAN exists.",
+  "context_notes": "User explicitly requested to stop after 02-04. Wave 1 and Wave 2 are merged and verified. Full test suite, ruff, and mypy were green before handoff."
+}

@@ -1,0 +1,2 @@
+"""CLI adapters for CPHO."""
+
