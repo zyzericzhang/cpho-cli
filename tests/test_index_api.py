@@ -62,9 +62,7 @@ def _make_entry(
     def _refs(ids: list[str] | None) -> list[TaggedReference]:
         if not ids:
             return []
-        return [
-            TaggedReference(internal_id=i, source=TagSource.OCR_FALLBACK) for i in ids
-        ]
+        return [TaggedReference(internal_id=i, source=TagSource.OCR_FALLBACK) for i in ids]
 
     return IndexEntry(
         problem_id=problem_id,
@@ -182,12 +180,8 @@ def test_find_related_problems_same_category_overlap(tmp_path: Path) -> None:
 
 
 def test_find_related_problems_cross_category_bonus(tmp_path: Path) -> None:
-    p1 = _make_entry(
-        "p1", physics=["newton_second_law"], heuristic=["free_body_diagram"]
-    )
-    p2 = _make_entry(
-        "p2", physics=["newton_second_law"], heuristic=["free_body_diagram"]
-    )
+    p1 = _make_entry("p1", physics=["newton_second_law"], heuristic=["free_body_diagram"])
+    p2 = _make_entry("p2", physics=["newton_second_law"], heuristic=["free_body_diagram"])
     p3 = _make_entry("p3", physics=["newton_second_law"])
     _seed_index(tmp_path, [p1, p2, p3])
 
@@ -198,12 +192,8 @@ def test_find_related_problems_cross_category_bonus(tmp_path: Path) -> None:
 
 
 def test_find_related_min_shared_tags_threshold(tmp_path: Path) -> None:
-    p1 = _make_entry(
-        "p1", physics=["newton_second_law"], heuristic=["free_body_diagram"]
-    )
-    p2 = _make_entry(
-        "p2", physics=["newton_second_law"], heuristic=["free_body_diagram"]
-    )
+    p1 = _make_entry("p1", physics=["newton_second_law"], heuristic=["free_body_diagram"])
+    p2 = _make_entry("p2", physics=["newton_second_law"], heuristic=["free_body_diagram"])
     p3 = _make_entry("p3", physics=["newton_second_law"])
     _seed_index(tmp_path, [p1, p2, p3])
 
@@ -215,9 +205,7 @@ def test_find_related_min_shared_tags_threshold(tmp_path: Path) -> None:
 
 def test_find_related_max_results_truncates(tmp_path: Path) -> None:
     focal = _make_entry("focal", physics=["newton_second_law"])
-    others = [
-        _make_entry(f"p{i}", physics=["newton_second_law"]) for i in range(15)
-    ]
+    others = [_make_entry(f"p{i}", physics=["newton_second_law"]) for i in range(15)]
     _seed_index(tmp_path, [focal, *others])
 
     related = find_related_problems(tmp_path, "focal", max_results=5)
@@ -310,6 +298,21 @@ def test_update_problem_tags_replaces_all_user_tag_entries(tmp_path: Path) -> No
     assert entry.user_tags[0].tags == ["free_body_diagram"]
     assert entry.user_tags[0].canonical_tags == ["free_body_diagram"]
     assert entry.user_tags[0].skill_name == "explain"
+
+
+def test_add_problem_tags_records_explain_skill_name(tmp_path: Path) -> None:
+    _seed_index(tmp_path, [_make_entry("p1")])
+
+    entry = add_problem_tags(
+        tmp_path,
+        "p1",
+        ["补充标签"],
+        skill_name="explain",
+        reasoning="Explain 候选标签确认。",
+    )
+
+    assert entry.user_tags[0].skill_name == "explain"
+    assert entry.user_tags[0].reasoning_snippet == "Explain 候选标签确认。"
 
 
 def test_remove_problem_tags_removes_matching_strings(tmp_path: Path) -> None:
