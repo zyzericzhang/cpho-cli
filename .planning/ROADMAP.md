@@ -17,7 +17,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 02.1: Paper Splitting** — 试卷切分：多题试卷拆分为独立题目条目，修复数据模型形状错配 (INSERTED — COMPLETE 2026-05-24)
 - [x] **Phase 02.2: TUI REPL 骨架** — prompt_toolkit REPL 主循环、skill 注册机制、slash command 首批命令，为后续 phase 顺带扩展 TUI 打好基础 (INSERTED) (completed 2026-05-24)
 - [x] **Phase 02.3: Index 读写分离 + Solve 降级** — 移除 SolveReport→index 耦合与 golden_tests，index 标签层开放读写 API 供 skills 修改 (INSERTED) (completed 2026-05-25)
-- [ ] **Phase 3: Skill 跨切面 + 核心讲解 Skills** — 所有 skill 通用的 Markdown 导出 / Follow-up 对话 / 进度显示 + Solve 重定位（挑错 + tag 长期记录）+ Explain 增强（多 Tone / 分栏目 / 句子级 / 回写 Index）+ 主动提问 Skill
+- [x] **Phase 3: Skill 跨切面 + 核心讲解 Skills** — 所有 skill 通用的 Markdown 导出 / Follow-up 对话 / 进度显示 + Solve 重定位（挑错 + tag 长期记录）+ Explain 增强（多 Tone / 分栏目 / 句子级 / 回写 Index）+ 主动提问 Skill (completed 2026-05-26)
 - [ ] **Phase 4: 找同类题 + 组卷 + 异常处理** — 找同类题 skill + 编排文件驱动的 PDF 组卷（一页一题，答案分卷）+ 工作流异常边界（中途退出 / 硬盘拔出 / 文件越界 / blackboard 落盘恢复）
 - [ ] **Phase 5: 用户手册 + 开源准备** — README、`docs/user/` 延伸文档、简化的 Python 扩展机制，参考著名开源 repo 风格为 GitHub 开源做准备
 

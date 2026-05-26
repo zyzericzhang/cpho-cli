@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: planning
-stopped_at: Phase 05 context gathered
-last_updated: "2026-05-26T15:19:53.939Z"
-last_activity: 2026-05-26 -- Phase 3/4 重写、Phase 5 新增（依据 docs/new-understanding-2026-05-26.md）
+status: executing
+stopped_at: Phase 3 complete; starting Phase 4
+last_updated: "2026-05-26T00:00:00+08:00"
+last_activity: 2026-05-26 -- Phase 3 completed with full pytest verification; starting Phase 4.
 progress:
   total_phases: 8
-  completed_phases: 5
-  total_plans: 33
-  completed_plans: 33
-  percent: 63
+  completed_phases: 6
+  total_plans: 41
+  completed_plans: 41
+  percent: 75
 ---
 
 # Project State
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-05-20)
 
 **Core value:** 生成质量 — truly find problem difficulty points and insights, explain the "why" behind every derivation step, link related problems into a knowledge network.
-**Current focus:** Phase 3 — Skill 跨切面 + 核心讲解 Skills（Solve 重定位 / Explain 增强 / 主动提问）
+**Current focus:** Phase 4 — 找同类题 + 组卷 + 异常处理
 
 ## Current Position
 
-Phase: 3 (skill-cross-cutting-core-skills) — READY FOR PLANNING
+Phase: 4 (related-problems-pdf-assembly-errors) — READY FOR PLANNING
 Plan: TBD
-Status: Phase 02.3 complete; Phase 3 重写后 ready for planning（旧 Quiz/YAML 思路已废弃）
-Last activity: 2026-05-26 -- Phase 3/4 重写、Phase 5 新增（依据 docs/new-understanding-2026-05-26.md）
+Status: Phase 3 complete; Phase 4 ready for GSD research and planning.
+Last activity: 2026-05-26 -- Phase 3 completed with `uv run pytest -q` (384 passed, 5 existing warnings).
 
-Progress: [██████░░░░] 63%
+Progress: [████████░░] 75%
 
 ## Performance Metrics
 
@@ -46,7 +46,7 @@ Progress: [██████░░░░] 63%
 |-------|-------|-------|----------|
 | 1. Core Foundation | 5/5 | - | - |
 | 2. Tag Indexing | 7/7 | - | - |
-| 3. Skill 跨切面 + 核心讲解 Skills | 0/TBD | - | - |
+| 3. Skill 跨切面 + 核心讲解 Skills | 8/8 | - | - |
 | 4. 找同类题 + 组卷 + 异常处理 | 0/TBD | - | - |
 | 5. 用户手册 + 开源准备 | 0/TBD | - | - |
 | 02 | 7 | - | - |
