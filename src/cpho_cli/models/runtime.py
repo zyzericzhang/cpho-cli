@@ -18,9 +18,11 @@ class TraceRecord(BaseModel):
 
 
 class CheckpointRecord(BaseModel):
-    failed_step_id: str
+    step_id: str | None = None
+    status: Literal["passed", "failed"] = "failed"
     blackboard_keys: list[str]
-    error: str
+    error: str | None = None
+    failed_step_id: str | None = None
 
 
 class ResumeState(BaseModel):
@@ -31,4 +33,3 @@ class ResumeState(BaseModel):
 class SkillRunResult(BaseModel):
     blackboard: dict[str, Any]
     step_statuses: dict[str, str]
-

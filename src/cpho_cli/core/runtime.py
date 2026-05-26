@@ -69,7 +69,10 @@ class SkillRuntime:
         if self.checkpoint_dir is None:
             return
         self.checkpoint_dir.mkdir(parents=True, exist_ok=True)
-        path = self.checkpoint_dir / f"{record.failed_step_id}.checkpoint.json"
+        step_id = record.step_id or record.failed_step_id
+        if step_id is None:
+            raise SkillRuntimeError("Checkpoint record missing step id.")
+        path = self.checkpoint_dir / f"{step_id}.checkpoint.json"
         path.write_text(record.model_dump_json(indent=2), encoding="utf-8")
 
     def run(self, spec: SkillSpec, initial_blackboard: Mapping[str, Any]) -> SkillRunResult:
@@ -93,6 +96,13 @@ class SkillRuntime:
                     )
                 blackboard.update(outputs)
                 statuses[step.id] = "passed"
+                self._write_checkpoint(
+                    CheckpointRecord(
+                        step_id=step.id,
+                        status="passed",
+                        blackboard_keys=sorted(blackboard),
+                    )
+                )
                 self._write_trace(
                     TraceRecord(
                         step_id=step.id,
@@ -118,6 +128,8 @@ class SkillRuntime:
                 )
                 self._write_checkpoint(
                     CheckpointRecord(
+                        step_id=step.id,
+                        status="failed",
                         failed_step_id=step.id,
                         blackboard_keys=sorted(blackboard),
                         error=redact_secrets(str(exc), self.secrets),
@@ -130,4 +142,3 @@ class SkillRuntime:
 def load_resume_state(checkpoint_path: Path) -> ResumeState:
     data = json.loads(checkpoint_path.read_text(encoding="utf-8"))
     return ResumeState.model_validate(data)
-

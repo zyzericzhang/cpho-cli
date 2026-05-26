@@ -38,6 +38,46 @@ def test_blackboard_execution(tmp_path: Path) -> None:
     assert (tmp_path / "trace.jsonl").read_text(encoding="utf-8").count("\n") == 2
 
 
+def test_runtime_writes_success_checkpoints(tmp_path: Path) -> None:
+    runtime = SkillRuntime(
+        handlers={
+            "python_tool": lambda step, values: {
+                step.output_keys[0]: values[step.input_keys[0]] + step.id
+            }
+        },
+        checkpoint_dir=tmp_path / "checkpoints",
+    )
+
+    runtime.run(make_spec(), {"a": "start-"})
+
+    b_data = json.loads((tmp_path / "checkpoints" / "b.checkpoint.json").read_text())
+    c_data = json.loads((tmp_path / "checkpoints" / "c.checkpoint.json").read_text())
+    assert b_data["step_id"] == "b"
+    assert b_data["status"] == "passed"
+    assert c_data["blackboard_keys"] == ["a", "b", "c"]
+
+
+def test_runtime_writes_failed_checkpoint_after_last_success(tmp_path: Path) -> None:
+    def handler(step: SkillStep, values: dict[str, str]) -> dict[str, str]:
+        if step.id == "c":
+            raise RuntimeError("boom")
+        return {step.output_keys[0]: values[step.input_keys[0]] + step.id}
+
+    runtime = SkillRuntime(
+        handlers={"python_tool": handler},
+        checkpoint_dir=tmp_path / "checkpoints",
+    )
+
+    with pytest.raises(RuntimeError, match="boom"):
+        runtime.run(make_spec(), {"a": "start-"})
+
+    b_data = json.loads((tmp_path / "checkpoints" / "b.checkpoint.json").read_text())
+    c_data = json.loads((tmp_path / "checkpoints" / "c.checkpoint.json").read_text())
+    assert b_data["status"] == "passed"
+    assert c_data["status"] == "failed"
+    assert c_data["error"] == "boom"
+
+
 def test_missing_key_fails(tmp_path: Path) -> None:
     runtime = SkillRuntime(handlers={"python_tool": lambda step, values: {}})
 
