@@ -1,0 +1,51 @@
+name: explain
+inputs:
+  - problem_text
+  - answer_text
+  - solve_context
+  - stage_one
+outputs:
+  - teacher_stage1
+  - teacher_sentence
+  - dense_stage1
+  - dense_sentence
+  - brief_stage1
+  - brief_sentence
+  - candidate_tags
+steps:
+  - id: teacher_stage1
+    kind: llm
+    input_keys: [problem_text, answer_text, solve_context]
+    output_keys: [teacher_stage1]
+    prompt_template: teacher_stage1.md.j2
+  - id: teacher_sentence
+    kind: llm
+    input_keys: [problem_text, answer_text, solve_context, stage_one]
+    output_keys: [teacher_sentence]
+    prompt_template: teacher_sentence.md.j2
+  - id: dense_stage1
+    kind: llm
+    input_keys: [problem_text, answer_text, solve_context]
+    output_keys: [dense_stage1]
+    prompt_template: dense_stage1.md.j2
+  - id: dense_sentence
+    kind: llm
+    input_keys: [problem_text, answer_text, solve_context, stage_one]
+    output_keys: [dense_sentence]
+    prompt_template: dense_sentence.md.j2
+  - id: brief_stage1
+    kind: llm
+    input_keys: [problem_text, answer_text, solve_context]
+    output_keys: [brief_stage1]
+    prompt_template: brief_stage1.md.j2
+  - id: brief_sentence
+    kind: llm
+    input_keys: [problem_text, answer_text, solve_context, stage_one]
+    output_keys: [brief_sentence]
+    prompt_template: brief_sentence.md.j2
+  - id: extract_tags
+    kind: llm
+    input_keys: [problem_text, answer_text, explanations]
+    output_keys: [candidate_tags]
+    prompt_template: extract_tags.md.j2
+
