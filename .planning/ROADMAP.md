@@ -2,7 +2,7 @@
 
 ## Overview
 
-CPHO CLI builds from a quality-first core pipeline through four phases: first establishing trustworthy physics derivations with answer-key grounding and OCR validation (Phase 1), then building the problem knowledge index infrastructure — the retrieval backbone and learning-memory foundation for all downstream skills (Phase 2), with an urgent Phase 02.1 insertion to fix a data-model mismatch by splitting multi-problem exam papers into individual ProblemEntries, layering on built-in Explanation and Quiz skills with a YAML skill loader extracted from real usage (Phase 3), and finally completing the knowledge network with cross-problem comparative analysis, exam PDF generation, Skill Creator, and community plugin ecosystem (Phase 4). Each phase delivers a coherent, verifiable capability that builds on the previous phase's foundation.
+CPHO CLI 从质量优先的核心管线起步（Phase 1：题解可信化 + OCR 验证），接着建立题目知识索引基础设施（Phase 2，作为下游所有 skill 的检索骨架与学习记忆地基），其中插入 Phase 02.1 用 PaperFile/ProblemEntry 修正"文件 ≠ 题目"的形状错配、Phase 02.2 搭起 prompt_toolkit REPL 骨架、Phase 02.3 把 solve 降级为 builtin skill 并打开 index 标签层读写 API；Phase 3 落地 skill 通用跨切面能力（Markdown 导出 / Follow-up 对话 / 运行过程进度显示）与三个核心讲解类 skill（重定位的 Solve = 给标答挑错并把错误以 tag 形式长期写回 index、增强的 Explain = 多 Tone × 分栏目 × 句子级 × 回写 Index、新增的"主动提问 Skill" = 连续对话寻找关键点 → markdown 输出）；Phase 4 在 Phase 3 之上交付"找同类题 skill"与基于编排文件的 PDF 组卷 skill，并系统性补齐异常边界处理；Phase 5 完成用户手册、README 与简化的 Python 扩展机制，为 GitHub 开源做准备。每个 phase 交付一组可验证的、向下游 skill 提供地基的能力。
 
 ## Phases
 
@@ -17,8 +17,9 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 02.1: Paper Splitting** — 试卷切分：多题试卷拆分为独立题目条目，修复数据模型形状错配 (INSERTED — COMPLETE 2026-05-24)
 - [x] **Phase 02.2: TUI REPL 骨架** — prompt_toolkit REPL 主循环、skill 注册机制、slash command 首批命令，为后续 phase 顺带扩展 TUI 打好基础 (INSERTED) (completed 2026-05-24)
 - [x] **Phase 02.3: Index 读写分离 + Solve 降级** — 移除 SolveReport→index 耦合与 golden_tests，index 标签层开放读写 API 供 skills 修改 (INSERTED) (completed 2026-05-25)
-- [ ] **Phase 3: Skill System + Core Skills** — Explanation mode, Quiz mode, and YAML skill extensibility
-- [ ] **Phase 4: Knowledge Network + Ecosystem** — Comparative analysis, exam generation, knowledge graph, and community plugins
+- [ ] **Phase 3: Skill 跨切面 + 核心讲解 Skills** — 所有 skill 通用的 Markdown 导出 / Follow-up 对话 / 进度显示 + Solve 重定位（挑错 + tag 长期记录）+ Explain 增强（多 Tone / 分栏目 / 句子级 / 回写 Index）+ 主动提问 Skill
+- [ ] **Phase 4: 找同类题 + 组卷 + 异常处理** — 找同类题 skill + 编排文件驱动的 PDF 组卷（一页一题，答案分卷）+ 工作流异常边界（中途退出 / 硬盘拔出 / 文件越界 / blackboard 落盘恢复）
+- [ ] **Phase 5: 用户手册 + 开源准备** — README、`docs/user/` 延伸文档、简化的 Python 扩展机制，参考著名开源 repo 风格为 GitHub 开源做准备
 
 ## Phase Details
 
@@ -130,33 +131,54 @@ Plans:
 - [x] 02.3-09-PLAN.md — Expose index vision in CLI/REPL and add phase acceptance gates
 - [x] 02.3-10-PLAN.md — Run final real uv verification and write Chinese verification manual
 
-### Phase 3: Skill System + Core Skills
-**Goal**: Users can run Explanation and Quiz analysis modes on indexed problems (individual ProblemEntries split from exam papers), and extend the system with custom YAML-defined skills that are auto-discovered from a skills directory.
-**Depends on**: Phase 2
-**Requirements**: SKILL-01, SKILL-02, PLUGIN-01
-**Success Criteria** (what must be TRUE):
-  1. User runs explanation mode on a problem and receives a complete derivation where every step explicitly states the reasoning logic for the transition (为什么想到这一步), not just the mathematical calculation.
-  2. User runs quiz mode and engages in a REPL-based Socratic dialogue; the tool asks scaffolded questions (concept hint → method hint → equation hint) before revealing any solution step, and adapts follow-up questions based on user responses.
-  3. User creates a custom skill by writing a single YAML file (defining inputs, DAG step sequence, prompt template references, and output format), placing it in the skills directory; the skill is auto-discovered and immediately executable without restarting the CLI.
-  4. All CLI output — error messages, help text, skill descriptions, and prompt instructions to the LLM — is in Chinese by default, matching the target audience's primary language.
-**Plans**: TBD
+### Phase 3: Skill 跨切面 + 核心讲解 Skills
 
-### Phase 4: Knowledge Network + Ecosystem
-**Goal**: Users can compare problems, generate exam PDFs, explore knowledge-graph connections, install community skills via pip, and create new skills from natural language descriptions.
-**Depends on**: Phase 3
-**Requirements**: SKILL-03, SKILL-04, PLUGIN-02, PLUGIN-03, PLUGIN-04, KNOW-01, KNOW-02
+**Goal:** 在 Phase 02.2 REPL 与 Phase 02.3 index 读写 API 基础上，搭建所有 skill 共用的跨切面能力，并交付三个核心讲解类 skill。跨切面能力包含：Markdown 导出（用户输入 path、每类文件有默认值、文件名包含题目名）、类似 Claude Code 的运行过程进度显示、所有 skill 结束后的 Follow-up 对话（像 ChatGPT 网页版一样继续聊）、异常基础（中途退出可恢复）。三个核心 skill：(1) **Solve 重定位** —— 不再去解题，而是给工作空间内已提供的标准答案逐步挑错，错误以受控 tag 形式长期写回 index 的 skill-tag 层（与 LLM 机打 tag 分离、含 provenance）；(2) **Explain 增强** —— 多 Tone（老师型 / 知识点密集型 / 简短型）可同时选多个生成多版输出，每版首段先描述整道题物理图像与思路再推导；分栏目（原答案推导 / 超越原答案的更清晰推导 / 句子级 explain），且可在讲解后基于新发现 tag 回写 Index（用户可手动增删）；(3) **主动提问 Skill** —— 连续对话寻找题目关键点和关键步骤，输出一份 markdown 文件（前半部分问题，后半部分解答）。Solve 优先于其他 skill 运行——其他 skill 在 Solve 校正过的标答基础上讲解。物理优先，数学为辅。
+
+**Depends on:** Phase 02.3
+**Requirements**: SKILL-SOLVE-REPOSITION, SKILL-EXPLAIN-NEW, SKILL-PROBE, CROSS-EXPORT, CROSS-FOLLOWUP, CROSS-PROGRESS（详见 REQUIREMENTS.md 更新）
 **Success Criteria** (what must be TRUE):
-  1. User selects two or more problems for comparative analysis; output identifies shared physics models and common solution strategies, and automatically pulls additional related problems from the tag-based knowledge graph for extended comparison.
-  2. User queries problems by tags and generates two PDF files (problem sheet + answer sheet) where pages are extracted and stitched directly from source PDFs — no LaTeX re-rendering, preserving original formatting.
-  3. User describes a desired analysis workflow in natural Chinese language; Skill Creator produces a complete, functional YAML skill configuration with prompt templates that executes correctly on first run.
-  4. User runs `pip install <some-cpho-skill-package>` and the installed skill is automatically discovered via Python entry points and available for execution without any manual registration step.
-  5. When analyzing any problem with any skill, related-problem context from the knowledge graph (tag-similar problems from the workspace) is automatically injected into the analysis pipeline as supplementary context.
-**Plans**: TBD
+  1. 用户运行 `cpho solve <题目>`，工具不返回新解法，而是对工作空间内匹配到的标准答案做逐步审查；发现的错误以受控 tag 形式写入 index 的 skill-tag 层（与 LLM 机打 tag 分离，含 skill 来源 / 时间 / 推理出处的 provenance），`cpho index --force` 重建只覆盖机打 tag、保留 skill 写入的 tag。
+  2. 用户运行 Explain 并选择一个或多个 Tone（老师型 / 知识点密集型 / 简短型），工具同时生成对应版本的讲解；每个版本第一段都先用几句话陈述整道题的物理图像与解题思路，再开始推导。
+  3. Explain 输出分栏目：「原答案逐步讲解」「超越原答案的更清晰推导（若有）」「句子级 explain」三栏内容像标准答案一样写出；讲解后用户可选择"基于本次发现的 tag 重新 index 这道题"，工具把新 tag 写入 index skill-tag 层（用户可手工增删），不动机打 tag。
+  4. 用户运行"主动提问 Skill"，工具就同一道题展开连续对话寻找关键点 / 关键步骤 / 深挖处理；结束后生成一份 markdown 文件（路径用户输入、有默认值、文件名含题目名），文件前半为所有问题、后半为对应解答。
+  5. 任意 skill 运行过程中都有类似 Claude Code 的进度显示（当前到第几步 / 正在做什么 / 已耗时）；任意 skill 结束都可一键导出 markdown，路径与文件名规则统一，用户可改默认值。
+  6. 任意 skill 结束后用户进入 Follow-up 模式，可基于本次 skill 上下文像 ChatGPT 网页版那样继续追问，直至显式退出。
+
+**Plans**: TBD（见 `/gsd:plan-phase 3` 拆分）
+
+### Phase 4: 找同类题 + 组卷 + 异常处理
+
+**Goal:** 在 Phase 3 核心 skill 已可用的基础上，落地"找同类题 skill"作为组卷前置，再交付 PDF 组卷 skill：用户准备一份"编排文件"（以题号顺序列出每个题位的填法 —— 题目 ID 或 pass，或仅填分类与大体要求），工具据此从原始 PDF 裁剪页面拼接成两份 PDF（题目卷一页一题、答案卷分开），不重渲染公式；用户也可让组卷 skill 完全自动选题。同时系统性补齐工作流的异常边界场景：中途退出、外接硬盘工作空间被拔出、选择的文件不在 workspace、blackboard 与 explain/index 等 skill 中间产物的落盘与恢复，做到"至少不卡机"。组卷输出格式与 PDF 拼接尽量复用 GitHub 开源库二次开发，不重写底层。
+
+**Depends on:** Phase 3
+**Requirements**: SKILL-RELATED, SKILL-COMPOSE, ROBUST-BOUNDARY（详见 REQUIREMENTS.md 更新）
+**Success Criteria** (what must be TRUE):
+  1. 用户对任意已索引题目运行"找同类题 skill"，工具基于 index 标签层返回按相似度排序的同类题列表；结果可作为下一个 skill（组卷 / Explain 对比等）的输入。
+  2. 用户准备的编排文件（题号 → 题目 ID / pass / 分类与要求）可被组卷 skill 消费，工具生成两份 PDF：题目卷一页一题、答案卷分开；页面直接来自原始 PDF 裁剪，不做 LaTeX 重渲染。
+  3. 用户也可让组卷 skill 自动选题（结合"找同类题"或标签筛选），无需手写编排文件即可产出一份 PDF。
+  4. 工作空间挂在外接硬盘且中途拔出 / 用户中途 Ctrl+C / 用户选择的文件不在当前 workspace / OCR / LLM 调用失败：工具都有明确的失败提示而非卡死；任意 skill 的中间产物（blackboard、partial markdown、explain 中间版本）落盘到可恢复位置，下次运行同一 skill 可选择继续或丢弃。
+
+**Plans**: TBD（见 `/gsd:plan-phase 4` 拆分）
+
+### Phase 5: 用户手册 + 开源准备
+
+**Goal:** 项目核心功能完成后，为 GitHub 开源做准备：写一份高质量 README（项目简介 / Demo 截图或 asciinema / 安装 / Quick Start / REPL 用法 / 所有内置 skill 列表与示例 / 配置 / 扩展指南 / License）；在 `docs/user/` 目录提供 README 的延伸文档（按模块/skill 分章）；开放一个简化的 Python 扩展机制（用户改代码加 skill，明确入口与复用底层路径，不像 v1 设想的 YAML 那样灵活）；版面风格参考著名 GitHub repo 的 README。
+
+**Depends on:** Phase 4
+**Requirements**: DOCS-README, DOCS-USER, PLUGIN-PY-SIMPLE（详见 REQUIREMENTS.md 更新；YAML skill loader / 自然语言生成 skill / pip 第三方包安装机制移入 Out of Scope）
+**Success Criteria** (what must be TRUE):
+  1. 仓库根目录 `README.md` 遵循著名开源项目的版面（简介 / 截图或 asciinema / 安装 / Quick Start / REPL 用法 / 所有内置 skill 列表与示例 / 配置 / 扩展指南 / License）；新用户从 clone 到运行第一个 skill 在 10 分钟内可完成。
+  2. `docs/user/` 目录存在，按 skill / 模块分章提供 README 的延伸文档；至少覆盖 solve / explain（含 Tone 与回写 Index）/ 主动提问 / 找同类题 / 组卷 / index / REPL 每个 skill 的运行参数、典型用法与导出文件说明。
+  3. 简化 Python 扩展机制有专门一章文档：明确要写哪个 Python 类 / 函数、如何复用 `core/llm.py` 与 index 读写 API、如何在 REPL 注册新 slash command；不再保留 YAML skill loader 或自然语言生成 skill 的承诺，明确写入 Out of Scope。
+  4. README 至少包含一张运行截图或 asciinema（REPL 或 CLI 的实际运行画面）。
+
+**Plans**: TBD（见 `/gsd:plan-phase 5` 拆分）
 
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 2.1 → 2.2 → 2.3 → 3 → 4
+Phases execute in numeric order: 1 → 2 → 2.1 → 2.2 → 2.3 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -165,5 +187,6 @@ Phases execute in numeric order: 1 → 2 → 2.1 → 2.2 → 2.3 → 3 → 4
 | 02.1. Paper Splitting | 5/5 | Complete | 2026-05-24 |
 | 02.2. TUI REPL 骨架 | 6/6 | Complete   | 2026-05-24 |
 | 02.3. Index 读写分离 + Solve 降级 | 10/10 | Complete | 2026-05-25 |
-| 3. Skill System + Core Skills | 0/TBD | Not started | - |
-| 4. Knowledge Network + Ecosystem | 0/TBD | Not started | - |
+| 3. Skill 跨切面 + 核心讲解 Skills | 0/TBD | Not started | - |
+| 4. 找同类题 + 组卷 + 异常处理 | 0/TBD | Not started | - |
+| 5. 用户手册 + 开源准备 | 0/TBD | Not started | - |
