@@ -12,6 +12,8 @@
 - `uv run pytest tests/test_phase03_acceptance.py -q`
 - `uv run pytest tests/test_skill_outputs.py tests/test_repl_persistence.py tests/test_repl_session.py tests/test_repl_builtin_commands.py tests/test_llm.py tests/test_skill_progress.py tests/test_followup.py tests/test_repl_display.py tests/test_solve.py tests/test_skills.py tests/test_cli.py tests/test_explain.py tests/test_probe.py tests/test_repl_runtime.py tests/test_index_api.py tests/test_phase03_acceptance.py -q`
   - Result: 86 passed, 5 existing PDF dependency deprecation warnings.
+- `uv run pytest -q`
+  - Result: 384 passed, 5 existing PDF dependency deprecation warnings.
 
 ## Real Workspace Policy
 

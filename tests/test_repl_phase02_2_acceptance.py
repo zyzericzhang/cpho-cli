@@ -31,10 +31,12 @@ async def test_criterion_help_lists_phase02_2_commands(
         "/help",
         "/set",
         "/run",
+        "/solve",
         "/explain",
-        "/quiz",
+        "/probe",
     ]:
         assert name in output
+    assert "/quiz" not in output
 
 
 @pytest.mark.asyncio

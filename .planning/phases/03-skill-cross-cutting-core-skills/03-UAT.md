@@ -25,10 +25,11 @@ Validated Phase 3 skill cross-cutting features and core skills:
 
 - `uv run pytest tests/test_phase03_acceptance.py -q`
   - Result: 1 passed.
+- `uv run pytest -q`
+  - Result: 384 passed, 5 existing PDF dependency deprecation warnings.
 
 ## Notes
 
 - The acceptance test uses fake providers and a seeded index, so it does not require OpenRouter credentials.
 - The original real workspace is never mutated.
 - User tag writeback is verified through `add_problem_tags`; machine tag buckets remain unchanged.
-
