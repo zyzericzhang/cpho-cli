@@ -12,3 +12,4 @@ traces/
 *.local.yml
 *.local.yaml
 eval-output/
+.claude/
