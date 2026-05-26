@@ -8,37 +8,28 @@ inputs:
 outputs:
   - solve_report
 steps:
-  - id: extract_problem_answer
-    kind: python_tool
-    input_keys: [problem_text, answer_text]
-    output_keys: [raw_problem, raw_answer]
-  - id: normalize_problem
+  - id: extract_official_steps
     kind: llm
-    input_keys: [raw_problem, problem_file, answer_file]
-    output_keys: [normalized_problem]
-    prompt_template: normalize.md.j2
-  - id: validate_answer_structure
+    input_keys: [problem_text, answer_text, problem_file, answer_file]
+    output_keys: [official_steps]
+    prompt_template: extract_official_steps.md.j2
+  - id: check_each_step
     kind: llm
-    input_keys: [raw_answer, problem_file, answer_file]
-    output_keys: [answer_structure]
-    prompt_template: answer_structure.md.j2
-  - id: derive_subproblems
+    input_keys: [problem_text, answer_text, official_steps, problem_file, answer_file]
+    output_keys: [step_checks]
+    prompt_template: check_each_step.md.j2
+  - id: classify_error_types
     kind: llm
-    input_keys: [normalized_problem, answer_structure, problem_file, answer_file]
-    output_keys: [subproblem_derivations]
-    prompt_template: derive.md.j2
-  - id: cross_check_official_answer
+    input_keys: [step_checks, ocr_warnings, problem_file, answer_file]
+    output_keys: [error_classification]
+    prompt_template: classify_error_types.md.j2
+  - id: propose_discrepancies
     kind: llm
-    input_keys: [subproblem_derivations, answer_structure, problem_file, answer_file]
-    output_keys: [answer_cross_check]
-    prompt_template: cross_check.md.j2
-  - id: mark_discrepancies
-    kind: llm
-    input_keys: [answer_cross_check, ocr_warnings, problem_file, answer_file]
+    input_keys: [step_checks, error_classification, ocr_warnings, problem_file, answer_file]
     output_keys: [discrepancies]
-    prompt_template: discrepancies.md.j2
+    prompt_template: propose_discrepancies.md.j2
   - id: assemble_final_report
     kind: llm
-    input_keys: [normalized_problem, subproblem_derivations, answer_cross_check, discrepancies, ocr_warnings, problem_file, answer_file]
+    input_keys: [official_steps, step_checks, error_classification, discrepancies, ocr_warnings, problem_file, answer_file]
     output_keys: [solve_report]
-    prompt_template: final_report.md.j2
+    prompt_template: assemble_solve_report.md.j2

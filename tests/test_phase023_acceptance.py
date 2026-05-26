@@ -128,10 +128,9 @@ class _SolveProvider:
     def complete(self, messages, params: ModelParams, response_model=None):  # type: ignore[no-untyped-def]
         self.calls += 1
         responses = [
-            {"normalized_problem": "normalized"},
-            {"answer_structure": "answer"},
-            {"subproblem_derivations": "derive"},
-            {"answer_cross_check": "checked"},
+            {"official_steps": [{"ref": "answer:1", "content": "official"}]},
+            {"step_checks": [{"official_answer_refs": ["answer:1"], "status": "ok", "finding": "checked"}]},
+            {"error_classification": "none"},
             {"discrepancies": []},
         ]
         if self.calls <= len(responses):

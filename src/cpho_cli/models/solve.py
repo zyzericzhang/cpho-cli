@@ -35,9 +35,22 @@ class Discrepancy(BaseModel):
     official_answer_refs: list[str] = Field(default_factory=list)
 
 
+class OfficialAnswerStep(BaseModel):
+    ref: str
+    content: str
+
+
+class AnswerStepCheck(BaseModel):
+    official_answer_refs: list[str] = Field(default_factory=list)
+    status: str
+    finding: str
+
+
 class SolveReport(BaseModel):
     problem_id: str
-    derivation_steps: list[DerivationStep]
+    official_steps: list[OfficialAnswerStep] = Field(default_factory=list)
+    step_checks: list[AnswerStepCheck] = Field(default_factory=list)
+    derivation_steps: list[DerivationStep] = Field(default_factory=list)
     discrepancies: list[Discrepancy] = Field(default_factory=list)
     ocr_warnings: list[str] = Field(default_factory=list)
     physics_model_tags: list[str] = Field(default_factory=list)
@@ -49,4 +62,4 @@ class SolveRunResult(BaseModel):
     report_json: Path | None
     report_markdown: Path | None = None
     warnings: list[str] = Field(default_factory=list)
-
+    report: SolveReport | None = None

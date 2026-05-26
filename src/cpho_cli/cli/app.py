@@ -17,6 +17,8 @@ from cpho_cli.core.index import (
     update_problem_tags,
 )
 from cpho_cli.core.solve import SolveError, solve_problem
+from cpho_cli.core.solve import write_solve_report
+from cpho_cli.models.solve import Discrepancy, SolveReport
 
 app = typer.Typer(help="CPHO local physics analysis CLI.")
 topic_app = typer.Typer(help="主题分类浏览。")
@@ -51,6 +53,9 @@ def solve(
     ),
     output_dir: Path = typer.Option(Path("output"), "--output-dir", "-o", help="Output directory."),
     dry_run: bool = typer.Option(False, "--dry-run", help="Validate inputs without LLM calls."),
+    auto_confirm: bool = typer.Option(False, "--auto-confirm", help="自动接受所有候选 discrepancy。"),
+    persist_tags: bool = typer.Option(False, "--persist-tags", help="把接受的 discrepancy 写入 index user_tags。"),
+    workspace: Path = typer.Option(Path.cwd(), "--workspace", "-w", help="用于 index 写入的工作空间。"),
 ) -> None:
     """Solve one physics problem."""
     try:
@@ -61,6 +66,7 @@ def solve(
             provider_name=provider,
             output_dir=output_dir,
             dry_run=dry_run,
+            show_progress=not dry_run,
         )
     except (ConfigError, SolveError) as exc:
         raise typer.BadParameter(str(exc)) from exc
@@ -68,9 +74,46 @@ def solve(
     if result.report_json is None:
         typer.echo("Dry run passed.")
         return
+    if result.report is not None:
+        report = _confirm_solve_discrepancies(result.report, auto_confirm=auto_confirm)
+        result = write_solve_report(report, output_dir)
+        if persist_tags and report.discrepancies:
+            _persist_solve_discrepancies(workspace, report)
     typer.echo(f"Report JSON: {result.report_json}")
     if result.report_markdown is not None:
         typer.echo(f"Report Markdown: {result.report_markdown}")
+
+
+def _confirm_solve_discrepancies(report: SolveReport, *, auto_confirm: bool) -> SolveReport:
+    if auto_confirm or not report.discrepancies:
+        return report
+    accepted: list[Discrepancy] = []
+    for item in report.discrepancies:
+        typer.echo(f"候选 discrepancy: {item.description}")
+        choice = typer.prompt("接受? [y/n/e]", default="y").strip().lower()
+        if choice in {"", "y", "yes"}:
+            accepted.append(item)
+        elif choice in {"e", "edit"}:
+            edited = typer.prompt("编辑后内容").strip()
+            if edited:
+                accepted.append(item.model_copy(update={"description": edited}))
+    return report.model_copy(update={"discrepancies": accepted})
+
+
+def _persist_solve_discrepancies(workspace: Path, report: SolveReport) -> None:
+    tags = [item.description for item in report.discrepancies]
+    reasoning = "Solve official-answer review confirmed discrepancies."
+    try:
+        add_problem_tags(
+            workspace,
+            report.problem_id,
+            tags,
+            skill_name="solve",
+            reasoning=reasoning,
+        )
+    except IndexBuildError as exc:
+        raise typer.BadParameter(str(exc)) from exc
+    typer.echo(f"已写入 index user_tags: {len(tags)} 项")
 
 
 def _index_progress_cli(event: dict) -> None:

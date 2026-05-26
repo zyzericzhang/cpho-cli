@@ -8,7 +8,32 @@ from cpho_cli.core.solve import solve_problem
 from cpho_cli.models.config import ModelParams
 from cpho_cli.models.llm import LLMResponse, ModelCapabilities
 from cpho_cli.models.ocr import OCRBlock, OCRPageResult, OCRResult
-from cpho_cli.models.solve import DerivationStep, SolveReport
+from cpho_cli.models.solve import AnswerStepCheck, DerivationStep, Discrepancy, OfficialAnswerStep, SolveReport
+
+
+def _review_report() -> SolveReport:
+    return SolveReport(
+        problem_id="p1",
+        official_steps=[OfficialAnswerStep(ref="answer:1", content="Use F=ma")],
+        step_checks=[
+            AnswerStepCheck(
+                official_answer_refs=["answer:1"],
+                status="needs_review",
+                finding="符号可能错误",
+            )
+        ],
+        discrepancies=[
+            Discrepancy(
+                description="符号可能错误",
+                likely_source="sign error",
+                official_answer_refs=["answer:1"],
+            )
+        ],
+        ocr_warnings=[],
+        physics_model_tags=["newton"],
+        heuristic_insight_tags=["force-balance"],
+        math_technique_tags=["algebra"],
+    )
 
 
 class CaptureSolveProvider:
@@ -19,31 +44,14 @@ class CaptureSolveProvider:
     def complete(self, messages, params: ModelParams, response_model=None):  # type: ignore[no-untyped-def]
         self.calls.append({"messages": messages, "response_model": response_model})
         responses = [
-            {"normalized_problem": "normalized problem"},
-            {"answer_structure": "answer structure"},
-            {"subproblem_derivations": "F=ma derivation"},
-            {"answer_cross_check": "answer refs checked"},
+            {"official_steps": [{"ref": "answer:1", "content": "Use F=ma"}]},
+            {"step_checks": [{"official_answer_refs": ["answer:1"], "status": "ok", "finding": "checked"}]},
+            {"error_classification": "no issue"},
             {"discrepancies": []},
         ]
         if len(self.calls) <= len(responses):
             return LLMResponse(content=json.dumps(responses[len(self.calls) - 1]))
-        return LLMResponse(
-            content=SolveReport(
-                problem_id="p1",
-                derivation_steps=[
-                    DerivationStep(
-                        reasoning="Use Newton second law",
-                        expression="F=ma",
-                        official_answer_refs=["answer:1"],
-                    )
-                ],
-                discrepancies=[],
-                ocr_warnings=[],
-                physics_model_tags=["newton"],
-                heuristic_insight_tags=["force-balance"],
-                math_technique_tags=["algebra"],
-            ).model_dump_json()
-        )
+        return LLMResponse(content=_review_report().model_dump_json())
 
 
 class ConstantOCR:
@@ -78,12 +86,10 @@ def test_builtin_solve_skill_loads() -> None:
 
     assert loaded.spec.name == "solve"
     assert [step.id for step in loaded.spec.steps] == [
-        "extract_problem_answer",
-        "normalize_problem",
-        "validate_answer_structure",
-        "derive_subproblems",
-        "cross_check_official_answer",
-        "mark_discrepancies",
+        "extract_official_steps",
+        "check_each_step",
+        "classify_error_types",
+        "propose_discrepancies",
         "assemble_final_report",
     ]
 
@@ -165,32 +171,15 @@ def test_solve_non_dry_run_executes_builtin_skill_steps(tmp_path: Path) -> None:
             self.prompts.append(messages[-1]["content"])
             self.response_models.append(response_model)
             responses = [
-                {"normalized_problem": "normalized problem"},
-                {"answer_structure": "answer structure"},
-                {"subproblem_derivations": "F=ma derivation"},
-                {"answer_cross_check": "answer refs checked"},
+                {"official_steps": [{"ref": "answer:1", "content": "Use F=ma"}]},
+                {"step_checks": [{"official_answer_refs": ["answer:1"], "status": "ok", "finding": "checked"}]},
+                {"error_classification": "no issue"},
                 {"discrepancies": []},
             ]
             if len(self.prompts) <= len(responses):
                 return LLMResponse(content=json.dumps(responses[len(self.prompts) - 1]))
             assert response_model is SolveReport
-            return LLMResponse(
-                content=SolveReport(
-                    problem_id="p1",
-                    derivation_steps=[
-                        DerivationStep(
-                            reasoning="Use Newton second law",
-                            expression="F=ma",
-                            official_answer_refs=["answer:1"],
-                        )
-                    ],
-                    discrepancies=[],
-                    ocr_warnings=[],
-                    physics_model_tags=["newton"],
-                    heuristic_insight_tags=["force-balance"],
-                    math_technique_tags=["algebra"],
-                ).model_dump_json()
-            )
+            return LLMResponse(content=_review_report().model_dump_json())
 
     problem = tmp_path / "p1.png"
     answer = tmp_path / "p1-answer.png"
@@ -210,11 +199,11 @@ def test_solve_non_dry_run_executes_builtin_skill_steps(tmp_path: Path) -> None:
         llm_provider=provider,
     )
 
-    assert len(provider.prompts) == 6
+    assert len(provider.prompts) == 5
     assert "Problem OCR text:" in provider.prompts[0]
-    assert "Official answer OCR text:" in provider.prompts[1]
-    assert "Normalized problem:" in provider.prompts[2]
-    assert "Cross-check:" in provider.prompts[4]
+    assert "Official answer OCR text:" in provider.prompts[0]
+    assert "Official steps:" in provider.prompts[1]
+    assert "Step checks:" in provider.prompts[2]
     assert provider.response_models[-1] is SolveReport
     assert result.report_json is not None
     assert "answer:1" in result.report_json.read_text(encoding="utf-8")

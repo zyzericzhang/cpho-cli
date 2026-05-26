@@ -12,6 +12,8 @@ from cpho_cli.core.llm import LLMProvider, create_llm_provider
 from cpho_cli.core.ocr import OCRProvider, RapidOCRProvider
 from cpho_cli.core.runtime import SkillRuntime, SkillRuntimeError
 from cpho_cli.core.skill_handlers import make_llm_handler, python_tool_handler
+from cpho_cli.core.skill_outputs import write_markdown_atomic
+from cpho_cli.core.skill_progress import PlainProgressReporter, wrap_handlers
 from cpho_cli.core.skills import load_skill
 from cpho_cli.models.solve import SolveReport, SolveRunResult
 
@@ -24,26 +26,43 @@ def _builtin_solve_skill_dir() -> Path:
     return Path(__file__).resolve().parents[1] / "builtin_skills" / "solve"
 
 
-def _write_report(report: SolveReport, output_dir: Path) -> SolveRunResult:
+def write_solve_report(report: SolveReport, output_dir: Path) -> SolveRunResult:
     output_dir.mkdir(parents=True, exist_ok=True)
     json_path = output_dir / f"{report.problem_id}-report.json"
     md_path = output_dir / f"{report.problem_id}-report.md"
     json_path.write_text(report.model_dump_json(indent=2), encoding="utf-8")
-    md_path.write_text(
+    write_markdown_atomic(
+        md_path,
         "\n".join(
             [
-                f"# Solve Report: {report.problem_id}",
+                f"# Solve Review: {report.problem_id}",
                 "",
                 "## OCR Warnings",
                 *(f"- {warning}" for warning in report.ocr_warnings),
                 "",
-                "## Derivation",
+                "## Official Answer Steps",
+                *(f"- {step.ref}: {step.content}" for step in report.official_steps),
+                "",
+                "## Step Checks",
+                *(f"- {check.status}: {check.finding}" for check in report.step_checks),
+                "",
+                "## Discrepancies",
+                *(
+                    f"- {item.description} ({item.likely_source})"
+                    for item in report.discrepancies
+                ),
+                "",
+                "## Legacy Derivation",
                 *(f"- {step.expression}: {step.reasoning}" for step in report.derivation_steps),
             ]
         ),
-        encoding="utf-8",
     )
-    return SolveRunResult(report_json=json_path, report_markdown=md_path, warnings=report.ocr_warnings)
+    return SolveRunResult(
+        report_json=json_path,
+        report_markdown=md_path,
+        warnings=report.ocr_warnings,
+        report=report,
+    )
 
 
 def solve_problem(
@@ -55,6 +74,7 @@ def solve_problem(
     dry_run: bool = False,
     ocr_provider: OCRProvider | None = None,
     llm_provider: LLMProvider | None = None,
+    show_progress: bool = False,
 ) -> SolveRunResult:
     if not problem_path.exists():
         raise SolveError(f"Problem file not found: {problem_path}")
@@ -86,11 +106,14 @@ def solve_problem(
     )
     params = resolve_model_params(config, "solve", provider_name=provider_name)
     skill = load_skill(_builtin_solve_skill_dir())
+    handlers = {
+        "python_tool": python_tool_handler,
+        "llm": make_llm_handler(provider, params, skill.root),
+    }
+    if show_progress:
+        handlers = wrap_handlers(handlers, PlainProgressReporter())
     runtime = SkillRuntime(
-        handlers={
-            "python_tool": python_tool_handler,
-            "llm": make_llm_handler(provider, params, skill.root),
-        },
+        handlers=handlers,
         secrets=[provider_config.api_key],
     )
     try:
@@ -117,7 +140,7 @@ def solve_problem(
         raise SolveError(f"Solve skill failed: {exc}") from exc
     if warnings:
         report.ocr_warnings = sorted(set(report.ocr_warnings + warnings))
-    return _write_report(report, output_dir)
+    return write_solve_report(report, output_dir)
 
 
 def report_has_assertion(report_path: Path, assertion: str) -> bool:
