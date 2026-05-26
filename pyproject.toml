@@ -1,0 +1,58 @@
+[project]
+name = "cpho-cli"
+version = "0.1.0"
+description = "Local CLI for physics olympiad problem analysis"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "httpx>=0.27",
+  "jinja2>=3.1",
+  "onnxruntime>=1.18",
+  "pydantic>=2.7",
+  "pymupdf>=1.24",
+  "prompt_toolkit>=3.0.50",
+  "pyyaml>=6.0",
+  "rapidocr>=3.0",
+  "typer>=0.12",
+  "wcwidth>=0.2.13",
+  "rich>=13.0",
+]
+
+[project.scripts]
+cpho = "cpho_cli.cli.app:app"
+
+[dependency-groups]
+dev = [
+  "mypy>=1.10",
+  "pytest>=8.2",
+  "pytest-asyncio>=0.23",
+  "ruff>=0.5",
+]
+
+[tool.uv]
+package = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+cpho_cli = [
+  "builtin_skills/**/*",
+  "vocabulary/*.yml",
+  "vocabulary/builtin/*.yml",
+  "vocabulary/topics/*.yml",
+  "core/index/prompts/*",
+  "core/splitting/prompts/*",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

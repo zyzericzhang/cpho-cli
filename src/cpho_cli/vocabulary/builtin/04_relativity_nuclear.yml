@@ -1,0 +1,436 @@
+version: v0.1
+tags:
+- internal_id: pion_decay_kinematics
+  display_zh: π介子衰变运动学
+  category: physics_model
+  aliases:
+  - π衰变
+  - pion decay
+  description: 用二体衰变能动守恒求μ子和中微子运动学。
+- internal_id: lifetime_time_dilation
+  display_zh: 寿命时间膨胀
+  category: physics_law
+  aliases:
+  - 运动寿命延长
+  - lifetime dilation
+  description: 用固有寿命和γ因子计算高速粒子飞行距离。
+- internal_id: decay_product_angle_limit
+  display_zh: 衰变角限
+  category: heuristic
+  aliases:
+  - 最大出射角
+  - decay angle limit
+  description: 通过换系和速度合成确定衰变产物角度范围。
+- internal_id: neutrino_energy_angle_relation
+  display_zh: 中微子能角关系
+  category: physics_law
+  aliases:
+  - 能量-角度关系
+  - neutrino angle-energy
+  description: 建立实验室系中微子能量与出射角的函数关系。
+- internal_id: two_body_decay_frame
+  display_zh: 二体衰变系
+  category: heuristic
+  aliases:
+  - 母粒子静止系
+  - two-body rest frame
+  description: 先在母粒子静止系求末态再变换到实验系。
+- internal_id: annihilation_photon_pair
+  display_zh: 双光子湮灭
+  category: physics_model
+  aliases:
+  - 电子正电子湮灭
+  - two-photon annihilation
+  description: 用四动量守恒处理电子正电子湮灭成两光子。
+- internal_id: identical_particle_collision
+  display_zh: 同种粒子碰撞
+  category: physics_model
+  aliases:
+  - 电子电子碰撞
+  - identical collision
+  description: 利用对称性处理同质量粒子的相对论碰撞。
+- internal_id: lab_to_com_collision
+  display_zh: 碰撞质心化
+  category: heuristic
+  aliases:
+  - 转质心系碰撞
+  - COM collision
+  description: 将实验室系碰撞转入质心系简化动量角度关系。
+- internal_id: photon_energy_extrema
+  display_zh: 光子能量极值
+  category: math_technique
+  aliases:
+  - 能量最大最小
+  - energy extrema
+  description: 由出射方向或角变量求光子能量上下界。
+- internal_id: relativistic_doppler_shift
+  display_zh: 相对论多普勒
+  category: physics_law
+  aliases:
+  - 相对论频移
+  - relativistic Doppler
+  description: 同时考虑时间膨胀和相对运动导致的频率改变。
+- internal_id: transverse_doppler_effect
+  display_zh: 横向多普勒效应
+  category: physics_law
+  aliases:
+  - 横向频移
+  - transverse Doppler
+  description: 垂直视线方向运动也因钟慢产生频率偏移。
+- internal_id: doppler_angle_transform
+  display_zh: 多普勒角变换
+  category: physics_law
+  aliases:
+  - 频率角变换
+  - Doppler angle
+  description: 联立光行差与频率变换处理任意方向多普勒。
+- internal_id: four_wavevector_transform
+  display_zh: 波矢四矢量
+  category: physics_law
+  aliases:
+  - 四维波矢
+  - four-wavevector
+  description: 将光频率与波矢作为四矢量统一变换。
+- internal_id: photon_four_momentum
+  display_zh: 光子四动量
+  category: physics_law
+  aliases:
+  - 光子能动量
+  - photon four-momentum
+  description: 用光子能量和动量组成零质量四动量。
+- internal_id: lorentz_invariant_interval
+  display_zh: 时空间隔不变
+  category: physics_law
+  aliases:
+  - 线元不变
+  - spacetime interval
+  description: 用四维间隔不变量推导钟慢和洛伦兹变换。
+- internal_id: null_geodesic_condition
+  display_zh: 零测地线条件
+  category: physics_law
+  aliases:
+  - 光线线元为零
+  - null geodesic
+  description: 光子轨迹满足时空间隔为零的测地线条件。
+- internal_id: affine_parameter_elimination
+  display_zh: 仿射参量消去
+  category: math_technique
+  aliases:
+  - 消去λ
+  - affine parameter
+  description: 消去测地线参数得到光子轨道微分方程。
+- internal_id: successive_approximation
+  display_zh: 逐次逼近法
+  category: math_technique
+  aliases:
+  - 迭代近似
+  - successive approximation
+  description: 将零级解代回方程右端求一级修正解。
+- internal_id: lorenz_gauge_potential
+  display_zh: 洛伦兹规范势
+  category: physics_law
+  aliases:
+  - Lorenz gauge
+  - 四维势规范
+  description: 在洛伦兹规范下使用标势和矢势描述辐射场。
+- internal_id: retarded_potential
+  display_zh: 推迟势
+  category: physics_law
+  aliases:
+  - 延迟势
+  - retarded potential
+  description: 用源在推迟时刻的运动状态确定电磁势。
+- internal_id: far_field_radiation
+  display_zh: 远场辐射项
+  category: approximation
+  aliases:
+  - 1/r辐射项
+  - far-field term
+  description: 保留随距离按1/r衰减的辐射场主导项。
+- internal_id: lienard_radiation_formula
+  display_zh: 李纳辐射公式
+  category: physics_law
+  aliases:
+  - Liénard formula
+  - 相对论辐射功率
+  description: 给出任意速度带电粒子加速辐射的总功率。
+- internal_id: oscillator_frequency_shift
+  display_zh: 振子频率修正
+  category: approximation
+  aliases:
+  - 相对论周期修正
+  - frequency shift
+  description: 由相对论动能修正简谐振子的周期或频率。
+- internal_id: slow_amplitude_evolution
+  display_zh: 缓变振幅法
+  category: approximation
+  aliases:
+  - 慢变振幅
+  - adiabatic amplitude
+  description: 将辐射耗能转化为振幅随时间缓慢衰减。
+- internal_id: radiation_power_average
+  display_zh: 辐射功率平均
+  category: math_technique
+  aliases:
+  - 周期平均功率
+  - power averaging
+  description: 对振动周期内辐射功率取平均求能量损失率。
+- internal_id: relativistic_box_pressure
+  display_zh: 相对论盒压
+  category: physics_model
+  aliases:
+  - 粒子盒压强
+  - relativistic box pressure
+  description: 用高速粒子碰壁动量转移分析盒壁受力。
+- internal_id: particle_state_from_force_fit
+  display_zh: 力位移拟合法
+  category: heuristic
+  aliases:
+  - 线性拟合测参
+  - force-position fit
+  description: 通过外力与位置关系拟合粒子静质量和初速度。
+- internal_id: covariant_energy_conservation
+  display_zh: 协变能量守恒
+  category: heuristic
+  aliases:
+  - 四动量守恒法
+  - covariant conservation
+  description: 用四动量守恒避免在特定参考系中硬算分量。
+- internal_id: electromagnetic_stress_energy
+  display_zh: 电磁能动张量
+  category: physics_law
+  aliases:
+  - 应力能量张量
+  - stress-energy tensor
+  description: 用张量形式统一描述电磁场能量动量输运。
+- internal_id: charge_density_contraction
+  display_zh: 电荷密度收缩
+  category: physics_law
+  aliases:
+  - 密度洛伦兹变换
+  - charge density transform
+  description: 因长度收缩导致不同参考系电荷密度不同。
+- internal_id: current_wire_frame_choice
+  display_zh: 载流线换系
+  category: heuristic
+  aliases:
+  - 导线参考系
+  - wire frame
+  description: 选择电子或离子静止系分析载流导线电磁场。
+- internal_id: field_invariant_analysis
+  display_zh: 场不变量分析
+  category: heuristic
+  aliases:
+  - E²-c²B²
+  - field invariants
+  description: 用电磁场不变量判断可否变到纯电场或纯磁场系。
+- internal_id: crossed_fields_drift
+  display_zh: 交叉场漂移
+  category: physics_model
+  aliases:
+  - E×B漂移
+  - crossed-field drift
+  description: 带电粒子在互相垂直电磁场中的整体漂移运动。
+- internal_id: massless_particle_limit
+  display_zh: 零质量极限
+  category: approximation
+  aliases:
+  - m=0近似
+  - massless limit
+  description: 将中微子或光子视为零质量粒子简化运动学。
+- internal_id: small_recoil_approximation
+  display_zh: 小反冲近似
+  category: approximation
+  aliases:
+  - 反冲修正
+  - small recoil
+  description: 发射光子后母体速度很小时展开反冲能量修正。
+- internal_id: gamma_recoil_correction
+  display_zh: γ反冲修正
+  category: physics_law
+  aliases:
+  - 核γ反冲
+  - gamma recoil
+  description: 原子核发射γ光子时能量需扣除反冲动能。
+- internal_id: decay_chain_rate_equations
+  display_zh: 衰变链方程
+  category: math_technique
+  aliases:
+  - 级联衰变
+  - decay chain
+  description: 用耦合微分方程描述母核和子核数量演化。
+- internal_id: excited_state_population_peak
+  display_zh: 激发态峰值
+  category: math_technique
+  aliases:
+  - 粒子数最大时刻
+  - population peak
+  description: 对激发态数量函数求极值得到峰值时刻。
+- internal_id: branching_decay_model
+  display_zh: 分支衰变模型
+  category: physics_model
+  aliases:
+  - 多通道衰变
+  - branching decay model
+  description: 同一母态按不同衰变常数进入多个末态。
+- internal_id: beta_stability_line
+  display_zh: β稳定线
+  category: physics_model
+  aliases:
+  - 稳定核曲线
+  - beta stability
+  description: 由结合能对质子数极值确定稳定核的Z-A关系。
+- internal_id: nuclear_symmetry_energy
+  display_zh: 核对称能
+  category: physics_law
+  aliases:
+  - 不对称能
+  - symmetry energy
+  description: 描述质子数和中子数偏离相等时的结合能代价。
+- internal_id: nuclear_coulomb_energy
+  display_zh: 核库仑能
+  category: physics_law
+  aliases:
+  - 质子排斥能
+  - Coulomb term
+  description: 原子核内质子间静电排斥降低总结合能。
+- internal_id: nuclear_surface_energy
+  display_zh: 核表面能
+  category: physics_law
+  aliases:
+  - 表面积项
+  - surface term
+  description: 表面核子配位数较少导致结合能减少。
+- internal_id: nuclear_volume_energy
+  display_zh: 核体积能
+  category: physics_law
+  aliases:
+  - 体积项
+  - volume term
+  description: 核力短程饱和使结合能主项近似正比于核子数。
+- internal_id: nuclear_pairing_energy
+  display_zh: 核对能
+  category: physics_law
+  aliases:
+  - 成对项
+  - pairing term
+  description: 质子或中子成对配对使偶偶核额外稳定。
+- internal_id: mirror_nuclei_radius
+  display_zh: 镜核半径法
+  category: heuristic
+  aliases:
+  - 镜核质量差
+  - mirror nuclei
+  description: 用镜核库仑能差反推原子核半径参数。
+- internal_id: nuclear_separation_energy
+  display_zh: 核子分离能
+  category: physics_law
+  aliases:
+  - 质子分离能
+  - neutron separation
+  description: 从结合能差计算移出一个质子或中子的能量。
+- internal_id: fission_energy_balance
+  display_zh: 裂变能量分解
+  category: heuristic
+  aliases:
+  - 裂变释放能
+  - fission Q-value
+  description: 分别比较体积、表面、库仑等项对裂变能的贡献。
+- internal_id: chain_reaction_criticality
+  display_zh: 链式反应临界
+  category: physics_model
+  aliases:
+  - 核裂变链反应
+  - criticality
+  description: 中子增殖数达到临界时裂变反应可自持进行。
+- internal_id: neutron_moderation
+  display_zh: 中子慢化
+  category: physics_model
+  aliases:
+  - 快中子减速
+  - neutron moderation
+  description: 通过与轻核弹性碰撞降低中子动能。
+- internal_id: elastic_scattering_energy_loss
+  display_zh: 弹散能损
+  category: physics_law
+  aliases:
+  - 碰撞损能
+  - elastic energy loss
+  description: 由两体弹性碰撞运动学求入射粒子能量损失。
+- internal_id: fermi_sphere_filling
+  display_zh: 费米球填充
+  category: heuristic
+  aliases:
+  - 动量空间填充
+  - Fermi sphere
+  description: 零温费米子按动量空间态从低到高填满。
+- internal_id: pauli_exclusion_counting
+  display_zh: 泡利态计数
+  category: physics_law
+  aliases:
+  - 泡利不相容
+  - Pauli counting
+  description: 每个单粒子态按自旋简并度限制占有数。
+- internal_id: infinite_box_energy_levels
+  display_zh: 方盒能级
+  category: physics_model
+  aliases:
+  - 立方势阱
+  - particle in a box
+  description: 用三维无限深方势阱估算核子单粒子能级。
+- internal_id: nuclear_fermi_energy
+  display_zh: 核费米能
+  category: physics_law
+  aliases:
+  - 最大占有能
+  - nuclear Fermi energy
+  description: 由核子数密度确定质子或中子的最高占有能量。
+- internal_id: degenerate_fermi_pressure
+  display_zh: 简并费米压
+  category: physics_model
+  aliases:
+  - 费米压力
+  - degeneracy pressure
+  description: 泡利不相容导致费米气体即使零温也有动能压力。
+- internal_id: nuclear_radius_scaling
+  display_zh: 核半径标度
+  category: physics_law
+  aliases:
+  - R=r0A^(1/3)
+  - nuclear radius law
+  description: 原子核半径随质量数三分之一次方增长。
+- internal_id: spin_spin_coupling
+  display_zh: 自旋自旋耦合
+  category: physics_law
+  aliases:
+  - 自旋点积
+  - spin-spin coupling
+  description: 两个自旋角动量点积导致平行反平行能量差。
+- internal_id: magnetic_dipole_contact_field
+  display_zh: 磁偶极接触场
+  category: physics_law
+  aliases:
+  - δ函数磁场
+  - contact field
+  description: 点磁偶极子的奇异接触项影响s态超精细分裂。
+- internal_id: polarized_sphere_regularization
+  display_zh: 极化球正则化
+  category: math_technique
+  aliases:
+  - 均匀极化球
+  - sphere regularization
+  description: 用有限极化球处理点偶极场在原点的奇异性。
+- internal_id: g_factor_magnetic_moment
+  display_zh: g因子磁矩
+  category: physics_law
+  aliases:
+  - 朗德g因子
+  - g-factor
+  description: 用g因子联系自旋角动量和磁偶极矩大小。
+- internal_id: hyperfine_transition_wavelength
+  display_zh: 超精细跃迁波长
+  category: physics_model
+  aliases:
+  - 21厘米线
+  - hyperfine wavelength
+  description: 由超精细能级差求氢原子跃迁辐射波长。

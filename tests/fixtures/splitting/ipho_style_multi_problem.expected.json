@@ -1,0 +1,333 @@
+{
+  "paper_pdf": "ipho_style_multi_problem.pdf",
+  "answer_pdf": "ipho_style_multi_problem_answers.pdf",
+  "expected_problem_numbers": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "expected_problem_page_ranges": {
+    "1": [
+      1,
+      1
+    ],
+    "2": [
+      2,
+      3
+    ],
+    "3": [
+      4,
+      4
+    ],
+    "4": [
+      5,
+      6
+    ],
+    "5": [
+      7,
+      7
+    ]
+  },
+  "expected_answer_page_ranges": {
+    "1": [
+      1,
+      1
+    ],
+    "2": [
+      2,
+      2
+    ],
+    "3": [
+      3,
+      3
+    ],
+    "4": [
+      4,
+      4
+    ],
+    "5": [
+      5,
+      5
+    ]
+  },
+  "expected_answer_mapping": {
+    "1": 1,
+    "2": 2,
+    "3": 3,
+    "4": 4,
+    "5": 5
+  },
+  "problem_ocr_pages": {
+    "pages": [
+      {
+        "page_number": 1,
+        "blocks": [
+          {
+            "text": "第1题 Mechanics warmup",
+            "page_number": 1,
+            "confidence": 0.99,
+            "bbox": null,
+            "low_confidence": false
+          },
+          {
+            "text": "A block slides on an inclined plane.",
+            "page_number": 1,
+            "confidence": 0.99,
+            "bbox": null,
+            "low_confidence": false
+          },
+          {
+            "text": "Find the acceleration and normal force.",
+            "page_number": 1,
+            "confidence": 0.99,
+            "bbox": null,
+            "low_confidence": false
+          }
+        ]
+      },
+      {
+        "page_number": 2,
+        "blocks": [
+          {
+            "text": "2. Oscillation setup",
+            "page_number": 2,
+            "confidence": 0.99,
+            "bbox": null,
+            "low_confidence": false
+          },
+          {
+            "text": "A mass-spring oscillator is released from rest.",
+            "page_number": 2,
+            "confidence": 0.99,
+            "bbox": null,
+            "low_confidence": false
+          },
+          {
+            "text": "Derive the period and maximum speed.",
+            "page_number": 2,
+            "confidence": 0.99,
+            "bbox": null,
+            "low_confidence": false
+          }
+        ]
+      },
+      {
+        "page_number": 3,
+        "blocks": [
+          {
+            "text": "Continuation of problem 2",
+            "page_number": 3,
+            "confidence": 0.99,
+            "bbox": null,
+            "low_confidence": false
+          },
+          {
+            "text": "Use energy conservation for the final expression.",
+            "page_number": 3,
+            "confidence": 0.99,
+            "bbox": null,
+            "low_confidence": false
+          }
+        ]
+      },
+      {
+        "page_number": 4,
+        "blocks": [
+          {
+            "text": "(3) Thermodynamics cycle",
+            "page_number": 4,
+            "confidence": 0.99,
+            "bbox": null,
+            "low_confidence": false
+          },
+          {
+            "text": "An ideal gas follows an isothermal and adiabatic path.",
+            "page_number": 4,
+            "confidence": 0.99,
+            "bbox": null,
+            "low_confidence": false
+          },
+          {
+            "text": "Compute the work done in one cycle.",
+            "page_number": 4,
+            "confidence": 0.99,
+            "bbox": null,
+            "low_confidence": false
+          }
+        ]
+      },
+      {
+        "page_number": 5,
+        "blocks": [
+          {
+            "text": "Problem 4 Electromagnetic induction",
+            "page_number": 5,
+            "confidence": 0.99,
+            "bbox": null,
+            "low_confidence": false
+          },
+          {
+            "text": "A conducting rod moves through a uniform magnetic field.",
+            "page_number": 5,
+            "confidence": 0.99,
+            "bbox": null,
+            "low_confidence": false
+          },
+          {
+            "text": "Determine the induced emf.",
+            "page_number": 5,
+            "confidence": 0.99,
+            "bbox": null,
+            "low_confidence": false
+          }
+        ]
+      },
+      {
+        "page_number": 6,
+        "blocks": [
+          {
+            "text": "Continuation of Problem 4",
+            "page_number": 6,
+            "confidence": 0.99,
+            "bbox": null,
+            "low_confidence": false
+          },
+          {
+            "text": "Discuss the direction of current and magnetic braking.",
+            "page_number": 6,
+            "confidence": 0.99,
+            "bbox": null,
+            "low_confidence": false
+          }
+        ]
+      },
+      {
+        "page_number": 7,
+        "blocks": [
+          {
+            "text": "题5 Geometric optics",
+            "page_number": 7,
+            "confidence": 0.99,
+            "bbox": null,
+            "low_confidence": false
+          },
+          {
+            "text": "A lens system forms an image on a screen.",
+            "page_number": 7,
+            "confidence": 0.99,
+            "bbox": null,
+            "low_confidence": false
+          },
+          {
+            "text": "Find the final image position and magnification.",
+            "page_number": 7,
+            "confidence": 0.99,
+            "bbox": null,
+            "low_confidence": false
+          }
+        ]
+      }
+    ]
+  },
+  "answer_ocr_pages": {
+    "pages": [
+      {
+        "page_number": 1,
+        "blocks": [
+          {
+            "text": "第1题 Answer",
+            "page_number": 1,
+            "confidence": 0.99,
+            "bbox": null,
+            "low_confidence": false
+          },
+          {
+            "text": "Resolve gravity parallel to the incline and apply Newton second law.",
+            "page_number": 1,
+            "confidence": 0.99,
+            "bbox": null,
+            "low_confidence": false
+          }
+        ]
+      },
+      {
+        "page_number": 2,
+        "blocks": [
+          {
+            "text": "2. Answer",
+            "page_number": 2,
+            "confidence": 0.99,
+            "bbox": null,
+            "low_confidence": false
+          },
+          {
+            "text": "Use angular frequency omega = sqrt(k / m).",
+            "page_number": 2,
+            "confidence": 0.99,
+            "bbox": null,
+            "low_confidence": false
+          }
+        ]
+      },
+      {
+        "page_number": 3,
+        "blocks": [
+          {
+            "text": "(3) Answer",
+            "page_number": 3,
+            "confidence": 0.99,
+            "bbox": null,
+            "low_confidence": false
+          },
+          {
+            "text": "Compute isothermal work and use adiabatic relation.",
+            "page_number": 3,
+            "confidence": 0.99,
+            "bbox": null,
+            "low_confidence": false
+          }
+        ]
+      },
+      {
+        "page_number": 4,
+        "blocks": [
+          {
+            "text": "Problem 4 Answer",
+            "page_number": 4,
+            "confidence": 0.99,
+            "bbox": null,
+            "low_confidence": false
+          },
+          {
+            "text": "Motional emf equals B L v with Lenz law direction.",
+            "page_number": 4,
+            "confidence": 0.99,
+            "bbox": null,
+            "low_confidence": false
+          }
+        ]
+      },
+      {
+        "page_number": 5,
+        "blocks": [
+          {
+            "text": "题5 Answer",
+            "page_number": 5,
+            "confidence": 0.99,
+            "bbox": null,
+            "low_confidence": false
+          },
+          {
+            "text": "Apply thin lens equation twice and multiply magnifications.",
+            "page_number": 5,
+            "confidence": 0.99,
+            "bbox": null,
+            "low_confidence": false
+          }
+        ]
+      }
+    ]
+  }
+}

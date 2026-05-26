@@ -1,0 +1,23 @@
+{
+  "problem_id": "phase02-3-real-workspace-fake-solve",
+  "derivation_steps": [
+    {
+      "reasoning": "fake provider verification",
+      "expression": "F=ma",
+      "official_answer_refs": [
+        "answer:1"
+      ]
+    }
+  ],
+  "discrepancies": [],
+  "ocr_warnings": [],
+  "physics_model_tags": [
+    "newton"
+  ],
+  "heuristic_insight_tags": [
+    "free-body"
+  ],
+  "math_technique_tags": [
+    "algebra"
+  ]
+}

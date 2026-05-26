@@ -1,0 +1,15 @@
+name: probe
+inputs:
+  - problem_text
+  - solve_context
+  - previous_turns
+  - latest_user_response
+outputs:
+  - next_question
+steps:
+  - id: next_turn
+    kind: llm
+    input_keys: [problem_text, solve_context, previous_turns, latest_user_response]
+    output_keys: [next_question]
+    prompt_template: next_turn.md.j2
+

@@ -1,0 +1,128 @@
+version: "v0.1"
+roots:
+  - id: mechanics
+    display_zh: 力学
+    children:
+      - id: kinematics
+        display_zh: 运动学
+        children: []
+      - id: dynamics
+        display_zh: 动力学
+        children:
+          - id: newtons_laws
+            display_zh: 牛顿定律
+            children: []
+          - id: friction_and_resistance
+            display_zh: 摩擦与阻力
+            children: []
+      - id: conservation_laws
+        display_zh: 守恒定律
+        children:
+          - id: energy_conservation_topic
+            display_zh: 能量守恒
+            children: []
+          - id: momentum_conservation_topic
+            display_zh: 动量守恒
+            children: []
+          - id: angular_momentum_topic
+            display_zh: 角动量守恒
+            children: []
+      - id: celestial_mechanics
+        display_zh: 天体运动
+        children:
+          - id: orbital_theory
+            display_zh: 轨道理论
+            children: []
+          - id: gravitational_field
+            display_zh: 引力场
+            children: []
+      - id: rigid_body
+        display_zh: 刚体力学
+        children: []
+      - id: fluid_mechanics
+        display_zh: 流体力学
+        children: []
+      - id: oscillations_waves
+        display_zh: 振动与波
+        children:
+          - id: simple_harmonic
+            display_zh: 简谐运动
+            children: []
+          - id: wave_propagation
+            display_zh: 波的传播
+            children: []
+          - id: standing_waves
+            display_zh: 驻波
+            children: []
+  - id: thermodynamics
+    display_zh: 热学
+    children:
+      - id: gas_laws
+        display_zh: 气体定律
+        children: []
+      - id: thermo_laws
+        display_zh: 热力学定律
+        children: []
+      - id: statistical_physics
+        display_zh: 统计物理
+        children: []
+      - id: phase_transitions
+        display_zh: 相变
+        children: []
+  - id: electromagnetism
+    display_zh: 电磁学
+    children:
+      - id: electrostatics
+        display_zh: 静电学
+        children: []
+      - id: dc_circuits
+        display_zh: 直流电路
+        children: []
+      - id: magnetostatics
+        display_zh: 静磁学
+        children: []
+      - id: em_induction
+        display_zh: 电磁感应
+        children: []
+      - id: em_waves
+        display_zh: 电磁波
+        children: []
+      - id: ac_circuits
+        display_zh: 交流电路
+        children: []
+  - id: optics
+    display_zh: 光学
+    children:
+      - id: geometric_optics
+        display_zh: 几何光学
+        children: []
+      - id: wave_optics
+        display_zh: 波动光学
+        children:
+          - id: interference
+            display_zh: 干涉
+            children: []
+          - id: diffraction
+            display_zh: 衍射
+            children: []
+          - id: polarization
+            display_zh: 偏振
+            children: []
+      - id: quantum_optics
+        display_zh: 量子光学
+        children: []
+  - id: modern_physics
+    display_zh: 近代物理
+    children:
+      - id: special_relativity
+        display_zh: 狭义相对论
+        children: []
+      - id: quantum_mechanics
+        display_zh: 量子力学
+        children: []
+      - id: atomic_physics
+        display_zh: 原子物理
+        children: []
+      - id: nuclear_physics
+        display_zh: 核物理
+        children: []

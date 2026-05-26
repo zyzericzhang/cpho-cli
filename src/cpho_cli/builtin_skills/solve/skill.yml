@@ -1,0 +1,35 @@
+name: solve
+inputs:
+  - problem_text
+  - answer_text
+  - ocr_warnings
+  - problem_file
+  - answer_file
+outputs:
+  - solve_report
+steps:
+  - id: extract_official_steps
+    kind: llm
+    input_keys: [problem_text, answer_text, problem_file, answer_file]
+    output_keys: [official_steps]
+    prompt_template: extract_official_steps.md.j2
+  - id: check_each_step
+    kind: llm
+    input_keys: [problem_text, answer_text, official_steps, problem_file, answer_file]
+    output_keys: [step_checks]
+    prompt_template: check_each_step.md.j2
+  - id: classify_error_types
+    kind: llm
+    input_keys: [step_checks, ocr_warnings, problem_file, answer_file]
+    output_keys: [error_classification]
+    prompt_template: classify_error_types.md.j2
+  - id: propose_discrepancies
+    kind: llm
+    input_keys: [step_checks, error_classification, ocr_warnings, problem_file, answer_file]
+    output_keys: [discrepancies]
+    prompt_template: propose_discrepancies.md.j2
+  - id: assemble_final_report
+    kind: llm
+    input_keys: [official_steps, step_checks, error_classification, discrepancies, ocr_warnings, problem_file, answer_file]
+    output_keys: [solve_report]
+    prompt_template: assemble_solve_report.md.j2

@@ -1,0 +1,576 @@
+version: v0.1
+tags:
+- internal_id: lorentz_transformation_vector
+  display_zh: 矢量洛伦兹变换
+  category: physics_law
+  aliases:
+  - 洛伦兹变换矢量式
+  - vector Lorentz transform
+  description: 用平行与垂直分量统一处理任意方向换系。
+- internal_id: relativity_of_simultaneity
+  display_zh: 同时相对性
+  category: physics_law
+  aliases:
+  - 不同系不同同时
+  - simultaneity relativity
+  description: 判断不同参考系中事件同时性的改变。
+- internal_id: directional_length_contraction
+  display_zh: 方向性尺缩
+  category: physics_law
+  aliases:
+  - 沿运动方向收缩
+  - length contraction
+  description: 只对速度方向上的长度进行洛伦兹收缩。
+- internal_id: proper_length_identification
+  display_zh: 本征长度识别
+  category: heuristic
+  aliases:
+  - 静长判断
+  - proper length
+  description: 先判断哪一参考系中物体长度是本征长度。
+- internal_id: velocity_addition_collinear
+  display_zh: 共线速度合成
+  category: physics_law
+  aliases:
+  - 相对论速度叠加
+  - collinear velocity addition
+  description: 用相对论速度加法处理同向或反向运动。
+- internal_id: velocity_addition_vector
+  display_zh: 矢量速度合成
+  category: physics_law
+  aliases:
+  - 非共线速度合成
+  - vector velocity addition
+  description: 分解平行垂直分量处理非共线速度变换。
+- internal_id: relativistic_acceleration_transform
+  display_zh: 加速度变换
+  category: physics_law
+  aliases:
+  - 相对论加速度变换
+  - acceleration transform
+  description: 在不同惯性系间转换粒子加速度与时间关系。
+- internal_id: proper_time_clock_reading
+  display_zh: 本征时读数
+  category: physics_law
+  aliases:
+  - 固有时
+  - proper time
+  description: 用运动物体自身钟的固有时表示过程时间。
+- internal_id: spacetime_event_matching
+  display_zh: 时空事件配对
+  category: heuristic
+  aliases:
+  - 事件法
+  - event matching
+  description: 将发射、接收、碰撞等过程拆成时空事件求解。
+- internal_id: light_cone_intersection
+  display_zh: 光锥交点法
+  category: heuristic
+  aliases:
+  - 光信号交会
+  - light cone intersection
+  description: 用光速传播条件确定信号发射接收事件。
+- internal_id: retarded_time_geometry
+  display_zh: 推迟时几何
+  category: heuristic
+  aliases:
+  - 视位置延迟
+  - retarded time
+  description: 由光传播时间反推观察到的物体表观形状。
+- internal_id: relativistic_visual_shape
+  display_zh: 相对论视形
+  category: physics_model
+  aliases:
+  - 视觉畸变
+  - Terrell effect
+  description: 分析高速运动物体因光时延产生的表观形状。
+- internal_id: relativistic_center_of_momentum
+  display_zh: 相对论质心系
+  category: heuristic
+  aliases:
+  - 零动量系
+  - COM frame
+  description: 转到总动量为零的参考系简化碰撞或爆炸。
+- internal_id: invariant_mass_method
+  display_zh: 不变质量法
+  category: heuristic
+  aliases:
+  - 不变量法
+  - invariant mass
+  description: 用四动量平方不变量求阈能或反应结果。
+- internal_id: energy_momentum_relation
+  display_zh: 能动关系
+  category: physics_law
+  aliases:
+  - 相对论能量动量
+  - E-p relation
+  description: 用能量动量关系连接质量、动量和总能量。
+- internal_id: relativistic_threshold_energy
+  display_zh: 阈能条件
+  category: physics_law
+  aliases:
+  - 反应阈值
+  - threshold energy
+  description: 由末态质心系静止条件确定反应最低能量。
+- internal_id: pair_annihilation_kinematics
+  display_zh: 湮灭运动学
+  category: physics_model
+  aliases:
+  - 正负电子湮灭
+  - annihilation kinematics
+  description: 用能动守恒处理粒子反粒子转化为光子。
+- internal_id: photon_aberration
+  display_zh: 光行差公式
+  category: physics_law
+  aliases:
+  - 相对论光行差
+  - aberration
+  description: 描述光子方向在不同惯性系中的角度变换。
+- internal_id: massive_particle_aberration
+  display_zh: 有质量粒子行差
+  category: physics_law
+  aliases:
+  - 粒子角变换
+  - massive aberration
+  description: 描述中微子等有质量粒子速度方向的换系。
+- internal_id: relativistic_beaming
+  display_zh: 相对论束射
+  category: physics_model
+  aliases:
+  - 前向聚束
+  - relativistic beaming
+  description: 高速源的辐射在观察系中向前方集中。
+- internal_id: wigner_rotation
+  display_zh: 魏格纳转动
+  category: physics_law
+  aliases:
+  - Wigner rotation
+  - 非共线boost转动
+  description: 两次非共线洛伦兹变换导致参考系空间转动。
+- internal_id: thomas_precession
+  display_zh: 托马斯进动
+  category: physics_law
+  aliases:
+  - Thomas precession
+  - 托马斯旋进
+  description: 加速粒子瞬时共动系连续变化产生附加进动。
+- internal_id: low_velocity_beta_expansion
+  display_zh: 低速β展开
+  category: approximation
+  aliases:
+  - 保留β二阶
+  - low beta expansion
+  description: 在速度远小于光速时按β阶数展开相对论效应。
+- internal_id: weak_field_light_deflection
+  display_zh: 弱场光偏折
+  category: physics_model
+  aliases:
+  - 引力光线偏折
+  - light bending
+  description: 计算太阳附近光线在引力场中的偏转角。
+- internal_id: gravitational_impulse_method
+  display_zh: 引力冲量法
+  category: heuristic
+  aliases:
+  - 横向冲量
+  - impulse method
+  description: 将微弱偏折近似为沿直线路径累积横向冲量。
+- internal_id: orbit_equation_perturbation
+  display_zh: 轨道方程微扰
+  category: math_technique
+  aliases:
+  - u=1/r微扰
+  - orbit perturbation
+  description: 用倒半径轨道方程和小修正求偏折或进动。
+- internal_id: effective_potential_orbit
+  display_zh: 有效势轨道
+  category: heuristic
+  aliases:
+  - 径向有效势
+  - effective potential
+  description: 将中心力运动化为一维径向有效势问题。
+- internal_id: geodesic_weak_field
+  display_zh: 弱场测地线
+  category: physics_model
+  aliases:
+  - Schwarzschild弱场
+  - weak-field geodesic
+  description: 用弱引力度规中的测地线计算轨道修正。
+- internal_id: photon_rocket_equation
+  display_zh: 光子火箭方程
+  category: physics_model
+  aliases:
+  - 相对论火箭
+  - photon rocket
+  description: 用光子动量排放建立质量比与速度关系。
+- internal_id: relativistic_radiation_damping
+  display_zh: 相对论辐射阻尼
+  category: physics_model
+  aliases:
+  - 辐射耗散
+  - radiation damping
+  description: 处理带电振子因电磁辐射损失能量的衰减。
+- internal_id: poynting_robertson_drag
+  display_zh: 坡印廷罗伯逊阻力
+  category: physics_model
+  aliases:
+  - P-R阻力
+  - Poynting-Robertson effect
+  description: 运动尘埃吸收再辐射导致切向辐射阻力。
+- internal_id: relativistic_cyclotron_frequency
+  display_zh: 相对论回旋频率
+  category: physics_law
+  aliases:
+  - 回旋频率降低
+  - relativistic cyclotron
+  description: 粒子能量升高导致回旋频率随γ因子改变。
+- internal_id: cherenkov_condition
+  display_zh: 切伦科夫条件
+  category: physics_law
+  aliases:
+  - 切连科夫辐射
+  - Cherenkov condition
+  description: 粒子速度超过介质光速时产生锥形辐射。
+- internal_id: photodisintegration_threshold
+  display_zh: 光致裂变阈值
+  category: physics_model
+  aliases:
+  - 光核反应阈能
+  - photodisintegration
+  description: 用能量动量守恒求光子击出核子阈能。
+- internal_id: electromagnetic_field_transform
+  display_zh: 电磁场变换
+  category: physics_law
+  aliases:
+  - E-B变换
+  - field transform
+  description: 在不同惯性系间变换电场和磁场分量。
+- internal_id: four_current_transform
+  display_zh: 四维电流变换
+  category: physics_law
+  aliases:
+  - 电荷电流四矢量
+  - four-current
+  description: 将电荷密度和电流密度作为四矢量变换。
+- internal_id: relativistic_lorentz_force
+  display_zh: 相对论洛伦兹力
+  category: physics_law
+  aliases:
+  - 电磁力运动
+  - relativistic Lorentz force
+  description: 结合相对论动量方程处理带电粒子运动。
+- internal_id: energy_momentum_integral
+  display_zh: 能动积分法
+  category: heuristic
+  aliases:
+  - 积分方程联立
+  - energy-momentum integral
+  description: 用能量方程与动量方程积分求相对论运动。
+- internal_id: radiation_pressure_mirror
+  display_zh: 镜面光压
+  category: physics_law
+  aliases:
+  - 反射光压
+  - radiation pressure
+  description: 用光子动量变化计算镜面受到的推力。
+- internal_id: relativistic_solar_sail
+  display_zh: 相对论太阳帆
+  category: physics_model
+  aliases:
+  - 光帆模型
+  - solar sail
+  description: 考虑速度效应下光压持续推动飞船加速。
+- internal_id: rutherford_scattering
+  display_zh: 卢瑟福散射
+  category: physics_model
+  aliases:
+  - α粒子散射
+  - Rutherford scattering
+  description: 用点核库仑斥力解释大角度α粒子散射。
+- internal_id: thomson_plum_pudding_model
+  display_zh: 西瓜模型
+  category: physics_model
+  aliases:
+  - 汤姆孙模型
+  - plum pudding model
+  description: 将正电荷视作均匀分布球体估算散射偏角。
+- internal_id: coulomb_scattering_angle
+  display_zh: 库仑散射角
+  category: physics_law
+  aliases:
+  - 双曲线散射
+  - Coulomb scattering
+  description: 由库仑势和瞄准距离确定粒子偏转角。
+- internal_id: differential_cross_section
+  display_zh: 微分截面
+  category: physics_law
+  aliases:
+  - 散射截面
+  - differential cross section
+  description: 用单位立体角散射粒子数表征散射概率。
+- internal_id: impact_parameter_mapping
+  display_zh: 瞄准距映射
+  category: heuristic
+  aliases:
+  - b-θ关系
+  - impact parameter
+  description: 建立瞄准距离和散射角之间的对应关系。
+- internal_id: lab_cm_angle_transform
+  display_zh: 质心实验角变换
+  category: math_technique
+  aliases:
+  - CM-Lab角变换
+  - angle transform
+  description: 将质心系散射角转换为实验室系观测角。
+- internal_id: central_potential_scattering
+  display_zh: 中心势散射
+  category: physics_model
+  aliases:
+  - 有心力散射
+  - central potential scattering
+  description: 用中心势轨道求入射粒子的散射角和截面。
+- internal_id: inverse_square_potential_scattering
+  display_zh: 平方反比势散射
+  category: physics_model
+  aliases:
+  - α/r²势散射
+  - inverse-square potential
+  description: 处理势能正比于反平方距离的经典散射。
+- internal_id: square_well_scattering
+  display_zh: 球形势阱散射
+  category: physics_model
+  aliases:
+  - 有限深势阱
+  - spherical well scattering
+  description: 用折射式轨迹处理球形有限势阱散射。
+- internal_id: scattering_refraction_analogy
+  display_zh: 散射折射类比
+  category: heuristic
+  aliases:
+  - 力学折射
+  - refraction analogy
+  description: 将势阱中速度改变类比为光线折射求偏折。
+- internal_id: resonant_photon_recoil
+  display_zh: 共振光子反冲
+  category: physics_model
+  aliases:
+  - 光吸收反冲
+  - photon recoil
+  description: 原子吸收发射共振光子后获得累计反冲动量。
+- internal_id: rapidity_parameterization
+  display_zh: 快速度参数
+  category: math_technique
+  aliases:
+  - 双曲角
+  - rapidity
+  description: 用双曲函数参数化相对论速度和能量动量。
+- internal_id: doppler_resonance_condition
+  display_zh: 多普勒共振条件
+  category: physics_law
+  aliases:
+  - 频率调谐
+  - Doppler resonance
+  description: 调整入射光频率使运动原子仍能共振吸收。
+- internal_id: compton_scattering
+  display_zh: 康普顿散射
+  category: physics_model
+  aliases:
+  - 光子电子散射
+  - Compton scattering
+  description: 用相对论能动守恒处理光子与电子散射。
+- internal_id: klein_nishina_formula
+  display_zh: 克莱因仁科公式
+  category: physics_law
+  aliases:
+  - Klein-Nishina
+  - 康普顿截面
+  description: 给出相对论光子电子散射的角分布截面。
+- internal_id: thomson_limit
+  display_zh: 汤姆逊极限
+  category: approximation
+  aliases:
+  - 低频极限
+  - Thomson limit
+  description: 光子能量远小于电子静能时的散射近似。
+- internal_id: invariant_phase_space
+  display_zh: 不变相空间
+  category: math_technique
+  aliases:
+  - Lorentz不变相空间
+  - invariant phase space
+  description: 用洛伦兹不变相空间元计算二体散射截面。
+- internal_id: mandelstam_invariants
+  display_zh: 曼德尔斯塔姆量
+  category: math_technique
+  aliases:
+  - s t u变量
+  - Mandelstam variables
+  description: 用散射不变量化简相对论散射运动学。
+- internal_id: compton_edge_spectrum
+  display_zh: 康普顿边
+  category: physics_model
+  aliases:
+  - 康普顿电子谱
+  - Compton edge
+  description: 由最大反冲电子能量解释能谱截止边缘。
+- internal_id: scintillator_response_model
+  display_zh: 闪烁体响应
+  category: physics_model
+  aliases:
+  - 闪烁探测
+  - scintillator response
+  description: 将电子沉积能量转化为探测器电压脉冲。
+- internal_id: blackbody_exchange
+  display_zh: 黑体辐射交换
+  category: physics_model
+  aliases:
+  - 部分黑体传热
+  - radiative exchange
+  description: 计算两个部分黑体之间的净辐射传热。
+- internal_id: view_factor_reciprocity
+  display_zh: 角系数互易
+  category: physics_law
+  aliases:
+  - 形态因子互易
+  - view factor reciprocity
+  description: 用面积和吸收比例互易关系保证热平衡。
+- internal_id: lambertian_radiation
+  display_zh: 朗伯辐射
+  category: physics_model
+  aliases:
+  - 余弦辐射
+  - Lambertian
+  description: 用余弦角分布描述漫射黑体表面辐射。
+- internal_id: larmor_radiation_loss
+  display_zh: 拉莫尔辐射损失
+  category: physics_law
+  aliases:
+  - 加速电荷辐射
+  - Larmor formula
+  description: 用加速电荷辐射功率估算经典原子塌缩。
+- internal_id: bohr_quantization
+  display_zh: 玻尔量子化
+  category: physics_model
+  aliases:
+  - 角动量量子化
+  - Bohr model
+  description: 用角动量量子化求氢原子能级和轨道半径。
+- internal_id: sommerfeld_quantization
+  display_zh: 索末菲量子化
+  category: physics_model
+  aliases:
+  - 作用量子化
+  - Sommerfeld quantization
+  description: 对椭圆轨道的径向和角向作用量进行量子化。
+- internal_id: action_variable_integral
+  display_zh: 作用量积分
+  category: math_technique
+  aliases:
+  - 相积分
+  - action integral
+  description: 计算闭合轨道上的广义动量积分量子化条件。
+- internal_id: relativistic_fine_structure
+  display_zh: 相对论精细结构
+  category: physics_model
+  aliases:
+  - 氢精细结构
+  - fine structure
+  description: 用相对论修正解释氢原子谱线精细劈裂。
+- internal_id: wkb_quantization
+  display_zh: WKB量子化
+  category: approximation
+  aliases:
+  - 半经典量子化
+  - WKB
+  description: 用半经典相积分条件近似求束缚态能级。
+- internal_id: langer_correction
+  display_zh: 兰格修正
+  category: approximation
+  aliases:
+  - l+1/2修正
+  - Langer correction
+  description: 中心势径向WKB中将角动量量子数作半整数修正。
+- internal_id: spin_orbit_coupling
+  display_zh: 自旋轨道耦合
+  category: physics_law
+  aliases:
+  - LS耦合
+  - spin-orbit coupling
+  description: 电子自旋磁矩与轨道磁场相互作用导致能级劈裂。
+- internal_id: thomas_half_factor
+  display_zh: 托马斯半因子
+  category: approximation
+  aliases:
+  - 1/2因子
+  - Thomas factor
+  description: 托马斯进动使自旋轨道耦合修正出现半因子。
+- internal_id: hyperfine_structure
+  display_zh: 超精细结构
+  category: physics_model
+  aliases:
+  - 氢21厘米线
+  - hyperfine structure
+  description: 核磁矩与电子磁矩相互作用造成更小能级劈裂。
+- internal_id: fermi_contact_interaction
+  display_zh: 费米接触项
+  category: physics_law
+  aliases:
+  - 接触相互作用
+  - Fermi contact
+  description: s态电子在原点概率密度导致磁偶极接触能。
+- internal_id: magnetic_dipole_hamiltonian
+  display_zh: 磁偶极哈密顿量
+  category: physics_law
+  aliases:
+  - 偶极相互作用
+  - dipole Hamiltonian
+  description: 用磁偶极子在磁场中的能量计算能级修正。
+- internal_id: perturbation_energy_shift
+  display_zh: 微扰能级修正
+  category: math_technique
+  aliases:
+  - 一级微扰
+  - perturbation shift
+  description: 用未扰动波函数期望值求小相互作用能级位移。
+- internal_id: fermi_gas_nucleus
+  display_zh: 核费米气体
+  category: physics_model
+  aliases:
+  - 费米气体模型
+  - nuclear Fermi gas
+  description: 将核子视作势阱中简并费米气体估算核性质。
+- internal_id: semi_empirical_mass_formula
+  display_zh: 半经验质量公式
+  category: physics_model
+  aliases:
+  - 液滴模型公式
+  - Bethe-Weizsäcker
+  description: 用体积、表面、库仑等项估算原子核结合能。
+- internal_id: beta_decay_spectrum
+  display_zh: β衰变谱
+  category: physics_model
+  aliases:
+  - 连续β谱
+  - beta spectrum
+  description: 用三体末态相空间解释β衰变电子连续能谱。
+- internal_id: decay_branching_ratio
+  display_zh: 衰变分支比
+  category: physics_law
+  aliases:
+  - branching ratio
+  - 分支衰变
+  description: 比较不同末态衰变常数确定各通道概率。
+- internal_id: crystal_photoelectric_effect
+  display_zh: 晶体光电效应
+  category: physics_model
+  aliases:
+  - 晶体中光电发射
+  - crystal photoeffect
+  description: 考虑晶格周期性对光电子动量与能量的影响。
+- internal_id: reciprocal_lattice_momentum
+  display_zh: 倒格矢动量
+  category: physics_law
+  aliases:
+  - 晶格动量
+  - reciprocal vector
+  description: 晶体中动量守恒可相差一个倒格矢。

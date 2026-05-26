@@ -1,0 +1,27 @@
+Split prompt version: {{ split_prompt_version }}
+
+Paper file: {{ paper_file }}
+Paper sha256: {{ paper_sha256 }}
+Paper total pages: {{ paper_total_pages }}
+Answer file: {{ answer_file or "none" }}
+Answer total pages: {{ answer_total_pages or "none" }}
+
+Return JSON matching the supplied schema. Use 1-indexed inclusive page ranges.
+Create one item per large problem. Pair answer pages by problem number when possible.
+Put answer-only numbers into unmatched_answers.
+
+Paper OCR pages:
+{% for page in paper_pages %}
+Page {{ page.page_number }}:
+{{ page.text }}
+{% endfor %}
+
+Answer OCR pages:
+{% if answer_pages %}
+{% for page in answer_pages %}
+Page {{ page.page_number }}:
+{{ page.text }}
+{% endfor %}
+{% else %}
+none
+{% endif %}
