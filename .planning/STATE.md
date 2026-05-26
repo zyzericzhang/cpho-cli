@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Phase 3 complete; starting Phase 4
+stopped_at: Phase 4 complete; starting Phase 5
 last_updated: "2026-05-26T00:00:00+08:00"
-last_activity: 2026-05-26 -- Phase 3 completed with full pytest verification; starting Phase 4.
+last_activity: 2026-05-26 -- Phase 4 completed with full pytest verification; starting Phase 5.
 progress:
   total_phases: 8
-  completed_phases: 6
-  total_plans: 41
-  completed_plans: 41
-  percent: 75
+  completed_phases: 7
+  total_plans: 47
+  completed_plans: 47
+  percent: 88
 ---
 
 # Project State
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-05-20)
 
 **Core value:** 生成质量 — truly find problem difficulty points and insights, explain the "why" behind every derivation step, link related problems into a knowledge network.
-**Current focus:** Phase 4 — 找同类题 + 组卷 + 异常处理
+**Current focus:** Phase 5 — 用户手册 + 开源准备
 
 ## Current Position
 
-Phase: 4 (related-problems-pdf-assembly-errors) — READY FOR PLANNING
+Phase: 5 (user-manual-opensource) — READY FOR PLANNING
 Plan: TBD
-Status: Phase 3 complete; Phase 4 ready for GSD research and planning.
-Last activity: 2026-05-26 -- Phase 3 completed with `uv run pytest -q` (384 passed, 5 existing warnings).
+Status: Phase 4 complete; Phase 5 ready for GSD research and planning.
+Last activity: 2026-05-26 -- Phase 4 completed with `uv run pytest -q` (407 passed, 5 existing warnings).
 
-Progress: [████████░░] 75%
+Progress: [█████████░] 88%
 
 ## Performance Metrics
 
@@ -47,7 +47,7 @@ Progress: [████████░░] 75%
 | 1. Core Foundation | 5/5 | - | - |
 | 2. Tag Indexing | 7/7 | - | - |
 | 3. Skill 跨切面 + 核心讲解 Skills | 8/8 | - | - |
-| 4. 找同类题 + 组卷 + 异常处理 | 0/TBD | - | - |
+| 4. 找同类题 + 组卷 + 异常处理 | 6/6 | - | - |
 | 5. 用户手册 + 开源准备 | 0/TBD | - | - |
 | 02 | 7 | - | - |
 

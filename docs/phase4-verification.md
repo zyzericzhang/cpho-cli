@@ -10,6 +10,8 @@
 - `uv run pytest tests/test_phase04_acceptance.py -q`
 - `uv run pytest tests/test_boundary.py tests/test_runtime.py tests/test_related.py tests/test_repl_related_commands.py tests/test_composition_models.py tests/test_composition_selection.py tests/test_compose_pdf.py tests/test_compose_cli.py tests/test_repl_compose_commands.py tests/test_topic_cli.py tests/test_repl_phase02_2_acceptance.py tests/test_phase04_acceptance.py -q`
   - Result: 37 passed, 5 existing PyMuPDF/SWIG deprecation warnings.
+- `uv run pytest -q`
+  - Result: 407 passed, 5 existing PyMuPDF/SWIG deprecation warnings.
 
 ## Real Workspace Policy
 
