@@ -22,5 +22,6 @@ def test_topic_browse_help() -> None:
 def test_compose_help() -> None:
     result = runner.invoke(app, ["compose", "--help"])
     assert result.exit_code == 0
-    assert "--topic" in result.output
-    assert "--tags" in result.output
+    assert "new" in result.output
+    assert "build" in result.output
+    assert "auto" in result.output

@@ -22,6 +22,7 @@ from cpho_cli.models.solve import Discrepancy, SolveReport
 
 app = typer.Typer(help="CPHO local physics analysis CLI.")
 topic_app = typer.Typer(help="主题分类浏览。")
+compose_app = typer.Typer(help="编排文件驱动的组卷。")
 
 
 class IndexGroup(typer.core.TyperGroup):
@@ -39,6 +40,7 @@ index_app = typer.Typer(
 )
 app.add_typer(topic_app, name="topic")
 app.add_typer(index_app, name="index")
+app.add_typer(compose_app, name="compose")
 
 _OCR_STRATEGY_CHOICES = ("prompt", "reuse", "rebuild", "new-only")
 
@@ -53,9 +55,15 @@ def solve(
     ),
     output_dir: Path = typer.Option(Path("output"), "--output-dir", "-o", help="Output directory."),
     dry_run: bool = typer.Option(False, "--dry-run", help="Validate inputs without LLM calls."),
-    auto_confirm: bool = typer.Option(False, "--auto-confirm", help="自动接受所有候选 discrepancy。"),
-    persist_tags: bool = typer.Option(False, "--persist-tags", help="把接受的 discrepancy 写入 index user_tags。"),
-    workspace: Path = typer.Option(Path.cwd(), "--workspace", "-w", help="用于 index 写入的工作空间。"),
+    auto_confirm: bool = typer.Option(
+        False, "--auto-confirm", help="自动接受所有候选 discrepancy。"
+    ),
+    persist_tags: bool = typer.Option(
+        False, "--persist-tags", help="把接受的 discrepancy 写入 index user_tags。"
+    ),
+    workspace: Path = typer.Option(
+        Path.cwd(), "--workspace", "-w", help="用于 index 写入的工作空间。"
+    ),
 ) -> None:
     """Solve one physics problem."""
     try:
@@ -121,7 +129,9 @@ def _index_progress_cli(event: dict) -> None:
     if phase == "begin":
         typer.echo(f"开始索引: {event['total_files']} 个文件")
     elif phase == "paper_split_start":
-        typer.echo(f"  切分 [{event['file_index']}/{event['total_files']}]: {event['file_path'][-60:]}")
+        typer.echo(
+            f"  切分 [{event['file_index']}/{event['total_files']}]: {event['file_path'][-60:]}"
+        )
     elif phase == "problem_tag_done":
         typer.echo(
             f"  [{event['problem_id']}]: "
@@ -141,15 +151,29 @@ def index_command(
         help="工作空间目录（默认: 当前目录；也可作为位置参数传入）。",
     ),
     config: Optional[Path] = typer.Option(None, "--config", "-c", help="本地 YAML 配置文件路径。"),
-    provider: Optional[str] = typer.Option(None, "--provider", "-p", help="配置中的 provider 名称。"),
+    provider: Optional[str] = typer.Option(
+        None, "--provider", "-p", help="配置中的 provider 名称。"
+    ),
     force: bool = typer.Option(False, "--force", help="强制重建全部索引，忽略 fingerprint。"),
-    force_all: bool = typer.Option(False, "--force-all", help="强制完全重建，并清空 skill/用户写入标签。"),
-    vision: bool = typer.Option(False, "--vision", help="启用多模态索引；默认使用 OCR 文本，开启后可能上传 PDF/图片到配置的 provider。"),
+    force_all: bool = typer.Option(
+        False, "--force-all", help="强制完全重建，并清空 skill/用户写入标签。"
+    ),
+    vision: bool = typer.Option(
+        False,
+        "--vision",
+        help="启用多模态索引；默认使用 OCR 文本，开启后可能上传 PDF/图片到配置的 provider。",
+    ),
     only_new: bool = typer.Option(False, "--only-new", help="仅索引新增题目，跳过已存在条目。"),
-    dry_run: bool = typer.Option(False, "--dry-run", help="仅验证 workspace 与词表，不调用 LLM 不写文件。"),
-    ocr_strategy: str = typer.Option("prompt", "--ocr-strategy", help="OCR 引擎升级策略: prompt|reuse|rebuild|new-only"),
+    dry_run: bool = typer.Option(
+        False, "--dry-run", help="仅验证 workspace 与词表，不调用 LLM 不写文件。"
+    ),
+    ocr_strategy: str = typer.Option(
+        "prompt", "--ocr-strategy", help="OCR 引擎升级策略: prompt|reuse|rebuild|new-only"
+    ),
     quiet: bool = typer.Option(False, "--quiet", "-q", help="仅输出错误。"),
-    list_candidates_flag: bool = typer.Option(False, "--list-candidates", help="只列出 pending candidate tag，不重建索引。"),
+    list_candidates_flag: bool = typer.Option(
+        False, "--list-candidates", help="只列出 pending candidate tag，不重建索引。"
+    ),
 ) -> None:
     """对工作空间题目生成结构化索引。"""
     if ctx.invoked_subcommand is not None:
@@ -199,7 +223,12 @@ def index_command(
         typer.echo("  [c] 暂时跳过，保持现有 OCR")
         typer.echo("  [d] 仅索引新增题目，不动旧条目")
         choice = typer.prompt("选择 [a/b/c/d]").strip().lower()
-        mapping = {"a": ("rebuild", True), "b": ("rebuild", False), "c": ("reuse", False), "d": ("new-only", False)}
+        mapping = {
+            "a": ("rebuild", True),
+            "b": ("rebuild", False),
+            "c": ("reuse", False),
+            "d": ("new-only", False),
+        }
         if choice not in mapping:
             raise typer.BadParameter(f"无效选择: {choice}; 应为 a|b|c|d") from None
         new_strategy, new_force = mapping[choice]
@@ -237,7 +266,9 @@ def index_command(
         typer.echo("")
         typer.echo(f"OCR 复用:          {stats.ocr_reused}")
         typer.echo(f"OCR 重生成:        {stats.ocr_regenerated}")
-        typer.echo(f"OCR 引擎升级:      {'已处理' if stats.ocr_engine_upgrade_detected else '未检测到'}")
+        typer.echo(
+            f"OCR 引擎升级:      {'已处理' if stats.ocr_engine_upgrade_detected else '未检测到'}"
+        )
         if stats.forced_regenerations > 0:
             typer.echo(f"强制重建:          {stats.forced_regenerations}  (--force 触发, 内容未变)")
         typer.echo("")
@@ -248,7 +279,9 @@ def index_command(
         typer.echo("")
         typer.echo("候选词表:")
         typer.echo(f"  本次新提议:      {stats.candidate_tags_proposed}")
-        typer.echo(f"  累计待审:        {stats.pending_review_items}  (运行 `cpho index --list-candidates` 查看)")
+        typer.echo(
+            f"  累计待审:        {stats.pending_review_items}  (运行 `cpho index --list-candidates` 查看)"
+        )
         typer.echo("")
         typer.echo(f"完成. 索引: {workspace}/.cpho/index.jsonl")
 
@@ -264,15 +297,29 @@ class _IndexBuildContext:
 def index_build_command(
     workspace: Path = typer.Argument(Path.cwd(), help="工作空间目录（默认: 当前目录）。"),
     config: Optional[Path] = typer.Option(None, "--config", "-c", help="本地 YAML 配置文件路径。"),
-    provider: Optional[str] = typer.Option(None, "--provider", "-p", help="配置中的 provider 名称。"),
+    provider: Optional[str] = typer.Option(
+        None, "--provider", "-p", help="配置中的 provider 名称。"
+    ),
     force: bool = typer.Option(False, "--force", help="强制重建全部索引，忽略 fingerprint。"),
-    force_all: bool = typer.Option(False, "--force-all", help="强制完全重建，并清空 skill/用户写入标签。"),
-    vision: bool = typer.Option(False, "--vision", help="启用多模态索引；默认使用 OCR 文本，开启后可能上传 PDF/图片到配置的 provider。"),
+    force_all: bool = typer.Option(
+        False, "--force-all", help="强制完全重建，并清空 skill/用户写入标签。"
+    ),
+    vision: bool = typer.Option(
+        False,
+        "--vision",
+        help="启用多模态索引；默认使用 OCR 文本，开启后可能上传 PDF/图片到配置的 provider。",
+    ),
     only_new: bool = typer.Option(False, "--only-new", help="仅索引新增题目，跳过已存在条目。"),
-    dry_run: bool = typer.Option(False, "--dry-run", help="仅验证 workspace 与词表，不调用 LLM 不写文件。"),
-    ocr_strategy: str = typer.Option("prompt", "--ocr-strategy", help="OCR 引擎升级策略: prompt|reuse|rebuild|new-only"),
+    dry_run: bool = typer.Option(
+        False, "--dry-run", help="仅验证 workspace 与词表，不调用 LLM 不写文件。"
+    ),
+    ocr_strategy: str = typer.Option(
+        "prompt", "--ocr-strategy", help="OCR 引擎升级策略: prompt|reuse|rebuild|new-only"
+    ),
     quiet: bool = typer.Option(False, "--quiet", "-q", help="仅输出错误。"),
-    list_candidates_flag: bool = typer.Option(False, "--list-candidates", help="只列出 pending candidate tag，不重建索引。"),
+    list_candidates_flag: bool = typer.Option(
+        False, "--list-candidates", help="只列出 pending candidate tag，不重建索引。"
+    ),
 ) -> None:
     index_command(
         _IndexBuildContext(workspace),  # type: ignore[arg-type]
@@ -398,36 +445,106 @@ def topic_browse(
     typer.echo(f"\n共 {len(results)} 道题目")
 
 
-@app.command(name="compose")
-def compose_command(
-    topic: Optional[str] = typer.Option(None, "--topic", "-t", help="主题路径前缀 (如 力学/天体运动)."),
-    tags: Optional[str] = typer.Option(None, "--tags", help="标签 ID 列表, 逗号分隔."),
-    workspace: Path = typer.Argument(Path.cwd(), help="Workspace 目录."),
-) -> None:
-    """按主题和标签组合筛选题目（组卷）。"""
-    from cpho_cli.core.index.compose import compose_problem_list
+def _compose_output_dir(workspace: Path, output: Path | None) -> Path | None:
+    if output is None:
+        return None
+    from cpho_cli.core.boundary import ensure_in_workspace
 
-    tag_list = [t.strip() for t in tags.split(",")] if tags else None
     try:
-        results = compose_problem_list(workspace, topic_path=topic, tag_ids=tag_list)
-    except (IndexNotFoundError, VocabularyError) as exc:
+        return ensure_in_workspace(workspace, _workspace_relative_path(workspace, output))
+    except RuntimeError as exc:
         raise typer.BadParameter(str(exc)) from exc
 
-    if not results:
-        typer.echo("未找到匹配题目。")
-        return
 
-    typer.echo(f"组卷结果 ({len(results)} 道题目):")
-    for result in results:
-        all_tags = ", ".join(
-            ref.internal_id
-            for ref in result.physics_model_tags
-            + result.math_technique_tags
-            + result.heuristic_tags
-        )
-        typer.echo(
-            f"  [{result.problem_id}] {result.topic_path or '未分类'} | tags: {all_tags}"
-        )
+def _composition_file_in_workspace(workspace: Path, path: Path) -> Path:
+    from cpho_cli.core.boundary import ensure_in_workspace
+
+    try:
+        return ensure_in_workspace(workspace, _workspace_relative_path(workspace, path))
+    except RuntimeError as exc:
+        raise typer.BadParameter(str(exc)) from exc
+
+
+def _split_tag_ids(tags: str | None) -> list[str]:
+    if not tags:
+        return []
+    return [tag.strip() for tag in tags.split(",") if tag.strip()]
+
+
+def _workspace_relative_path(workspace: Path, path: Path) -> Path:
+    return path if path.is_absolute() else workspace / path
+
+
+@compose_app.command(name="new")
+def compose_new(
+    name: str = typer.Argument(..., help="编排名称。"),
+    count: int = typer.Option(..., "--count", "-n", help="题位数量。"),
+    workspace: Path = typer.Option(Path.cwd(), "--workspace", "-w", help="Workspace 目录。"),
+) -> None:
+    """创建组卷编排 YAML 模板。"""
+    from cpho_cli.core.composition import write_composition_template
+
+    path = write_composition_template(workspace, name=name, count=count)
+    typer.echo(f"已创建编排文件: {path}")
+
+
+@compose_app.command(name="build")
+def compose_build(
+    composition_file: Path = typer.Argument(..., help="编排 YAML 文件。"),
+    workspace: Path = typer.Option(Path.cwd(), "--workspace", "-w", help="Workspace 目录。"),
+    output: Path | None = typer.Option(None, "--output", "-o", help="输出目录。"),
+) -> None:
+    """根据编排文件生成题目卷和答案卷。"""
+    from cpho_cli.core.compose_pdf import assemble_composition_pdfs
+    from cpho_cli.core.composition import load_composition, resolve_composition_slots
+
+    path = _composition_file_in_workspace(workspace, composition_file)
+    composition = load_composition(path)
+    resolved = resolve_composition_slots(workspace, composition)
+    result = assemble_composition_pdfs(
+        workspace,
+        resolved,
+        output_dir=_compose_output_dir(workspace, output),
+        name=composition.name,
+    )
+    for warning in result.warnings:
+        typer.echo(f"警告: {warning}")
+    typer.echo(f"题目卷: {result.problem_pdf}")
+    typer.echo(f"答案卷: {result.answer_pdf}")
+
+
+@compose_app.command(name="auto")
+def compose_auto(
+    count: int = typer.Option(..., "--count", "-n", help="题目数量。"),
+    name: str = typer.Option("auto", "--name", help="输出名称。"),
+    topic: str | None = typer.Option(None, "--topic", "-t", help="主题路径前缀。"),
+    tags: str | None = typer.Option(None, "--tags", help="标签 ID 列表, 逗号分隔。"),
+    workspace: Path = typer.Option(Path.cwd(), "--workspace", "-w", help="Workspace 目录。"),
+    output: Path | None = typer.Option(None, "--output", "-o", help="输出目录。"),
+) -> None:
+    """按 topic/tags 自动选题并生成 PDF。"""
+    from cpho_cli.core.compose_pdf import assemble_composition_pdfs
+    from cpho_cli.core.composition import resolve_composition_slots
+    from cpho_cli.models.composition import CompositionFile, CompositionSlot, SlotSpec
+
+    composition = CompositionFile(
+        name=name,
+        slots={
+            index: CompositionSlot(spec=SlotSpec(topic=topic, tags=_split_tag_ids(tags)))
+            for index in range(1, count + 1)
+        },
+    )
+    resolved = resolve_composition_slots(workspace, composition)
+    result = assemble_composition_pdfs(
+        workspace,
+        resolved,
+        output_dir=_compose_output_dir(workspace, output),
+        name=name,
+    )
+    for warning in result.warnings:
+        typer.echo(f"警告: {warning}")
+    typer.echo(f"题目卷: {result.problem_pdf}")
+    typer.echo(f"答案卷: {result.answer_pdf}")
 
 
 @app.command(name="repl")
@@ -436,7 +553,9 @@ def repl_command(
         None, "--workspace", "-w", help="工作空间目录（覆盖持久化的 last_workspace）。"
     ),
     config: Optional[Path] = typer.Option(None, "--config", "-c", help="本地 YAML 配置文件路径。"),
-    provider: Optional[str] = typer.Option(None, "--provider", "-p", help="配置中的 provider 名称。"),
+    provider: Optional[str] = typer.Option(
+        None, "--provider", "-p", help="配置中的 provider 名称。"
+    ),
 ) -> None:
     """启动交互式 REPL（prompt_toolkit）。"""
     import asyncio

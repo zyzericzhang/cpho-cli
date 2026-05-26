@@ -30,6 +30,7 @@ registry: dict[str, Command] = {}
 def install_builtin_commands(registry: dict[str, Command]) -> None:
     from cpho_cli.cli.repl.commands import (
         builtin_skills,
+        compose,
         help_cmd,
         related,
         run_debug,
@@ -38,7 +39,16 @@ def install_builtin_commands(registry: dict[str, Command]) -> None:
         workspace,
     )
 
-    for module in (search, workspace, help_cmd, set_cmd, run_debug, builtin_skills, related):
+    for module in (
+        search,
+        workspace,
+        help_cmd,
+        set_cmd,
+        run_debug,
+        builtin_skills,
+        related,
+        compose,
+    ):
         module.register(registry)
 
 
