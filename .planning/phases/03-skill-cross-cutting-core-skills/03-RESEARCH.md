@@ -506,22 +506,19 @@ OWASP ASVS is an application security verification standard for web applications
 | A4 | Streaming Explain should stream markdown prose and validate tags in a separate final step. | Pitfalls / Code Examples | If planner requires fully structured streaming, implementation complexity rises. |
 | A5 | Export overwrite behavior should prompt or suffix. | Security Domain | User may prefer deterministic overwrite; planner should decide UX. |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Should `add_problem_tags` be renamed to match CONTEXT wording?**
-   - What we know: CONTEXT says `source`/`provenance`, current API accepts `skill_name`/`reasoning`. [CITED: CONTEXT.md; VERIFIED: `core/index/api.py`]
-   - What's unclear: whether naming consistency is worth a Phase 3 API rename.
-   - Recommendation: do not rename unless planner includes a small compatibility wrapper; use existing API directly.
+   - Resolution: do not rename the Phase 02.3 API in Phase 3. Implement Solve and Explain persistence with the existing `add_problem_tags(..., skill_name=..., reasoning=...)` signature. Treat CONTEXT wording `source`/`provenance` as product intent; `skill_name` and `reasoning` are the concrete code contract for this phase. [CITED: CONTEXT.md; VERIFIED: `core/index/api.py`]
+   - Plan mapping: Plan 03-03 requires `add_problem_tags(skill_name="solve", reasoning=...)`; Plan 03-07 requires `add_problem_tags(skill_name="explain", reasoning=...)`.
 
 2. **Should CLI `cpho solve` include interactive confirm by default?**
-   - What we know: D-05 requires confirm before SessionState write and `--auto-confirm` for batch. [CITED: CONTEXT.md]
-   - What's unclear: CLI has no `SessionState`; confirm can only affect markdown/index persistence.
-   - Recommendation: implement CLI confirm for persistence/export, and REPL confirm for `SessionState.current_solve_report`.
+   - Resolution: yes. CLI `cpho solve` must display candidate free-text discrepancies, prompt for accept/reject/edit per item by default, and support `--auto-confirm` to accept all candidates with no prompt for batch use. After confirmation, CLI asks whether to persist accepted discrepancy strings to the index through `add_problem_tags(skill_name="solve", reasoning=...)`; declining persistence leaves the index unchanged. REPL `/solve` uses the same confirmation semantics and additionally writes the accepted report into `SessionState.current_solve_report`. [CITED: D-05; CITED: D-15]
+   - Plan mapping: Plan 03-03 implements and tests Typer CLI confirmation, `--auto-confirm`, CROSS-PROGRESS, and optional solve persistence. Plan 03-07 implements REPL hot-path session handoff.
 
 3. **How much real OpenRouter verification is acceptable in automated tests?**
-   - What we know: existing tests use fake providers heavily and avoid network. [VERIFIED: tests]
-   - What's unclear: whether CI has OpenRouter credentials.
-   - Recommendation: keep automated tests fake-provider only; add one manual command using the cheapest model when credentials exist.
+   - Resolution: automated tests must remain fake-provider/fake-SSE only and must not require OpenRouter credentials or live network. Streaming support is verified with `httpx.MockTransport` fake SSE chunks; Explain multi-tone visible rendering is verified with fake per-tone chunks and final merged markdown assertions. Manual OpenRouter smoke checks may be documented for credentialed local verification, but they are not required for CI or phase execution. [VERIFIED: existing fake-provider test style]
+   - Plan mapping: Plan 03-04 covers provider stream parsing with fake SSE chunks; Plan 03-05 covers D-07 visible per-tone streaming and final merged markdown with fake chunks.
 
 ## Sources
 
