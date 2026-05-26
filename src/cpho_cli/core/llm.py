@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import json
 import time
 import re
+from collections.abc import Iterator
 from typing import Any, Protocol, TypeVar
 
 import httpx
@@ -13,6 +15,7 @@ from cpho_cli.models.llm import ChatMessage, LLMResponse, LLMUsage, ModelCapabil
 
 ResponseModel = TypeVar("ResponseModel", bound=BaseModel)
 _CAPABILITY_CACHE: dict[tuple[str, str, str], ModelCapabilities] = {}
+_STREAM_DONE = object()
 
 
 class LLMProviderError(RuntimeError):
@@ -27,6 +30,13 @@ class LLMProvider(Protocol):
         response_model: type[ResponseModel] | None = None,
     ) -> LLMResponse:
         """Complete a chat request."""
+
+    def stream(
+        self,
+        messages: list[ChatMessage],
+        params: ModelParams,
+    ) -> Iterator[str]:
+        """Stream chat completion text chunks."""
 
 
 class _OpenAICompatibleProvider:
@@ -53,14 +63,7 @@ class _OpenAICompatibleProvider:
         params: ModelParams,
         response_model: type[ResponseModel] | None = None,
     ) -> LLMResponse:
-        payload: dict[str, Any] = {
-            "model": params.name,
-            "messages": messages,
-        }
-        if params.temperature is not None:
-            payload["temperature"] = params.temperature
-        if params.max_tokens is not None:
-            payload["max_tokens"] = params.max_tokens
+        payload = self._chat_payload(messages, params)
         if response_model is not None:
             self._add_structured_output(payload, response_model)
 
@@ -110,6 +113,69 @@ class _OpenAICompatibleProvider:
         raise LLMProviderError(
             redact_secrets(f"{self.label} request failed: {last_error}", [self.api_key])
         )
+
+    def stream(
+        self,
+        messages: list[ChatMessage],
+        params: ModelParams,
+    ) -> Iterator[str]:
+        payload = self._chat_payload(messages, params)
+        payload["stream"] = True
+        headers = {"Authorization": f"Bearer {self.api_key}"}
+        last_error: Exception | None = None
+        for attempt in range(self.max_retries + 1):
+            try:
+                with self.client.stream(
+                    "POST",
+                    f"{self.base_url}/chat/completions",
+                    headers=headers,
+                    json=payload,
+                ) as response:
+                    if response.status_code in {429, 500, 502, 503, 504}:
+                        raise httpx.HTTPStatusError(
+                            "transient provider error",
+                            request=response.request,
+                            response=response,
+                        )
+                    if response.status_code >= 400:
+                        raise LLMProviderError(
+                            redact_secrets(
+                                f"{self.label} stream failed: {response.status_code} {response.text}",
+                                [self.api_key],
+                            )
+                        )
+                    for line in response.iter_lines():
+                        chunk = _parse_sse_line(line)
+                        if chunk is _STREAM_DONE:
+                            return
+                        if chunk:
+                            yield chunk
+                    return
+            except LLMProviderError:
+                raise
+            except (httpx.TransportError, httpx.HTTPStatusError) as exc:
+                last_error = exc
+                if attempt >= self.max_retries:
+                    break
+                time.sleep(0.1 * (2**attempt))
+        raise LLMProviderError(
+            redact_secrets(f"{self.label} stream failed: {last_error}", [self.api_key])
+        )
+
+    def _chat_payload(
+        self,
+        messages: list[ChatMessage],
+        params: ModelParams,
+    ) -> dict[str, Any]:
+        payload: dict[str, Any] = {
+            "model": params.name,
+            "messages": messages,
+        }
+        if params.temperature is not None:
+            payload["temperature"] = params.temperature
+        if params.max_tokens is not None:
+            payload["max_tokens"] = params.max_tokens
+        return payload
 
     def _add_structured_output(
         self,
@@ -162,6 +228,26 @@ class DeepSeekProvider(_OpenAICompatibleProvider):
 
 def _schema_name(response_model: type[BaseModel]) -> str:
     return re.sub(r"(?<!^)(?=[A-Z])", "_", response_model.__name__).lower().lstrip("_")
+
+
+def _parse_sse_line(line: str) -> str | object | None:
+    if not line:
+        return None
+    if not line.startswith("data:"):
+        return None
+    data = line.removeprefix("data:").strip()
+    if data == "[DONE]":
+        return _STREAM_DONE
+    try:
+        payload = json.loads(data)
+    except json.JSONDecodeError as exc:
+        raise LLMProviderError(f"Provider stream returned invalid JSON chunk: {exc}") from exc
+    choices = payload.get("choices") or []
+    if not choices:
+        return None
+    delta = choices[0].get("delta") or {}
+    content = delta.get("content")
+    return content if isinstance(content, str) else None
 
 
 def _tool_schema(schema_name: str, response_model: type[BaseModel]) -> dict[str, Any]:

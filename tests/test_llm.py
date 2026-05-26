@@ -205,3 +205,63 @@ def test_openrouter_model_capability_error_redacts_api_key() -> None:
         provider.get_model_capabilities("test/model")
 
     assert "sk-test-secret" not in str(exc.value)
+
+
+def test_openrouter_stream_yields_sse_content_chunks_in_order() -> None:
+    captured = {}
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        captured["payload"] = json.loads(request.read().decode())
+        return httpx.Response(
+            200,
+            headers={"content-type": "text/event-stream"},
+            text=(
+                'data: {"choices":[{"delta":{"content":"老师型第一段"}}]}\n\n'
+                'data: {"choices":[{"delta":{"content":"继续推导"}}]}\n\n'
+                'data: {"choices":[{"delta":{"content":"结尾"}}]}\n\n'
+                "data: [DONE]\n\n"
+            ),
+        )
+
+    provider = OpenRouterProvider(
+        api_key="sk-test-secret",
+        client=httpx.Client(transport=httpx.MockTransport(handler)),
+    )
+
+    chunks = list(provider.stream([{"role": "user", "content": "explain"}], ModelParams(name="m")))
+
+    assert captured["payload"]["stream"] is True
+    assert captured["payload"]["model"] == "m"
+    assert chunks == ["老师型第一段", "继续推导", "结尾"]
+
+
+def test_openrouter_stream_error_redacts_api_key() -> None:
+    def handler(request: httpx.Request) -> httpx.Response:
+        return httpx.Response(401, text="bad sk-test-secret")
+
+    provider = OpenRouterProvider(
+        api_key="sk-test-secret",
+        client=httpx.Client(transport=httpx.MockTransport(handler)),
+    )
+
+    with pytest.raises(LLMProviderError) as exc:
+        list(provider.stream([{"role": "user", "content": "x"}], ModelParams(name="m")))
+
+    assert "sk-test-secret" not in str(exc.value)
+
+
+def test_deepseek_stream_uses_openai_compatible_path() -> None:
+    def handler(request: httpx.Request) -> httpx.Response:
+        return httpx.Response(
+            200,
+            text='data: {"choices":[{"delta":{"content":"chunk"}}]}\n\ndata: [DONE]\n\n',
+        )
+
+    provider = DeepSeekProvider(
+        api_key="sk-test-secret",
+        client=httpx.Client(transport=httpx.MockTransport(handler)),
+    )
+
+    assert list(provider.stream([{"role": "user", "content": "x"}], ModelParams(name="m"))) == [
+        "chunk"
+    ]
