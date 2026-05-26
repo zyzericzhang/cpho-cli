@@ -5,6 +5,7 @@ from __future__ import annotations
 import pydoc
 import sys
 from collections.abc import Iterable
+from typing import Callable
 
 from wcwidth import wcswidth
 
@@ -73,6 +74,50 @@ def info(msg: str) -> None:
     print(f"{BLUE}{msg}{RESET}")
 
 
+def confirm_list(
+    items: list[str],
+    *,
+    prompt: Callable[[str], str] = input,
+    allow_edit: bool = False,
+    allow_append: bool = False,
+) -> list[str]:
+    confirmed: list[str] = []
+    for item in items:
+        while True:
+            suffix = " [y/n"
+            if allow_edit:
+                suffix += "/e"
+            suffix += "] "
+            answer = prompt(f"{item}{suffix}").strip()
+            lowered = answer.lower()
+            if lowered in {"", "y", "yes"}:
+                confirmed.append(item)
+                break
+            if lowered in {"n", "no"}:
+                break
+            if allow_edit and lowered in {"e", "edit"}:
+                edited = prompt("编辑后内容: ").strip()
+                if edited:
+                    confirmed.append(edited)
+                break
+            if allow_append and answer.startswith("+"):
+                appended = answer[1:].strip()
+                if appended:
+                    confirmed.append(appended)
+                continue
+            error("请输入 y/n" + ("/e" if allow_edit else "") + (" 或 +tag" if allow_append else ""))
+    if allow_append:
+        while True:
+            extra = prompt("追加项（+tag，空行结束）: ").strip()
+            if not extra:
+                break
+            if extra.startswith("+") and extra[1:].strip():
+                confirmed.append(extra[1:].strip())
+            else:
+                error("追加项必须以 + 开头")
+    return confirmed
+
+
 def banner(session: SessionState) -> str:
     provider = session.provider_name or session.config.active_provider
     if session.index_meta is None:
@@ -95,7 +140,16 @@ def banner(session: SessionState) -> str:
     )
 
 
-__all__ = ["banner", "error", "info", "make_index_progress_printer", "pager", "render_table", "warn"]
+__all__ = [
+    "banner",
+    "confirm_list",
+    "error",
+    "info",
+    "make_index_progress_printer",
+    "pager",
+    "render_table",
+    "warn",
+]
 
 
 def make_index_progress_printer():

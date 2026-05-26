@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from cpho_cli.cli.repl.display import banner, render_table
+from cpho_cli.cli.repl.display import banner, confirm_list, render_table
 from cpho_cli.cli.repl.session import SessionState
 from cpho_cli.models.config import AppConfig
 
@@ -22,3 +22,16 @@ def test_banner_without_index(tmp_path: Path) -> None:
     assert str(tmp_path) in output
     assert "未建立" in output
     assert "openrouter" in output
+
+
+def test_confirm_list_accept_reject_edit_and_append() -> None:
+    answers = iter(["y", "n", "e", "edited", "+extra", ""])
+
+    confirmed = confirm_list(
+        ["keep", "drop", "change"],
+        prompt=lambda text: next(answers),
+        allow_edit=True,
+        allow_append=True,
+    )
+
+    assert confirmed == ["keep", "edited", "extra"]
