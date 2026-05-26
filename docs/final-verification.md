@@ -7,6 +7,7 @@ Date: 2026-05-26
 - `feature/phase3` was branched from prior Phase 3 context and completed.
 - `feature/phase4` was branched from `feature/phase3` and completed.
 - `feature/phase5` was branched from `feature/phase4` and completed.
+- `dev` was created from `main` and merged with `feature/phase5`, carrying the full Phase 3 -> Phase 5 chain.
 
 ## Commands Run
 
@@ -50,6 +51,15 @@ Date: 2026-05-26
   - Result after Phase 5: 415 passed, 5 existing PyMuPDF/SWIG deprecation warnings.
 - `uv run ruff check .`
   - Result: all checks passed.
+
+### Dev Merge Verification
+
+- `git switch main && git switch -c dev && git merge --no-ff feature/phase5 -m "merge: phase 3-5 into dev"`
+  - Result: merge succeeded.
+- `uv run pytest -q`
+  - Result on `dev`: 415 passed, 5 existing PyMuPDF/SWIG deprecation warnings.
+- `uv run ruff check .`
+  - Result on `dev`: all checks passed.
 
 ## OpenRouter Model Verification
 
