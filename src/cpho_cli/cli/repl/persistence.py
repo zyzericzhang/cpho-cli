@@ -24,6 +24,13 @@ def cache_dir() -> Path:
     return path
 
 
+def data_dir() -> Path:
+    base = os.environ.get("XDG_DATA_HOME") or str(Path.home() / ".local" / "share")
+    path = Path(base) / "cpho"
+    path.mkdir(parents=True, exist_ok=True)
+    return path
+
+
 def session_path() -> Path:
     return config_dir() / "session.json"
 
@@ -48,6 +55,8 @@ def write_session(session: SessionState) -> None:
         "index_version": session.index_meta.index_version if session.index_meta else None,
         "max_results": session.max_results,
         "output_format": session.output_format,
+        "out_dir": str(session.out_dir) if session.out_dir is not None else None,
+        "probe_max_rounds": session.probe_max_rounds,
     }
     tmp.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
     tmp.replace(path)
@@ -66,6 +75,7 @@ def read_session() -> dict[str, Any] | None:
 __all__ = [
     "cache_dir",
     "config_dir",
+    "data_dir",
     "history_path",
     "log_path",
     "read_session",

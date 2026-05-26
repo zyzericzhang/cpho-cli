@@ -18,6 +18,9 @@ def test_session_state_defaults_and_mutability(tmp_path: Path) -> None:
     assert session.index_path is None
     assert session.last_search_result_ids == []
     assert session.current_problem_id is None
+    assert session.current_solve_report is None
+    assert session.out_dir is None
+    assert session.probe_max_rounds == 10
     assert session.max_results == 20
     assert session.output_format == "compact"
     assert session.model_capabilities == ModelCapabilities()

@@ -20,7 +20,14 @@ from cpho_cli.core.llm import (
 )
 from cpho_cli.models.llm import ModelCapabilities
 
-ALLOWED_KEYS = ("workspace", "max_results", "output_format", "provider")
+ALLOWED_KEYS = (
+    "workspace",
+    "max_results",
+    "output_format",
+    "provider",
+    "out.dir",
+    "probe.max_rounds",
+)
 
 
 class SetCompleter(Completer):
@@ -34,6 +41,10 @@ class SetCompleter(Completer):
 def _current_value(session, key: str) -> str:  # type: ignore[no-untyped-def]
     if key == "workspace":
         return str(session.workspace_path)
+    if key == "out.dir":
+        return "" if session.out_dir is None else str(session.out_dir)
+    if key == "probe.max_rounds":
+        return str(session.probe_max_rounds)
     if key == "provider":
         return session.provider_name or str(session.config.active_provider)
     return str(getattr(session, key))
@@ -76,6 +87,18 @@ async def do_set(session, args: list[str]) -> None:  # type: ignore[no-untyped-d
             display.error("output_format 必须是 compact 或 full")
             return
         session.output_format = value
+    elif key == "out.dir":
+        session.out_dir = Path(value).expanduser().resolve()
+    elif key == "probe.max_rounds":
+        try:
+            parsed = int(value)
+        except ValueError:
+            display.error("probe.max_rounds 必须是整数")
+            return
+        if parsed <= 0:
+            display.error("probe.max_rounds 必须大于 0")
+            return
+        session.probe_max_rounds = parsed
     elif key == "provider":
         if not _validate_provider(session, value):
             return
@@ -146,7 +169,7 @@ def register(registry: dict[str, Command]) -> None:
     registry["/set"] = Command(
         name="/set",
         help="查看或修改会话设置",
-        usage="/set [workspace|max_results|output_format|provider] [value]",
+        usage="/set [workspace|max_results|output_format|provider|out.dir|probe.max_rounds] [value]",
         handler=do_set,
         completer=SetCompleter(),
         category="设置",

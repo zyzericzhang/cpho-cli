@@ -4,12 +4,16 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from cpho_cli.core.index import IndexNotFoundError
 from cpho_cli.core.index.storage import load_index
 from cpho_cli.models.config import AppConfig, StrictModel
 from cpho_cli.models.llm import ModelCapabilities
 from pydantic import ConfigDict
+
+if TYPE_CHECKING:
+    from cpho_cli.models.solve import SolveReport
 
 
 class IndexMeta(StrictModel):
@@ -32,8 +36,11 @@ class SessionState:
     last_search_query: str | None = None
     last_search_result_ids: list[str] = field(default_factory=list)
     current_problem_id: str | None = None
+    current_solve_report: SolveReport | None = None
     max_results: int = 20
     output_format: str = "compact"
+    out_dir: Path | None = None
+    probe_max_rounds: int = 10
     model_capabilities: ModelCapabilities = field(default_factory=ModelCapabilities)
     prompt_session: object | None = None
 

@@ -43,6 +43,10 @@ async def test_set_validates_session_fields(tmp_path: Path, monkeypatch) -> None
 
     await do_set(session, ["max_results", "5"])
     await do_set(session, ["output_format", "full"])
+    await do_set(session, ["out.dir", str(tmp_path / "exports")])
+    await do_set(session, ["probe.max_rounds", "15"])
 
     assert session.max_results == 5
     assert session.output_format == "full"
+    assert session.out_dir == (tmp_path / "exports").resolve()
+    assert session.probe_max_rounds == 15
