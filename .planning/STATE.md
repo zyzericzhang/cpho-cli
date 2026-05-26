@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: executing
-stopped_at: Phase 4 complete; starting Phase 5
+status: complete
+stopped_at: Phase 5 complete
 last_updated: "2026-05-26T00:00:00+08:00"
-last_activity: 2026-05-26 -- Phase 4 completed with full pytest verification; starting Phase 5.
+last_activity: 2026-05-26 -- Phase 5 completed with full pytest verification.
 progress:
   total_phases: 8
-  completed_phases: 7
-  total_plans: 47
-  completed_plans: 47
-  percent: 88
+  completed_phases: 8
+  total_plans: 51
+  completed_plans: 51
+  percent: 100
 ---
 
 # Project State
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-05-20)
 
 **Core value:** 生成质量 — truly find problem difficulty points and insights, explain the "why" behind every derivation step, link related problems into a knowledge network.
-**Current focus:** Phase 5 — 用户手册 + 开源准备
+**Current focus:** All planned phases complete.
 
 ## Current Position
 
-Phase: 5 (user-manual-opensource) — READY FOR PLANNING
-Plan: TBD
-Status: Phase 4 complete; Phase 5 ready for GSD research and planning.
-Last activity: 2026-05-26 -- Phase 4 completed with `uv run pytest -q` (407 passed, 5 existing warnings).
+Phase: 5 (user-manual-opensource) — COMPLETE
+Plan: all
+Status: Remaining phases complete; ready for final cross-branch verification and merge.
+Last activity: 2026-05-26 -- Phase 5 completed with `uv run pytest -q` (415 passed, 5 existing warnings).
 
-Progress: [█████████░] 88%
+Progress: [██████████] 100%
 
 ## Performance Metrics
 
