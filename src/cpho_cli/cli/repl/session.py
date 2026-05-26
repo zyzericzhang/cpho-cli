@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from cpho_cli.core.index import IndexNotFoundError
 from cpho_cli.core.index.storage import load_index
@@ -43,6 +43,7 @@ class SessionState:
     probe_max_rounds: int = 10
     model_capabilities: ModelCapabilities = field(default_factory=ModelCapabilities)
     prompt_session: object | None = None
+    last_related: list[Any] | None = None
 
 
 def load_index_meta(workspace_root: Path) -> IndexMeta | None:
