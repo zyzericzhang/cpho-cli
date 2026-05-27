@@ -1,13 +1,13 @@
 ---
 gsd_state_version: 1.0
 milestone: v1.1
-milestone_name: milestone
-status: planning
-stopped_at: v1.0 archived, v1.1 planning next
-last_updated: "2026-05-27T00:00:00+08:00"
-last_activity: 2026-05-27 -- v1.0 milestone archived. Starting v1.1 planning (new-understanding-2026-05-27.md).
+milestone_name: 知识系统 + Explain 重构
+status: Defining requirements
+stopped_at: Phase 6 context gathered
+last_updated: "2026-05-27T15:23:50.456Z"
+last_activity: "2026-05-27 — Milestone v1.1 知识系统 + Explain 重构 started; reference: docs/new-understanding-2026-05-27.md."
 progress:
-  total_phases: 0
+  total_phases: 4
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -35,6 +35,7 @@ Progress: [__________] 0% (v1.1 not started)
 ## Performance Metrics
 
 **v1.0 Final:**
+
 - Total plans completed: 51
 - Timeline: 8 days (2026-05-19 → 2026-05-27)
 - LOC: ~17,458 Python
@@ -80,7 +81,7 @@ Items acknowledged and carried forward from v1.0 milestone close:
 
 ## Session Continuity
 
-Last session: 2026-05-27
-Stopped at: v1.0 milestone archive complete
+Last session: 2026-05-27T15:23:50.448Z
+Stopped at: Phase 6 context gathered
 New understanding reference: docs/new-understanding-2026-05-27.md
 Next step: /gsd:new-milestone (v1.1)
