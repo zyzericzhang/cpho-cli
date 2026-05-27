@@ -45,6 +45,7 @@ cpho_cli = [
   "core/index/prompts/*",
   "core/splitting/prompts/*",
   "core/knowledge/prompts/*",
+  "data/model_catalog/*",
 ]
 
 [tool.ruff]
