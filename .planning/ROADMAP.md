@@ -7,7 +7,7 @@ CPHO CLI 从 v1.0 MVP（8 phases，51 plans）起步，v1.1 引入**共享底层
 ## Milestones
 
 - ✅ **v1.0 MVP** — Phases 1–5 (shipped 2026-05-27)
-- 🚧 **v1.1 知识系统 + Explain 重构** — Phases 6–9 (planning)
+- 🚧 **v1.1 知识系统 + Explain 重构** — Phases 6–9 (in progress)
 
 ## Phases
 
@@ -29,7 +29,7 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 
 ### 🚧 v1.1 知识系统 + Explain 重构 (Phases 6–9)
 
-- [ ] **Phase 6: 知识库地基 + Skill 框架重构** (TBD plans)
+- [x] **Phase 6: 知识库地基 + Skill 框架重构** (5/5 plans) — completed 2026-05-27
 - [ ] **Phase 7: Explain v2 + 模型面板 + 输入路由** (TBD plans)
 - [ ] **Phase 8: 社区 KB + 错误处理** (TBD plans)
 - [ ] **Phase 9: 跨平台 + 安装包** (TBD plans)
@@ -51,7 +51,7 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 4. 系统提供 `SkillPipeline` + `SkillStep` 声明式框架，每个 step 声明输入 / 输出 / prompt 模板 / 默认模型 / `requires_multimodal`；每个 SkillPipeline 实现 `.describe()` 返回结构化步骤元数据供面板使用。
 5. v1.0 已有 4 个 skills（solve / probe / related / compose）行为保持不变，`uv run pytest -q` 仍为 415 通过；新框架与旧 skills 并行共存。
 
-**Plans**: TBD（见 `/gsd:plan-phase 6` 拆分）
+**Plans**: 5/5 complete — see `.planning/phases/06-skill/`
 
 ### Phase 7: Explain v2 + 模型面板 + 输入路由
 
@@ -117,7 +117,7 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 | 3. Skill 跨切面 + 核心讲解 Skills | v1.0 | 8/8 | Complete | 2026-05-26 |
 | 4. 找同类题 + 组卷 + 异常处理 | v1.0 | 6/6 | Complete | 2026-05-26 |
 | 5. 用户手册 + 开源准备 | v1.0 | 4/4 | Complete | 2026-05-26 |
-| 6. 知识库地基 + Skill 框架重构 | v1.1 | 0/TBD | Not started | - |
+| 6. 知识库地基 + Skill 框架重构 | v1.1 | 5/5 | Complete | 2026-05-27 |
 | 7. Explain v2 + 模型面板 + 输入路由 | v1.1 | 0/TBD | Not started | - |
 | 8. 社区 KB + 错误处理 | v1.1 | 0/TBD | Not started | - |
 | 9. 跨平台 + 安装包 | v1.1 | 0/TBD | Not started | - |
