@@ -1,13 +1,13 @@
 from __future__ import annotations
 
 import asyncio
-import json
 from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
 import jinja2
 
+from cpho_cli.core.json_utils import loads_json_object
 from cpho_cli.core.knowledge import KnowledgeResolver
 from cpho_cli.core.skill_outputs import default_markdown_path, write_markdown_atomic
 from cpho_cli.models.config import ModelParams
@@ -140,8 +140,8 @@ def _extract_tags(
     )
     response = provider.complete([{"role": "user", "content": prompt}], params)
     try:
-        data: Any = json.loads(response.content)
-    except json.JSONDecodeError:
+        data: Any = loads_json_object(response.content)
+    except ValueError:
         return []
     tags = data.get("candidate_tags", []) if isinstance(data, dict) else []
     return [str(tag) for tag in tags]

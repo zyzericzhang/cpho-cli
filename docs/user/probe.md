@@ -16,7 +16,7 @@
 /set probe.max_rounds 12
 ```
 
-退出：输入 `/exit` 或连续两次空回答。
+退出：在 REPL 中按 Ctrl-D；probe 内连续两次空回答会结束当前追问。
 
 ## 典型输出
 
@@ -33,6 +33,5 @@ cpho> /show 1
 cpho> /probe
 这一步应该先判断什么守恒？
 cpho:probe> 动量守恒
-cpho:probe> /exit
+cpho:probe> 
 ```
-

@@ -63,6 +63,12 @@ See PROJECT.md Key Decisions table (updated after v1.0 close).
 - [ ] Cross-platform + installer (Phase 9)
 - [ ] CORE-05: Golden test set (20-30 real physics problems) — carried from v1.0
 
+### Quick Tasks Completed
+
+| Date | Task | Status |
+|------|------|--------|
+| 2026-05-27 | fix real API verification 001 failures | complete |
+
 ### Blockers/Concerns
 
 - SKILL-EXPLAIN-NEW Tone design shipped in v1.0 is intentionally superseded in v1.1 — users on v1.0 will see old Tone UX until v1.1 ships

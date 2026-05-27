@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import hashlib
-import json
 import os
 import re
 from datetime import datetime, timezone
@@ -14,6 +13,7 @@ import yaml
 from cpho_cli.core.config import load_config, resolve_model_params, resolve_provider_config
 from cpho_cli.core.documents import IMAGE_EXTENSIONS
 from cpho_cli.core.index.vocabulary import load_merged_vocabulary
+from cpho_cli.core.json_utils import loads_json_object
 from cpho_cli.core.knowledge.store import KnowledgeError, load_knowledge_document
 from cpho_cli.core.llm import LLMProvider, create_llm_provider
 from cpho_cli.core.multimodal import build_multimodal_content
@@ -129,8 +129,8 @@ def _normalize_with_llm(
         params,
     )
     try:
-        data = json.loads(response.content)
-    except json.JSONDecodeError as exc:
+        data = loads_json_object(response.content)
+    except ValueError as exc:
         raise KnowledgeError(f"Knowledge normalize LLM returned invalid JSON: {exc}") from exc
     tag_id = str(data.get("canonical_tag_id") or canonical_tag_id or "")
     body = str(data.get("markdown_body") or source_text)

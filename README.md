@@ -151,7 +151,7 @@ uv run cpho repl --workspace /path/to/题库
 /probe
 ```
 
-退出方式：`/exit` 或连续两次空回答。
+退出方式：REPL 中按 Ctrl-D；Probe 内连续两次空回答会结束当前追问。
 
 ### `/search-related`
 
