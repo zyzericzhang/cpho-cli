@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 from cpho_cli.core.index.api import get_problem_entry
@@ -63,7 +64,8 @@ class KnowledgeResolver:
         return documents
 
     def _load_community_documents(self) -> list[KnowledgeDocument]:
-        root = Path.home() / ".cache" / "cpho" / "community-kb"
+        default_root = Path.home() / ".cache" / "cpho" / "community-kb"
+        root = Path(os.environ.get("CPHO_COMMUNITY_KB_DIR", default_root))
         if not root.exists():
             return []
         documents: list[KnowledgeDocument] = []

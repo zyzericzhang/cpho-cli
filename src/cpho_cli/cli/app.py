@@ -551,6 +551,35 @@ def knowledge_find(
         )
 
 
+@knowledge_app.command(name="sync")
+def knowledge_sync(
+    workspace: Path = typer.Option(Path.cwd(), "--workspace", "-w", help="Workspace 目录。"),
+    config: Optional[Path] = typer.Option(
+        None, "--config", "-c", help="社区知识库 YAML 配置；默认 .cpho/community-kb.yml。"
+    ),
+    cache_dir: Optional[Path] = typer.Option(None, "--cache-dir", help="覆盖同步 cache 目录。"),
+    force: bool = typer.Option(False, "--force", help="重新下载并覆盖同 tag cache。"),
+    quiet: bool = typer.Option(False, "--quiet", "-q", help="仅输出错误。"),
+) -> None:
+    """同步 pinned GitHub release 中的社区知识库。"""
+    from cpho_cli.core.community_sync import CommunitySyncError, sync_community_knowledge
+
+    try:
+        result = sync_community_knowledge(
+            workspace,
+            config_path=config,
+            cache_dir=cache_dir,
+            force=force,
+        )
+    except CommunitySyncError as exc:
+        raise typer.BadParameter(str(exc)) from exc
+    if quiet:
+        return
+    for repo in result.repositories:
+        status = "跳过" if repo.skipped else "已同步"
+        typer.echo(f"{status}: {repo.repo_name}@{repo.tag} -> {repo.cache_dir} ({repo.files_written} files)")
+
+
 @compose_app.command(name="new")
 def compose_new(
     name: str = typer.Argument(..., help="编排名称。"),

@@ -11,6 +11,7 @@ CHAPTERS = [
     "compose.md",
     "index.md",
     "knowledge.md",
+    "community-kb.md",
     "model-panel.md",
 ]
 
