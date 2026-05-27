@@ -6,6 +6,18 @@ CPHO CLI 是一个本地命令行工具，帮助物理竞赛教练和深度学�
 
 **v1.0 shipped.** v1.1 将引入知识记录系统（Knowledge Base）、Explain 板块重设计、模型选择面板、跨平台安装包等。
 
+## Current Milestone: v1.1 知识系统 + Explain 重构
+
+**Goal:** 在 v1.0 核心管线之上，引入知识记录系统作为共享底层、按板块重设计 Explain skill、为每个 skill 步骤暴露模型选择面板，并打磨输入策略、错误处理与跨平台分发。
+
+**Target features:**
+- 知识记录系统（核心新功能）：知识本 / 社区 GitHub 库 / 多模态导入 / 两步标准化 skill / Explain 联动第一优先级
+- Explain v2 重设计：板块选择替代 Tone / 知识文件第一优先级 / skill 架构重构 / 输出标注来源
+- 模型选择与 Skill 配置面板：每 skill 步骤面板 + 每步独立模型 + 官网实时抓取模型列表
+- 输入策略强化：Index 用 OCR+文本，其他 skill 走原始图片/PDF（多模态优先 + OCR 回退）
+- 错误处理 + 文档化：各类失败明确"改哪里"提示 + README/docs/user 错误方案章节
+- 跨平台 + 安装包：Windows 兼容 + Mac/Windows 一键安装包（含公开提问，需 spike）
+
 ## Core Value
 
 **生成质量**——真正找到题目的难点、启发点，讲清楚每一步推导的"为什么"，关联到相关题目形成知识网络。这是系统内置 skill 需要反复打磨的核心。

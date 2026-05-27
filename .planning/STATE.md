@@ -25,10 +25,10 @@ See: .planning/PROJECT.md (updated 2026-05-27 after v1.0 milestone)
 
 ## Current Position
 
-Phase: v1.1 planning
-Plan: not started
-Status: v1.0 archived. Run `/gsd:new-milestone` to kick off v1.1 requirements + roadmap.
-Last activity: 2026-05-27 -- v1.0 milestone archived; v1.1 reference: docs/new-understanding-2026-05-27.md.
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-05-27 — Milestone v1.1 知识系统 + Explain 重构 started; reference: docs/new-understanding-2026-05-27.md.
 
 Progress: [__________] 0% (v1.1 not started)
 
