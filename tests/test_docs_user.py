@@ -11,6 +11,7 @@ CHAPTERS = [
     "compose.md",
     "index.md",
     "knowledge.md",
+    "model-panel.md",
 ]
 
 SECTIONS = [
