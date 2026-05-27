@@ -31,7 +31,7 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 
 - [x] **Phase 6: 知识库地基 + Skill 框架重构** (5/5 plans) — completed 2026-05-27
 - [x] **Phase 7: Explain v2 + 模型面板 + 输入路由** (5/5 plans) — completed 2026-05-27
-- [ ] **Phase 8: 社区 KB + 错误处理** (TBD plans)
+- [x] **Phase 8: 社区 KB + 错误处理** (4/4 plans) — completed 2026-05-27
 - [ ] **Phase 9: 跨平台 + 安装包** (TBD plans)
 
 ## Phase Details
@@ -84,7 +84,7 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 3. 各类失败给出明确"改哪里"提示：skill prompt markdown 缺失（告诉用户路径）、API 调用失败（区分配置 / 平台 / 网络错误）、配置错误（指出 config.local.yml 哪一行）、knowledge 文件格式错误（指出 frontmatter 哪一字段）。
 4. `docs/user/errors/` 目录存在，每个用户可见的 `raise` 配对一个 docs 条目；grep 守门测试保证不遗漏；README 含错误索引章节链接到 `docs/user/errors/`。
 
-**Plans**: TBD（见 `/gsd:plan-phase 8` 拆分）
+**Plans**: 4/4 complete — see `.planning/phases/08-community-kb-error-handling/`
 
 ### Phase 9: 跨平台 + 安装包
 
@@ -119,5 +119,5 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 | 5. 用户手册 + 开源准备 | v1.0 | 4/4 | Complete | 2026-05-26 |
 | 6. 知识库地基 + Skill 框架重构 | v1.1 | 5/5 | Complete | 2026-05-27 |
 | 7. Explain v2 + 模型面板 + 输入路由 | v1.1 | 5/5 | Complete | 2026-05-27 |
-| 8. 社区 KB + 错误处理 | v1.1 | 0/TBD | Not started | - |
+| 8. 社区 KB + 错误处理 | v1.1 | 4/4 | Complete | 2026-05-27 |
 | 9. 跨平台 + 安装包 | v1.1 | 0/TBD | Not started | - |
