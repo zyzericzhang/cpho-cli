@@ -37,6 +37,35 @@ def test_load_skill_folder(tmp_path: Path) -> None:
     assert loaded.spec.steps[0].id == "derive"
 
 
+def test_skill_spec_describe_includes_step_metadata_and_prompt_path(tmp_path: Path) -> None:
+    write_skill(tmp_path)
+    with (tmp_path / "skill.yml").open("a", encoding="utf-8") as handle:
+        handle.write(
+            """
+  - id: summarize
+    kind: llm
+    description: Summarize derivation
+    default_model: openai/gpt-4o-mini
+    requires_multimodal: true
+    input_keys: [derivation]
+    output_keys: [summary]
+    prompt_template: derive.md.j2
+"""
+        )
+
+    loaded = load_skill(tmp_path)
+    description = loaded.spec.describe(loaded.root)
+
+    assert description.name == "solve"
+    assert description.steps[1].description == "Summarize derivation"
+    assert description.steps[1].default_model == "openai/gpt-4o-mini"
+    assert description.steps[1].requires_multimodal is True
+    assert description.steps[1].prompt_path == tmp_path / "prompts" / "derive.md.j2"
+    assert ("derive", "summarize", "input:derivation") in {
+        (edge.source, edge.target, edge.reason) for edge in description.edges
+    }
+
+
 def test_rejects_template_path_traversal(tmp_path: Path) -> None:
     write_skill(tmp_path, "../outside.md.j2")
 
