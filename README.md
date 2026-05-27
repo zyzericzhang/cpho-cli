@@ -4,13 +4,11 @@
 [![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB.svg)](pyproject.toml)
 [![uv](https://img.shields.io/badge/package%20manager-uv-5C3EE8.svg)](https://github.com/astral-sh/uv)
 
-物理竞赛题库的本地命令行工作台：索引 PDF/图片题库，审查标答，生成多风格讲解，主动追问关键步骤，查找同类题，并按编排文件拼装 PDF 试卷。
+物理竞赛题库的本地命令行工作台：索引 PDF/图片题库，审查标答，生成板块化讲解，主动追问关键步骤，查找同类题，管理私有/社区知识库，并按编排文件拼装 PDF 试卷。
 
 ![CPHO CLI demo](.github/assets/cpho-demo.svg)
 
 ## Quick Start
-
-目标：10 分钟内在 REPL 里跑出一次 `/explain`。
 
 ```bash
 git clone https://github.com/your-org/cpho-cli.git
@@ -26,204 +24,106 @@ active_provider: openrouter
 providers:
   openrouter:
     kind: openrouter
-    api_key: sk-...
+    api_key_env: OPENROUTER_API_KEY
     base_url: https://openrouter.ai/api/v1
+    default_model: openai/gpt-4o-mini
 model:
   name: openai/gpt-4o-mini
   temperature: 0.2
 ```
 
-索引示例题库或你自己的题库目录：
+索引题库并进入 REPL：
 
 ```bash
-uv run cpho index build examples --config config.local.yml
+uv run cpho index /path/to/workspace --config config.local.yml
+uv run cpho repl --workspace /path/to/workspace --config config.local.yml
 ```
 
-进入 REPL：
-
-```bash
-uv run cpho repl --workspace examples --config config.local.yml
-```
-
-错误排查索引见 [docs/user/errors](docs/user/errors/README.md)。
-
-在 REPL 中：
+常用 REPL 流程：
 
 ```text
 /search 力学
 /show 1
-/solve --auto-confirm
-/explain --tone teacher --tone dense
+/solve --auto-confirm --persist-tags
+/explain --panel approach --panel answer_replacement
 /probe
 ```
 
-Markdown 导出默认写到本机 `.cpho` 输出目录；也可以在 REPL 里设置：
-
-```text
-/set out.dir ./exports
-```
-
-把 `examples` 替换成 `/Users/你/物理竞赛资料` 这类真实题库目录即可。
-
-## 这是什么
-
-CPHO CLI 面向物理竞赛教练和学生。它不要求你把题目导入云端系统，文件夹就是题库：PDF、扫描图、答案、解析都可以留在本地。
-
-核心差异：
-
-| 需求 | ChatGPT 网页 | 普通 OCR 工具 | CPHO CLI |
-|---|---|---|---|
-| 批量索引本地题库 | 手动上传 | 只抽文本 | `cpho index build` |
-| 标答可信审查 | 容易直接顺着错解讲 | 不理解物理 | `/solve` 给标答挑错 |
-| 多风格讲解 | 需要反复 prompt | 不支持 | `/explain --tone teacher --tone dense` |
-| 追问关键点 | 临时聊天 | 不支持 | `/probe` 连续问答并导出 |
-| 找同类题 | 靠人工记忆 | 不支持 | `/search-related` |
-| 组卷 | 手动复制 PDF | 不支持 | `cpho compose build` |
+退出 REPL：按 Ctrl-D。Probe 内连续两次空回答会结束当前追问。
 
 ## 功能矩阵
 
-| 功能 | CLI | REPL | 输出 |
+| 功能 | CLI | REPL | 主要输出 |
 |---|---|---|---|
-| 建索引 | `cpho index build` | `/index` | `.cpho/index.jsonl` |
-| 搜索题目 | `cpho topic browse` | `/search`, `/show` | 表格 |
+| 建索引 | `cpho index <workspace>` | `/index` | `.cpho/index.jsonl` |
+| 浏览主题 | `cpho topic browse <path> <workspace>` | `/search`, `/show` | 表格 |
 | 标答审查 | `cpho solve` | `/solve` | JSON + Markdown |
-| 多 Tone 讲解 | - | `/explain` | `.explain.md` |
+| 板块讲解 | - | `/explain --panel ...` | `.explain.md` |
 | 主动追问 | - | `/probe` | `.probe.md` |
 | 找同类题 | - | `/search-related` | 表格 + Markdown |
 | 组卷 | `cpho compose new/build/auto` | `/compose` | 题目 PDF + 答案 PDF |
+| 私有知识 | `cpho knowledge normalize/publish/find` | 可在 REPL shell 中调用 | knowledge draft/published md |
+| 社区知识 | `cpho knowledge sync` | - | 只读 community KB cache |
+| 模型面板 | - | `/skill`, `/model` | `.cpho/skills/*.yml`, model cache |
 
-## REPL 用法
+## Explain v2
 
-```bash
-uv run cpho repl --workspace /path/to/题库
-```
+`/explain` 不再使用 v1.0 的 tone。现在按板块选择：
 
-常用命令：
-
-```text
-/help
-/workspace /path/to/题库
-/index --only-new
-/search newton
-/show 1
-/set out.dir ./exports
-/set probe.max_rounds 12
-/solve --auto-confirm --persist-tags
-/explain --tone teacher --tone brief
-/search-related --top 10
-/compose new weekly --count 5
-/compose build .cpho/compositions/weekly.yml
-```
-
-## Skill 列表
-
-### `/solve`
-
-定位：审查标准答案，不是重新解题。它提取标答步骤、逐步核查，发现符号、推导、引用等问题后写入 `SolveReport`。
-
-```text
-/solve --auto-confirm
-```
-
-可选 `--persist-tags` 把接受的 discrepancy 写入 index 的 `user_tags`。
-
-### `/explain`
-
-定位：基于题目、答案和可选 Solve 审查结果生成讲解。
-
-```text
-/explain --tone teacher --tone dense --tone brief
-```
-
-三种 tone：
-
-| Tone | 用途 |
+| Panel | 用途 |
 |---|---|
-| `teacher` | 老师讲课式，引导性强 |
-| `dense` | 知识点密集，推导更完整 |
-| `brief` | 简短抓主线 |
+| `approach` | 思路描述，只讲底层逻辑，不展开完整推导 |
+| `answer_replacement` | 补全标答跳步，可直接替代标准答案 |
+| `alternative_methods` | 比较其他处理方法 |
 
-### `/probe`
+Explain 会先查询 `KnowledgeResolver`，按 private > community 优先级引用知识文件，并在输出中写明来源和 `input_modality_used`。
 
-连续主动提问，帮助定位关键物理点和处理步骤。
+## 知识库
 
-```text
-/probe
-```
-
-退出方式：REPL 中按 Ctrl-D；Probe 内连续两次空回答会结束当前追问。
-
-### `/search-related`
-
-基于 index tag overlap 找同类题。
-
-```text
-/search-related p1 --top 10 --min-shared 1
-```
-
-REPL 会保存 `last_related`，供组卷时显式使用。
-
-### `compose`
-
-创建编排文件：
+私有知识：
 
 ```bash
-uv run cpho compose new weekly --count 5 --workspace examples
+uv run cpho knowledge normalize note.md --workspace /path/to/workspace --canonical-tag-id free_body_diagram
+uv run cpho knowledge publish .cpho/knowledge/drafts/<draft>.md --workspace /path/to/workspace
+uv run cpho knowledge find <problem_id> --workspace /path/to/workspace
 ```
 
-构建 PDF：
+社区知识：
 
 ```bash
-uv run cpho compose build examples/.cpho/compositions/weekly.yml --workspace examples
+uv run cpho knowledge sync --workspace /path/to/workspace
 ```
 
-自动选题：
+社区配置默认在 `<workspace>/.cpho/community-kb.yml`，同步到 `~/.cache/cpho/community-kb/<repo>/`，并保持只读。
+
+## 组卷与输出
 
 ```bash
-uv run cpho compose auto --count 5 --topic 力学 --tags newton --workspace examples
+uv run cpho compose new weekly --count 5 --workspace /path/to/workspace
+uv run cpho compose build /path/to/workspace/.cpho/compositions/weekly.yml --workspace /path/to/workspace
+uv run cpho compose auto --count 5 --topic 力学 --tags free_body_diagram --workspace /path/to/workspace
 ```
+
+默认组卷输出在 `<workspace>/.cpho/exports/compose/`。`--output` 必须在 workspace 内；`index` 会忽略 `.cpho/`、`artifacts/`、`exports/`、`output/`、`outputs/` 这些生成目录。
+
+## 文档
+
+- 用户文档索引：[docs/user/README.md](docs/user/README.md)
+- 错误排查索引：[docs/user/errors/README.md](docs/user/errors/README.md)
+- 扩展指南：[docs/user/extensions.md](docs/user/extensions.md)
+- 真实 API 验证记录：[docs/test-001-real-api-verification.md](docs/test-001-real-api-verification.md), [docs/test-002-real-api-verification.md](docs/test-002-real-api-verification.md)
 
 ## 配置
 
-最小配置：
-
-```yaml
-provider:
-  openrouter_api_key: sk-...
-```
-
-推荐 profile 配置：
-
-```yaml
-active_provider: openrouter
-providers:
-  openrouter:
-    kind: openrouter
-    api_key: sk-primary
-  backup:
-    kind: openrouter
-    api_key: sk-backup
-    base_url: https://openrouter.ai/api/v1
-model:
-  name: openai/gpt-4o-mini
-  temperature: 0.2
-```
-
-临时选择 provider：
+推荐使用环境变量保存密钥：
 
 ```bash
-uv run cpho solve problem.pdf --answer answer.pdf --provider backup
+export OPENROUTER_API_KEY=...
 ```
 
-## 扩展指南
+`config.local.yml`、真实测试 workspace 和 API key 不应提交。
 
-当前支持的是简单 Python 扩展：复制已有 `src/cpho_cli/cli/repl/commands/*.py` 或 `src/cpho_cli/builtin_skills/*` 的结构，写一个明确的 Python service，再在 REPL command installer 里注册 slash command。
-
-详细示例见 [docs/user/extensions.md](docs/user/extensions.md)。
-
-## 依赖与鸣谢
-
-主要依赖：
+## 依赖
 
 | 依赖 | 用途 |
 |---|---|
@@ -233,15 +133,12 @@ uv run cpho solve problem.pdf --answer answer.pdf --provider backup
 | `rapidocr` | OCR |
 | `pymupdf` | PDF 读取与组卷 |
 | `pydantic` | 严格数据模型 |
-| `openrouter` | OpenAI-compatible LLM provider |
-| `rich` | 进度显示 |
-
-各依赖遵循其各自 license。
+| `httpx` | OpenAI-compatible/GitHub API 调用 |
+| `jinja2` | Prompt 模板 |
 
 ## Out of Scope
 
-> **不在计划内：**
-> YAML 配置式第三方 skill loader、自然语言生成 skill、`pip install` 第三方 skill 包、GitBook/Docusaurus 文档站、多语言 README。
+当前不提供：自然语言生成新 skill、第三方 skill 包安装、托管文档站、跨平台安装器。跨平台/安装包属于 Phase 9。
 
 ## License
 

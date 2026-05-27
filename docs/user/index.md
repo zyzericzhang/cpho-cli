@@ -13,6 +13,9 @@
 
 ```bash
 uv run cpho index build /path/to/workspace --config config.local.yml
+# 等价简写：
+uv run cpho index /path/to/workspace --config config.local.yml
+uv run cpho topic browse 力学/运动学 /path/to/workspace
 ```
 
 REPL:
@@ -32,9 +35,11 @@ REPL:
 主要文件：
 
 - `.cpho/index.jsonl`
-- `.cpho/ocr/`
-- `.cpho/traces/`
-- `.cpho/compositions/`
+- `.cpho/cache/ocr/`
+- `.cpho/run-trace.jsonl`
+- `.cpho/vocabulary/pending.yml`
+
+索引扫描会忽略生成目录：`.cpho/`、`artifacts/`、`exports/`、`output/`、`outputs/`。
 
 ## 端到端完整示例
 
@@ -44,4 +49,3 @@ cpho> /index --only-new
 cpho> /search 牛顿
 cpho> /show 1
 ```
-

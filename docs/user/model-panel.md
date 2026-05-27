@@ -2,7 +2,7 @@
 
 ## 用途
 
-查看 skill pipeline 的步骤、prompt 路径、当前模型和多模态标记，并为单个步骤持久化模型覆盖。
+查看 skill pipeline 的步骤、prompt 路径、当前模型和多模态标记，并为单个步骤保存 workspace 级模型覆盖配置。
 
 ## 前置条件
 

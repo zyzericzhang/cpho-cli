@@ -68,6 +68,7 @@ See PROJECT.md Key Decisions table (updated after v1.0 close).
 | Date | Task | Status |
 |------|------|--------|
 | 2026-05-27 | fix real API verification 001 failures | complete |
+| 2026-05-27 | final README and docs/user update after real API verification | complete |
 
 ### Blockers/Concerns
 
