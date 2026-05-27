@@ -16,6 +16,7 @@ dependencies = [
   "typer>=0.12",
   "wcwidth>=0.2.13",
   "rich>=13.0",
+  "mammoth>=1.12.0",
 ]
 
 [project.scripts]
@@ -43,6 +44,7 @@ cpho_cli = [
   "vocabulary/topics/*.yml",
   "core/index/prompts/*",
   "core/splitting/prompts/*",
+  "core/knowledge/prompts/*",
 ]
 
 [tool.ruff]

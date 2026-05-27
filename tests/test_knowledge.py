@@ -7,7 +7,13 @@ import pytest
 import yaml
 
 from cpho_cli.core.index.storage import write_index
-from cpho_cli.core.knowledge import KnowledgeError, KnowledgeResolver, load_knowledge_document
+from cpho_cli.core.knowledge import (
+    KnowledgeError,
+    KnowledgeResolver,
+    load_knowledge_document,
+    normalize_knowledge_file,
+    publish_knowledge_draft,
+)
 from cpho_cli.models.index import (
     FileFingerprint,
     IndexEntry,
@@ -162,3 +168,46 @@ def test_resolver_falls_back_to_same_category(tmp_path: Path) -> None:
 
     assert [match.canonical_tag_id for match in matches] == ["test_model_b"]
     assert matches[0].match_kind == "same_category"
+
+
+def test_normalize_writes_reviewable_draft(tmp_path: Path) -> None:
+    _write_private_vocab(tmp_path)
+    source = tmp_path / "用户手写知识.md"
+    source.write_text("受力模型：先选研究对象，再列约束。", encoding="utf-8")
+
+    draft = normalize_knowledge_file(
+        tmp_path,
+        source,
+        canonical_tag_id="test_model_a",
+        dry_run=True,
+    )
+
+    document = load_knowledge_document(tmp_path, draft)
+    assert draft.parent == tmp_path / ".cpho" / "knowledge" / "drafts"
+    assert document.frontmatter.canonical_tag_id == "test_model_a"
+    assert document.frontmatter.last_normalized_hash
+    assert document.frontmatter.last_user_edit_hash == document.frontmatter.last_normalized_hash
+    assert "先选研究对象" in document.body
+
+
+def test_publish_validates_and_updates_user_edit_hash(tmp_path: Path) -> None:
+    _write_private_vocab(tmp_path)
+    source = tmp_path / "知识.md"
+    source.write_text("原文。", encoding="utf-8")
+    draft = normalize_knowledge_file(
+        tmp_path,
+        source,
+        canonical_tag_id="test_model_a",
+        dry_run=True,
+    )
+    text = draft.read_text(encoding="utf-8").replace("原文。", "用户审核后修改。")
+    draft.write_text(text, encoding="utf-8")
+
+    published = publish_knowledge_draft(tmp_path, draft)
+
+    assert published.path.parent == tmp_path / ".cpho" / "knowledge" / "files" / "published"
+    assert "用户审核后修改" in published.body
+    assert (
+        published.frontmatter.last_user_edit_hash
+        != published.frontmatter.last_normalized_hash
+    )
