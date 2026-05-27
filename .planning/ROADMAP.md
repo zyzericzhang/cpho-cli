@@ -30,7 +30,7 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 ### 🚧 v1.1 知识系统 + Explain 重构 (Phases 6–9)
 
 - [x] **Phase 6: 知识库地基 + Skill 框架重构** (5/5 plans) — completed 2026-05-27
-- [ ] **Phase 7: Explain v2 + 模型面板 + 输入路由** (TBD plans)
+- [x] **Phase 7: Explain v2 + 模型面板 + 输入路由** (5/5 plans) — completed 2026-05-27
 - [ ] **Phase 8: 社区 KB + 错误处理** (TBD plans)
 - [ ] **Phase 9: 跨平台 + 安装包** (TBD plans)
 
@@ -68,7 +68,7 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 4. 模型列表从 OpenRouter `GET /api/v1/models` 与 Gemini `client.models.list()` 实时抓取，diskcache TTL 默认 1h，可 force-refresh；首次离线 / API 失败有 bundled fallback；REPL 启动永不阻塞；list 失败（降级）与 call 失败（明报）区分。
 5. Index 仍用 OCR + 文本（保持 v1.0 行为）；其他 skill 默认走原始图片 / PDF（多模态），模型不支持时显式降级 OCR 并提示"哪个步骤为什么降级"，不静默；输出 provenance 含 `input_modality_used` 字段。
 
-**Plans**: TBD（plan-phase 时建议拆 wave：Explain v2 / 模型面板 / 输入路由）
+**Plans**: 5/5 complete — see `.planning/phases/07-explain-v2/`
 
 ### Phase 8: 社区 KB + 错误处理
 
@@ -118,6 +118,6 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 | 4. 找同类题 + 组卷 + 异常处理 | v1.0 | 6/6 | Complete | 2026-05-26 |
 | 5. 用户手册 + 开源准备 | v1.0 | 4/4 | Complete | 2026-05-26 |
 | 6. 知识库地基 + Skill 框架重构 | v1.1 | 5/5 | Complete | 2026-05-27 |
-| 7. Explain v2 + 模型面板 + 输入路由 | v1.1 | 0/TBD | Not started | - |
+| 7. Explain v2 + 模型面板 + 输入路由 | v1.1 | 5/5 | Complete | 2026-05-27 |
 | 8. 社区 KB + 错误处理 | v1.1 | 0/TBD | Not started | - |
 | 9. 跨平台 + 安装包 | v1.1 | 0/TBD | Not started | - |
