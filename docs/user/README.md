@@ -8,4 +8,4 @@
 - [related](related.md) — 查找同类题。
 - [compose](compose.md) — 用 YAML 编排文件生成题目卷和答案卷。
 - [index](index.md) — 建立和维护本地题目索引。
-
+- [knowledge](knowledge.md) — 标准化、发布和查找本地私有知识文件。

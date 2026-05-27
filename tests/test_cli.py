@@ -10,6 +10,7 @@ def test_help_lists_commands() -> None:
     assert "solve" in result.output
     assert "index" in result.output
     assert "topic" in result.output
+    assert "knowledge" in result.output
     assert "eval" not in result.output
 
 

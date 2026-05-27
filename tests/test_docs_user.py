@@ -10,6 +10,7 @@ CHAPTERS = [
     "related.md",
     "compose.md",
     "index.md",
+    "knowledge.md",
 ]
 
 SECTIONS = [

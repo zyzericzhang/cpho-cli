@@ -23,6 +23,7 @@ from cpho_cli.models.solve import Discrepancy, SolveReport
 app = typer.Typer(help="CPHO local physics analysis CLI.")
 topic_app = typer.Typer(help="主题分类浏览。")
 compose_app = typer.Typer(help="编排文件驱动的组卷。")
+knowledge_app = typer.Typer(help="知识文件标准化与检索。")
 
 
 class IndexGroup(typer.core.TyperGroup):
@@ -41,6 +42,7 @@ index_app = typer.Typer(
 app.add_typer(topic_app, name="topic")
 app.add_typer(index_app, name="index")
 app.add_typer(compose_app, name="compose")
+app.add_typer(knowledge_app, name="knowledge")
 
 _OCR_STRATEGY_CHOICES = ("prompt", "reuse", "rebuild", "new-only")
 
@@ -473,6 +475,80 @@ def _split_tag_ids(tags: str | None) -> list[str]:
 
 def _workspace_relative_path(workspace: Path, path: Path) -> Path:
     return path if path.is_absolute() else workspace / path
+
+
+@knowledge_app.command(name="normalize")
+def knowledge_normalize(
+    source: Path = typer.Argument(..., help="待标准化的知识文件。"),
+    workspace: Path = typer.Option(Path.cwd(), "--workspace", "-w", help="Workspace 目录。"),
+    config: Optional[Path] = typer.Option(None, "--config", "-c", help="本地 YAML 配置文件路径。"),
+    provider: Optional[str] = typer.Option(
+        None, "--provider", "-p", help="配置中的 provider 名称。"
+    ),
+    canonical_tag_id: Optional[str] = typer.Option(
+        None, "--canonical-tag-id", help="指定 canonical tag；不指定时由 LLM 判断。"
+    ),
+    dry_run: bool = typer.Option(False, "--dry-run", help="本地生成草稿，不调用 LLM。"),
+    quiet: bool = typer.Option(False, "--quiet", "-q", help="仅输出错误。"),
+) -> None:
+    """生成可审核的知识标准化草稿。"""
+    from cpho_cli.core.knowledge import KnowledgeError, normalize_knowledge_file
+
+    try:
+        draft = normalize_knowledge_file(
+            workspace,
+            _workspace_relative_path(workspace, source),
+            config_path=config,
+            provider_name=provider,
+            canonical_tag_id=canonical_tag_id,
+            dry_run=dry_run,
+        )
+    except (ConfigError, KnowledgeError) as exc:
+        raise typer.BadParameter(str(exc)) from exc
+    if not quiet:
+        typer.echo(f"草稿: {draft}")
+
+
+@knowledge_app.command(name="publish")
+def knowledge_publish(
+    draft: Path = typer.Argument(..., help="已审核的 knowledge draft。"),
+    workspace: Path = typer.Option(Path.cwd(), "--workspace", "-w", help="Workspace 目录。"),
+    quiet: bool = typer.Option(False, "--quiet", "-q", help="仅输出错误。"),
+) -> None:
+    """发布已审核的知识草稿。"""
+    from cpho_cli.core.knowledge import KnowledgeError, publish_knowledge_draft
+
+    try:
+        document = publish_knowledge_draft(workspace, draft)
+    except KnowledgeError as exc:
+        raise typer.BadParameter(str(exc)) from exc
+    if not quiet:
+        typer.echo(f"已发布: {document.path}")
+
+
+@knowledge_app.command(name="find")
+def knowledge_find(
+    problem_id: str = typer.Argument(..., help="已索引题目 ID。"),
+    workspace: Path = typer.Option(Path.cwd(), "--workspace", "-w", help="Workspace 目录。"),
+    quiet: bool = typer.Option(False, "--quiet", "-q", help="仅输出错误。"),
+) -> None:
+    """按题目 ID 查找匹配知识文件。"""
+    from cpho_cli.core.knowledge import KnowledgeError, KnowledgeResolver
+
+    try:
+        matches = KnowledgeResolver(workspace).find_for_problem(problem_id)
+    except (IndexBuildError, KnowledgeError) as exc:
+        raise typer.BadParameter(str(exc)) from exc
+    if quiet:
+        return
+    if not matches:
+        typer.echo("未找到匹配知识文件。")
+        return
+    for match in matches:
+        typer.echo(
+            f"{match.source.value} {match.canonical_tag_id} "
+            f"({match.match_kind}): {match.path}"
+        )
 
 
 @compose_app.command(name="new")
