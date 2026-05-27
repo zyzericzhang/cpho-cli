@@ -45,6 +45,8 @@ uv run cpho index build examples --config config.local.yml
 uv run cpho repl --workspace examples --config config.local.yml
 ```
 
+错误排查索引见 [docs/user/errors](docs/user/errors/README.md)。
+
 在 REPL 中：
 
 ```text

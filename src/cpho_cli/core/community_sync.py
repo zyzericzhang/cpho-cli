@@ -13,6 +13,7 @@ import httpx
 import yaml
 from pydantic import ValidationError
 
+from cpho_cli.core.errors import err_community_sync_failed
 from cpho_cli.core.knowledge.store import TEXT_KNOWLEDGE_EXTENSIONS, KnowledgeError
 from cpho_cli.core.knowledge.store import load_knowledge_document
 from cpho_cli.models.community import (
@@ -36,15 +37,23 @@ def load_community_sync_config(workspace_root: Path, path: Path | None = None) -
     try:
         raw = yaml.safe_load(config_path.read_text(encoding="utf-8")) or {}
     except OSError as exc:
-        raise CommunitySyncError(f"Community KB config not found: {config_path}") from exc
+        raise CommunitySyncError(
+            err_community_sync_failed(str(config_path), "Community KB config not found.")
+        ) from exc
     except yaml.YAMLError as exc:
-        raise CommunitySyncError(f"Invalid community KB config YAML: {config_path}: {exc}") from exc
+        raise CommunitySyncError(
+            err_community_sync_failed(str(config_path), f"Invalid community KB config YAML: {exc}")
+        ) from exc
     if not isinstance(raw, dict):
-        raise CommunitySyncError(f"Community KB config must be a YAML mapping: {config_path}")
+        raise CommunitySyncError(
+            err_community_sync_failed(str(config_path), "Community KB config must be a YAML mapping.")
+        )
     try:
         return CommunitySyncConfig.model_validate(raw)
     except ValidationError as exc:
-        raise CommunitySyncError(f"Invalid community KB config: {config_path}: {exc}") from exc
+        raise CommunitySyncError(
+            err_community_sync_failed(str(config_path), f"Invalid community KB config: {exc}")
+        ) from exc
 
 
 def sync_community_knowledge(
@@ -113,18 +122,26 @@ def _sync_repository(
         release_response.raise_for_status()
     except httpx.HTTPStatusError as exc:
         raise CommunitySyncError(
-            f"Community KB GitHub release request failed: {release_url}: {exc.response.status_code}"
+            err_community_sync_failed(
+                release_url,
+                f"Community KB GitHub release request failed: {exc.response.status_code}",
+            )
         ) from exc
     tarball_url = release_response.json().get("tarball_url")
     if not isinstance(tarball_url, str) or not tarball_url.strip():
-        raise CommunitySyncError(f"Community KB release missing tarball_url: {release_url}")
+        raise CommunitySyncError(
+            err_community_sync_failed(release_url, "Community KB release missing tarball_url.")
+        )
 
     tarball_response = client.get(tarball_url, headers=headers)
     try:
         tarball_response.raise_for_status()
     except httpx.HTTPStatusError as exc:
         raise CommunitySyncError(
-            f"Community KB tarball download failed: {tarball_url}: {exc.response.status_code}"
+            err_community_sync_failed(
+                tarball_url,
+                f"Community KB tarball download failed: {exc.response.status_code}",
+            )
         ) from exc
 
     _make_writable(target_dir)
@@ -163,11 +180,18 @@ def _parse_github_repo(url: str) -> tuple[str, str]:
     cleaned = url.rstrip("/")
     marker = "github.com/"
     if marker not in cleaned:
-        raise CommunitySyncError(f"Community KB repository must be a GitHub URL: {url}")
+        raise CommunitySyncError(
+            err_community_sync_failed(url, "Community KB repository must be a GitHub URL.")
+        )
     path = cleaned.split(marker, 1)[1]
     parts = [part for part in path.split("/") if part]
     if len(parts) < 2:
-        raise CommunitySyncError(f"Community KB repository URL must include owner and repo: {url}")
+        raise CommunitySyncError(
+            err_community_sync_failed(
+                url,
+                "Community KB repository URL must include owner and repo.",
+            )
+        )
     return parts[0], parts[1].removesuffix(".git")
 
 
@@ -189,8 +213,13 @@ def _safe_extract_tarball(content: bytes, target_dir: Path) -> None:
             try:
                 member_path.relative_to(target_resolved)
             except ValueError as exc:
-                raise CommunitySyncError(f"Unsafe path in community KB tarball: {member.name}") from exc
-        archive.extractall(target_dir)
+                raise CommunitySyncError(
+                    err_community_sync_failed(
+                        member.name,
+                        "Unsafe path in community KB tarball.",
+                    )
+                ) from exc
+        archive.extractall(target_dir, filter="data")
     tar_path.unlink(missing_ok=True)
 
 
@@ -219,10 +248,20 @@ def _stage_knowledge_files(
                     repo_name=repo_name,
                 )
             except KnowledgeError as exc:
-                raise CommunitySyncError(f"Invalid community KB knowledge file: {target}: {exc}") from exc
+                raise CommunitySyncError(
+                    err_community_sync_failed(
+                        str(target),
+                        f"Invalid community KB knowledge file: {exc}",
+                    )
+                ) from exc
             files_written += 1
     if files_written == 0:
-        raise CommunitySyncError("Community KB tarball contained no supported knowledge files.")
+        raise CommunitySyncError(
+            err_community_sync_failed(
+                str(extracted_dir),
+                "Community KB tarball contained no supported knowledge files.",
+            )
+        )
     return files_written
 
 

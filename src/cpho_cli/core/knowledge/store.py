@@ -6,6 +6,7 @@ from typing import Any
 import yaml
 from pydantic import ValidationError
 
+from cpho_cli.core.errors import err_knowledge_frontmatter_invalid
 from cpho_cli.core.index.vocabulary import load_merged_vocabulary
 from cpho_cli.models.knowledge import KnowledgeDocument, KnowledgeFrontmatter, KnowledgeSource
 
@@ -19,7 +20,9 @@ class KnowledgeError(ValueError):
 def _split_frontmatter(text: str, path: Path) -> tuple[dict[str, Any], str]:
     lines = text.splitlines()
     if not lines or lines[0].strip() != "---":
-        raise KnowledgeError(f"Knowledge file missing YAML frontmatter: {path}")
+        raise KnowledgeError(
+            err_knowledge_frontmatter_invalid(path, "Knowledge file missing YAML frontmatter.")
+        )
     for index, line in enumerate(lines[1:], start=1):
         if line.strip() == "---":
             raw = "\n".join(lines[1:index])
@@ -27,19 +30,33 @@ def _split_frontmatter(text: str, path: Path) -> tuple[dict[str, Any], str]:
             try:
                 data = yaml.safe_load(raw) or {}
             except yaml.YAMLError as exc:
-                raise KnowledgeError(f"Invalid YAML frontmatter in {path}: {exc}") from exc
+                raise KnowledgeError(
+                    err_knowledge_frontmatter_invalid(path, f"Invalid YAML frontmatter: {exc}")
+                ) from exc
             if not isinstance(data, dict):
-                raise KnowledgeError(f"Knowledge frontmatter must be a mapping: {path}")
+                raise KnowledgeError(
+                    err_knowledge_frontmatter_invalid(
+                        path,
+                        "Knowledge frontmatter must be a mapping.",
+                    )
+                )
             return data, body
-    raise KnowledgeError(f"Knowledge file frontmatter is not closed with ---: {path}")
+    raise KnowledgeError(
+        err_knowledge_frontmatter_invalid(
+            path,
+            "Knowledge file frontmatter is not closed with ---.",
+        )
+    )
 
 
 def _validate_canonical_tag(workspace_root: Path, frontmatter: KnowledgeFrontmatter, path: Path) -> None:
     vocabulary = load_merged_vocabulary(workspace_root)
     if frontmatter.canonical_tag_id not in vocabulary.tags:
         raise KnowledgeError(
-            "Unknown canonical_tag_id in knowledge file "
-            f"{path}: {frontmatter.canonical_tag_id}"
+            err_knowledge_frontmatter_invalid(
+                path,
+                f"Unknown canonical_tag_id in knowledge file: {frontmatter.canonical_tag_id}",
+            )
         )
 
 
@@ -61,7 +78,9 @@ def load_knowledge_document(
     try:
         frontmatter = KnowledgeFrontmatter.model_validate(data)
     except ValidationError as exc:
-        raise KnowledgeError(f"Invalid knowledge frontmatter in {path}: {exc}") from exc
+        raise KnowledgeError(
+            err_knowledge_frontmatter_invalid(path, f"Invalid knowledge frontmatter: {exc}")
+        ) from exc
     _validate_canonical_tag(workspace_root, frontmatter, path)
     return KnowledgeDocument(
         path=path,
