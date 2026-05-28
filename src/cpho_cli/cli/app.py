@@ -21,10 +21,10 @@ from cpho_cli.core.solve import SolveError, solve_problem
 from cpho_cli.core.solve import write_solve_report
 from cpho_cli.models.solve import Discrepancy, SolveReport
 
-app = typer.Typer(help="CPHO local physics analysis CLI.")
-topic_app = typer.Typer(help="主题分类浏览。")
-compose_app = typer.Typer(help="编排文件驱动的组卷。")
-knowledge_app = typer.Typer(help="知识文件标准化与检索。")
+app = typer.Typer(help="CPHO local physics analysis CLI.", rich_markup_mode=None)
+topic_app = typer.Typer(help="主题分类浏览。", rich_markup_mode=None)
+compose_app = typer.Typer(help="编排文件驱动的组卷。", rich_markup_mode=None)
+knowledge_app = typer.Typer(help="知识文件标准化与检索。", rich_markup_mode=None)
 
 
 class IndexGroup(typer.core.TyperGroup):
@@ -39,6 +39,7 @@ index_app = typer.Typer(
     cls=IndexGroup,
     invoke_without_command=True,
     context_settings={"allow_extra_args": True, "ignore_unknown_options": True},
+    rich_markup_mode=None,
 )
 app.add_typer(topic_app, name="topic")
 app.add_typer(index_app, name="index")
