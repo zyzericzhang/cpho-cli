@@ -1,6 +1,8 @@
 param(
   [Parameter(Mandatory = $true)]
-  [string]$ExecutablePath
+  [string]$ExecutablePath,
+
+  [string]$Label = "Clean-VM smoke"
 )
 
 Set-StrictMode -Version Latest
@@ -32,7 +34,7 @@ try {
   uv run python -c "from pathlib import Path; import fitz; p = Path(r'$Workspace') / '第四届芝麻物理联考 理论试题.pdf'; doc = fitz.open(); page = doc.new_page(); page.insert_text((72, 72), 'packaged CPHO smoke'); doc.save(p)"
 
   Add-Content -LiteralPath $Report -Encoding UTF8 -Value ""
-  Add-Content -LiteralPath $Report -Encoding UTF8 -Value "## Clean-VM smoke"
+  Add-Content -LiteralPath $Report -Encoding UTF8 -Value "## $Label"
   Invoke-SmokeStep "help" { & $ExecutablePath --help | Out-Null }
   Invoke-SmokeStep "diagnostics" { & $ExecutablePath diagnostics --packaging-smoke | Out-Null }
   Invoke-SmokeStep "version" {
