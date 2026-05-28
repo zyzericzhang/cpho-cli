@@ -14,8 +14,8 @@
 
 - Workflow: `Packaging spike`
 - Runner: `windows-2022`
-- Run: https://github.com/zyzericzhang/cpho-cli/actions/runs/26589444663
-- Commit: `2a50cacff92e6426cef45550fc5cf9ef591844da`
+- Run: https://github.com/zyzericzhang/cpho-cli/actions/runs/26590319698
+- Commit: `ffaab5a4205baf40bba84146b2854b2437f7ede5`
 - Artifact: `phase9-spike-report`
 - Artifact: `cpho-pyinstaller-windows`
 
@@ -24,7 +24,7 @@
 ```text
 PyInstaller:
 - Exit code: 0
-- Elapsed: 49.7s
+- Elapsed: 48.2s
 - Bundle size: 297.77 MB
 - PASS help
 - PASS diagnostics
