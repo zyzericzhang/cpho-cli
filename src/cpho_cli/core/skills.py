@@ -6,6 +6,7 @@ from pathlib import Path
 import yaml
 from pydantic import ValidationError
 
+from cpho_cli.core.errors import err_skill_prompt_missing
 from cpho_cli.models.skills import SkillSpec
 
 
@@ -51,6 +52,8 @@ def load_skill(skill_dir: Path) -> LoadedSkill:
             prompt_path = skill_dir / "prompts" / step.prompt_template
             if not _inside(prompt_path, skill_dir / "prompts"):
                 raise SkillDefinitionError("Prompt template path escapes skill prompts directory.")
+            if not prompt_path.exists():
+                raise SkillDefinitionError(err_skill_prompt_missing(skill_dir, step.id, prompt_path))
             prompt_paths[step.id] = prompt_path
 
     return LoadedSkill(
@@ -59,4 +62,3 @@ def load_skill(skill_dir: Path) -> LoadedSkill:
         spec=spec,
         prompt_paths=prompt_paths,
     )
-

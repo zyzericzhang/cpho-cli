@@ -16,7 +16,7 @@ from cpho_cli.core.probe import run_probe
 from cpho_cli.core.skill_outputs import default_markdown_path
 from cpho_cli.core.skill_progress import PlainProgressReporter, wrap_handlers
 from cpho_cli.models.config import ModelParams
-from cpho_cli.models.explain import ExplainTone
+from cpho_cli.models.explain import ExplainPanel
 from cpho_cli.models.index import (
     FileFingerprint,
     IndexEntry,
@@ -41,14 +41,10 @@ class FakePhase3Provider:
     def stream(self, messages, params: ModelParams) -> Iterator[str]:  # type: ignore[no-untyped-def]
         content = str(messages[-1]["content"])
         self.stream_calls.append(content)
-        if "sentence" in content:
-            yield "### 句子级 explain\n逐句解释。"
+        if "标答替换" in content:
+            yield "## 标答替换\n逐步检查并补全跳步。"
         else:
-            yield (
-                "### 整道题物理图像与思路\n先看受力。\n"
-                "### 原答案逐步讲解\n逐步检查。\n"
-                "### 超越原答案的更清晰推导\n补一个更清晰推导。"
-            )
+            yield "## 思路描述\n先看受力。"
 
     def complete(self, messages, params: ModelParams, response_model=None):  # type: ignore[no-untyped-def]
         content = str(messages[-1]["content"])
@@ -163,7 +159,7 @@ async def test_phase3_end_to_end_acceptance_uses_temp_copy_and_seeded_index(
         answer_text="答案文本",
         problem_name=entry.problem_id,
         workspace_path=workspace,
-        tones=[ExplainTone.TEACHER, ExplainTone.DENSE],
+        panels=[ExplainPanel.APPROACH, ExplainPanel.ANSWER_REPLACEMENT],
         solve_report=solve_report,
         output_dir=tmp_path / "exports",
     )
@@ -202,7 +198,7 @@ async def test_phase3_end_to_end_acceptance_uses_temp_copy_and_seeded_index(
     assert reloaded is not None
     assert [tag.internal_id for tag in reloaded.physics_model_tags] == ["newton_second_law"]
     assert reloaded.user_tags[0].skill_name == "explain"
-    assert "## Tone: 老师型" in explain.markdown_path.read_text(encoding="utf-8")
+    assert "## 思路描述" in explain.markdown_path.read_text(encoding="utf-8")
     assert "## 问题" in probe.markdown_path.read_text(encoding="utf-8")
     assert "## Follow-up" in explain.markdown_path.read_text(encoding="utf-8")
     assert default_markdown_path(

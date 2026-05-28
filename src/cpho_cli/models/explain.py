@@ -8,42 +8,48 @@ from pydantic import Field
 from cpho_cli.models.config import StrictModel
 
 
-class ExplainTone(str, Enum):
-    TEACHER = "teacher"
-    DENSE = "dense"
-    BRIEF = "brief"
+class ExplainPanel(str, Enum):
+    APPROACH = "approach"
+    ANSWER_REPLACEMENT = "answer_replacement"
+    ALTERNATIVE_METHODS = "alternative_methods"
 
     @property
     def display_zh(self) -> str:
         return {
-            ExplainTone.TEACHER: "老师型",
-            ExplainTone.DENSE: "知识点密集型",
-            ExplainTone.BRIEF: "简短型",
+            ExplainPanel.APPROACH: "思路描述",
+            ExplainPanel.ANSWER_REPLACEMENT: "标答替换",
+            ExplainPanel.ALTERNATIVE_METHODS: "其他方法",
         }[self]
 
 
 class ExplainStreamChunk(StrictModel):
-    tone: ExplainTone
+    panel: ExplainPanel
     text: str
     stage: str
 
 
-class ToneExplainOutput(StrictModel):
-    tone: ExplainTone
-    stage_one_markdown: str
-    sentence_markdown: str
+class PanelExplainOutput(StrictModel):
+    panel: ExplainPanel
+    markdown: str
+
+
+class ExplainProvenance(StrictModel):
+    input_modality_used: str = "ocr_text"
+    knowledge_sources: list[str] = Field(default_factory=list)
 
 
 class ExplainResult(StrictModel):
     problem_name: str
-    tone_outputs: list[ToneExplainOutput]
+    panel_outputs: list[PanelExplainOutput]
     candidate_tags: list[str] = Field(default_factory=list)
     markdown_path: Path
+    provenance: ExplainProvenance = Field(default_factory=ExplainProvenance)
 
 
 __all__ = [
+    "ExplainPanel",
+    "ExplainProvenance",
     "ExplainResult",
     "ExplainStreamChunk",
-    "ExplainTone",
-    "ToneExplainOutput",
+    "PanelExplainOutput",
 ]

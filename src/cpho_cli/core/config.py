@@ -7,6 +7,7 @@ from typing import Any
 import yaml
 from pydantic import ValidationError
 
+from cpho_cli.core.errors import err_config_missing_api_key
 from cpho_cli.core.llm import supported_provider_kinds
 from cpho_cli.models.config import AppConfig, ModelParams, ProviderProfile, ResolvedProviderConfig
 
@@ -98,13 +99,15 @@ def resolve_provider_config(
     if not api_key:
         if legacy_profile:
             raise ConfigError(
-                "OpenRouter API key missing. Set OPENROUTER_API_KEY or provider.openrouter_api_key "
-                "in config.local.yml."
+                err_config_missing_api_key(
+                    "openrouter",
+                    "OPENROUTER_API_KEY or provider.openrouter_api_key",
+                )
             )
         source = f"providers.{name}.api_key"
         if profile.api_key_env:
             source = f"{profile.api_key_env} or {source}"
-        raise ConfigError(f"API key missing for provider profile '{name}'. Set {source}.")
+        raise ConfigError(err_config_missing_api_key(name, source))
 
     base_url = profile.base_url or _DEFAULT_BASE_URLS.get(kind, config.provider.base_url)
 

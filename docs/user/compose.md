@@ -33,7 +33,7 @@ REPL:
 
 ## 导出文件说明
 
-默认输出到 `.cpho/exports/compose/`。可用 `--output` 覆盖，但路径必须在 workspace 内。
+默认输出到 `.cpho/exports/compose/`。可用 `--output` 覆盖，但路径必须在 workspace 内。`index` 会忽略 `.cpho/`、`artifacts/`、`exports/`、`output/`、`outputs/`，避免生成的组卷 PDF 被再次索引。
 
 ## 端到端完整示例
 
@@ -43,4 +43,3 @@ cpho> /compose auto --from last-related --count 3
 题目卷: .cpho/exports/compose/auto-题目.pdf
 答案卷: .cpho/exports/compose/auto-答案.pdf
 ```
-

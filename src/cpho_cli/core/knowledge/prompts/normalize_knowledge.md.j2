@@ -1,0 +1,21 @@
+You are standardizing a physics olympiad knowledge note for CPHO CLI.
+
+Preserve the user's original wording and intent. Only adapt format enough to make the note usable as a structured reference.
+
+Source file: {{ source_filename }}
+Preferred canonical_tag_id: {{ canonical_tag_id or "not provided" }}
+
+Available canonical tags:
+{% for tag in vocabulary %}
+- {{ tag.id }} ({{ tag.display_zh }}, {{ tag.category }}): {{ tag.description }}
+{% endfor %}
+
+Source content:
+{{ source_text }}
+
+Return strict JSON:
+{
+  "canonical_tag_id": "one tag id from the list",
+  "title": "short title",
+  "markdown_body": "standardized markdown preserving the user's meaning"
+}

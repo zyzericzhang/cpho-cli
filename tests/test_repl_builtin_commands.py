@@ -162,9 +162,10 @@ async def test_repl_explain_passes_solve_report_confirms_tags_and_probe_entry(
 
     async def fake_run_explain(**kwargs):  # type: ignore[no-untyped-def]
         calls["solve_report"] = kwargs["solve_report"]
+        assert [panel.value for panel in kwargs["panels"]] == ["approach"]
         return ExplainResult(
             problem_name="p1",
-            tone_outputs=[],
+            panel_outputs=[],
             candidate_tags=["牛顿定律", "错误标签"],
             markdown_path=tmp_path / "explain.md",
         )
@@ -196,13 +197,33 @@ async def test_repl_explain_passes_solve_report_confirms_tags_and_probe_entry(
         prompt_session=PromptScript(["y", "n", "+补充标签", "", "/probe", "/exit"]),
     )
 
-    await builtin_skills.do_explain(session, ["--tone", "teacher"])
+    await builtin_skills.do_explain(session, ["--panel", "approach"])
 
     assert calls["solve_report"] is solve_report
     assert calls["tags"][0][2] == ["牛顿定律", "补充标签"]  # type: ignore[index]
     assert calls["tags"][1]["skill_name"] == "explain"  # type: ignore[index]
     assert calls["probe_problem"] == "p1"
     assert "→ 进入 Probe 模式？(`/probe` 或 Enter 跳过)" in capsys.readouterr().out
+
+
+@pytest.mark.asyncio
+async def test_repl_explain_rejects_old_tone_option(
+    tmp_path: Path,
+    capsys,
+) -> None:
+    _seed_problem(tmp_path)
+    from cpho_cli.cli.repl.commands import builtin_skills
+
+    session = SessionState(
+        workspace_path=tmp_path,
+        config=AppConfig(),
+        current_problem_id="p1",
+        prompt_session=PromptScript([""]),
+    )
+
+    await builtin_skills.do_explain(session, ["--tone", "teacher"])
+
+    assert "用法: /explain" in capsys.readouterr().out
 
 
 @pytest.mark.asyncio
@@ -217,7 +238,7 @@ async def test_repl_explain_warns_without_prior_solve(
         assert kwargs["solve_report"] is None
         return ExplainResult(
             problem_name="p1",
-            tone_outputs=[],
+            panel_outputs=[],
             candidate_tags=[],
             markdown_path=tmp_path / "explain.md",
         )

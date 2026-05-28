@@ -15,6 +15,7 @@ ANSWER_MARKERS = ("answer", "answers", "solution", "solutions", "ans", "key", "�
 ANSWER_DIRS = {"answer", "answers", "solutions", "答案"}
 PROBLEM_MARKERS = ("problem", "problems", "question", "questions", "试题", "试卷", "题目")
 IMAGE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".webp", ".gif", ".tif", ".tiff"}
+IGNORED_DISCOVERY_DIRS = {".cpho", "artifacts", "exports", "output", "outputs"}
 
 
 def _is_supported(path: Path) -> bool:
@@ -42,6 +43,8 @@ def _safe_files(root: Path) -> list[Path]:
     files: list[Path] = []
     for path in root.rglob("*"):
         if not path.is_file() or not _is_supported(path):
+            continue
+        if any(part in IGNORED_DISCOVERY_DIRS for part in path.relative_to(root).parts[:-1]):
             continue
         resolved = path.resolve()
         try:

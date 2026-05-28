@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import json
 from collections.abc import Mapping
 from pathlib import Path
 from typing import Any
@@ -8,7 +7,9 @@ from typing import Any
 import jinja2
 from pydantic import BaseModel, ValidationError
 
+from cpho_cli.core.json_utils import extract_json_text, loads_json_object
 from cpho_cli.core.llm import LLMProvider, LLMProviderError, detect_model_capabilities
+from cpho_cli.core.input_routing import choose_input_route
 from cpho_cli.core.multimodal import build_multimodal_content
 from cpho_cli.core.runtime import SkillRuntimeError, StepHandler
 from cpho_cli.models.config import ModelParams
@@ -67,8 +68,13 @@ def make_llm_handler(
             for key in ("problem_file", "answer_file")
             if (value := values.get(key)) is not None
         ]
+        route = choose_input_route(file_paths, active_capabilities)
         if file_paths:
-            content = build_multimodal_content(prompt, file_paths, active_capabilities) or prompt
+            content = (
+                build_multimodal_content(prompt, route.file_paths, active_capabilities)
+                if route.file_paths
+                else None
+            ) or prompt
         response = provider.complete(
             messages=[
                 {
@@ -83,18 +89,24 @@ def make_llm_handler(
 
         if output_model is not None:
             try:
-                return {step.output_keys[0]: output_model.model_validate_json(response.content)}
-            except ValidationError as exc:
+                return {
+                    step.output_keys[0]: output_model.model_validate_json(
+                        extract_json_text(response.content)
+                    )
+                }
+            except (ValueError, ValidationError) as exc:
                 raise SkillRuntimeError(
                     f"Step {step.id} output failed {output_model.__name__} validation: {exc}"
                 ) from exc
 
         try:
-            parsed = json.loads(response.content)
-        except json.JSONDecodeError as exc:
+            parsed = loads_json_object(response.content)
+        except ValueError as exc:
             raise SkillRuntimeError(f"Step {step.id} returned invalid JSON: {exc}") from exc
-        if not isinstance(parsed, dict):
-            raise SkillRuntimeError(f"Step {step.id} returned non-object JSON")
+        if "input_modality_used" in step.output_keys and "input_modality_used" not in parsed:
+            parsed["input_modality_used"] = route.input_modality_used
+        if "input_routing_warning" in step.output_keys and "input_routing_warning" not in parsed:
+            parsed["input_routing_warning"] = route.warning
         missing = [key for key in step.output_keys if key not in parsed]
         if missing:
             raise SkillRuntimeError(f"Step {step.id} missing output keys: {missing}")

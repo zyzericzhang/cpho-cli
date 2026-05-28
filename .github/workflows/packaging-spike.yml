@@ -1,0 +1,119 @@
+name: Packaging spike
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - ".github/workflows/packaging-spike.yml"
+      - "packaging/**"
+      - "pyproject.toml"
+      - "uv.lock"
+      - "src/**"
+  push:
+    paths:
+      - ".github/workflows/packaging-spike.yml"
+      - "packaging/**"
+      - "pyproject.toml"
+      - "uv.lock"
+      - "src/**"
+
+jobs:
+  windows-packaging-spike:
+    runs-on: windows-2022
+    timeout-minutes: 90
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: uv sync --dev
+
+      - name: Run packaging spike
+        shell: pwsh
+        run: |
+          Set-StrictMode -Version Latest
+          $ErrorActionPreference = "Stop"
+          $PSNativeCommandUseErrorActionPreference = $false
+          $Report = "packaging/SPIKE-REPORT.md"
+
+          Add-Content -LiteralPath $Report -Encoding UTF8 -Value ""
+          Add-Content -LiteralPath $Report -Encoding UTF8 -Value "## CI execution"
+          Add-Content -LiteralPath $Report -Encoding UTF8 -Value "- Runner: windows-2022"
+          Add-Content -LiteralPath $Report -Encoding UTF8 -Value "- Ref: $env:GITHUB_REF"
+          Add-Content -LiteralPath $Report -Encoding UTF8 -Value "- SHA: $env:GITHUB_SHA"
+
+          pwsh -NoProfile -File packaging/build_windows.ps1
+          $PyInstallerExit = $LASTEXITCODE
+          if ($PyInstallerExit -ne 0) {
+            Add-Content -LiteralPath $Report -Encoding UTF8 -Value "- PyInstaller workflow status: build command exited $PyInstallerExit"
+          }
+
+          $PyInstallerExe = "dist/cpho/cpho.exe"
+          if (Test-Path $PyInstallerExe) {
+            pwsh -NoProfile -File packaging/smoke_packaged_windows.ps1 -ExecutablePath $PyInstallerExe -Label "PyInstaller clean-VM smoke"
+            $PyInstallerSmokeExit = $LASTEXITCODE
+            if ($PyInstallerSmokeExit -ne 0) {
+              Add-Content -LiteralPath $Report -Encoding UTF8 -Value "- PyInstaller smoke status: exited $PyInstallerSmokeExit"
+            }
+          }
+          else {
+            Add-Content -LiteralPath $Report -Encoding UTF8 -Value ""
+            Add-Content -LiteralPath $Report -Encoding UTF8 -Value "## PyInstaller clean-VM smoke"
+            Add-Content -LiteralPath $Report -Encoding UTF8 -Value "- FAIL executable missing: $PyInstallerExe"
+          }
+
+          pwsh -NoProfile -File packaging/build_nuitka_windows.ps1
+          $NuitkaExit = $LASTEXITCODE
+          if ($NuitkaExit -ne 0) {
+            Add-Content -LiteralPath $Report -Encoding UTF8 -Value "- Nuitka workflow status: script exited $NuitkaExit"
+          }
+
+          $NuitkaExe = "build/nuitka/cpho_entry.dist/cpho_entry.exe"
+          if (Test-Path $NuitkaExe) {
+            pwsh -NoProfile -File packaging/smoke_packaged_windows.ps1 -ExecutablePath $NuitkaExe -Label "Nuitka clean-VM smoke"
+            $NuitkaSmokeExit = $LASTEXITCODE
+            if ($NuitkaSmokeExit -ne 0) {
+              Add-Content -LiteralPath $Report -Encoding UTF8 -Value "- Nuitka smoke status: exited $NuitkaSmokeExit"
+            }
+          }
+          else {
+            Add-Content -LiteralPath $Report -Encoding UTF8 -Value ""
+            Add-Content -LiteralPath $Report -Encoding UTF8 -Value "## Nuitka clean-VM smoke"
+            Add-Content -LiteralPath $Report -Encoding UTF8 -Value "- SKIP executable missing: $NuitkaExe"
+          }
+
+          Add-Content -LiteralPath $Report -Encoding UTF8 -Value ""
+          Add-Content -LiteralPath $Report -Encoding UTF8 -Value "## CI artifact note"
+          Add-Content -LiteralPath $Report -Encoding UTF8 -Value "The filled spike report and any produced bundles are uploaded as workflow artifacts."
+
+      - name: Upload spike report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: phase9-spike-report
+          path: packaging/SPIKE-REPORT.md
+
+      - name: Upload PyInstaller bundle
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cpho-pyinstaller-windows
+          path: dist/cpho/**
+          if-no-files-found: ignore
+
+      - name: Upload Nuitka bundle
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cpho-nuitka-windows
+          path: build/nuitka/cpho_entry.dist/**
+          if-no-files-found: ignore

@@ -1,0 +1,13 @@
+6+4
+6个skill
+Index
+Solve
+找同类题
+组卷
+explain
+知识库维护skill
+4个其他项目
+github开源准备
+下载包和兼容性
+社区知识库
+功能组合和框架（replcli等等）

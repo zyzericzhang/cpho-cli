@@ -9,6 +9,7 @@ from typing import Any, Protocol, TypeVar
 import httpx
 from pydantic import BaseModel
 
+from cpho_cli.core.errors import err_api_call_failed
 from cpho_cli.core.runtime import redact_secrets
 from cpho_cli.models.config import ModelParams
 from cpho_cli.models.llm import ChatMessage, LLMResponse, LLMUsage, ModelCapabilities
@@ -81,7 +82,11 @@ class _OpenAICompatibleProvider:
                 if response.status_code >= 400:
                     raise LLMProviderError(
                         redact_secrets(
-                            f"{self.label} request failed: {response.status_code} {response.text}",
+                            err_api_call_failed(
+                                self.label,
+                                "request",
+                                f"{response.status_code} {response.text}",
+                            ),
                             [self.api_key],
                         )
                     )
@@ -111,7 +116,10 @@ class _OpenAICompatibleProvider:
                     break
                 time.sleep(0.1 * (2**attempt))
         raise LLMProviderError(
-            redact_secrets(f"{self.label} request failed: {last_error}", [self.api_key])
+            redact_secrets(
+                err_api_call_failed(self.label, "request", str(last_error)),
+                [self.api_key],
+            )
         )
 
     def stream(
@@ -140,7 +148,11 @@ class _OpenAICompatibleProvider:
                     if response.status_code >= 400:
                         raise LLMProviderError(
                             redact_secrets(
-                                f"{self.label} stream failed: {response.status_code} {response.text}",
+                                err_api_call_failed(
+                                    self.label,
+                                    "stream",
+                                    f"{response.status_code} {response.text}",
+                                ),
                                 [self.api_key],
                             )
                         )
@@ -159,7 +171,10 @@ class _OpenAICompatibleProvider:
                     break
                 time.sleep(0.1 * (2**attempt))
         raise LLMProviderError(
-            redact_secrets(f"{self.label} stream failed: {last_error}", [self.api_key])
+            redact_secrets(
+                err_api_call_failed(self.label, "stream", str(last_error)),
+                [self.api_key],
+            )
         )
 
     def _chat_payload(

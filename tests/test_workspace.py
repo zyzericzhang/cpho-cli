@@ -74,3 +74,14 @@ def test_discovers_standalone_images_as_single_page_papers(tmp_path: Path) -> No
     }
     assert all(isinstance(paper, PaperFile) for paper in result.unmatched_problems)
     assert all(paper.total_pages == 1 for paper in result.unmatched_problems)
+
+
+def test_ignores_generated_output_directories(tmp_path: Path) -> None:
+    touch(tmp_path / "problem.pdf")
+    touch(tmp_path / "artifacts" / "generated.pdf")
+    touch(tmp_path / "outputs" / "generated.pdf")
+    touch(tmp_path / ".cpho" / "outputs" / "generated.pdf")
+
+    result = discover_workspace(tmp_path)
+
+    assert [paper.path.name for paper in result.unmatched_problems] == ["problem.pdf"]

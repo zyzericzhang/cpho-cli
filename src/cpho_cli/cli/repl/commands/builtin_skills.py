@@ -19,10 +19,11 @@ from cpho_cli.cli.repl.adapters.skill_command import (
 from cpho_cli.cli.repl.commands import Command
 from cpho_cli.cli.repl.session import SessionState
 from cpho_cli.core.explain import run_explain
+from cpho_cli.core.input_routing import choose_input_route
 from cpho_cli.core.index.api import add_problem_tags
 from cpho_cli.core.probe import run_probe
 from cpho_cli.core.solve import solve_problem
-from cpho_cli.models.explain import ExplainTone
+from cpho_cli.models.explain import ExplainPanel
 from cpho_cli.models.solve import SolveReport
 
 
@@ -37,7 +38,11 @@ def _solve_parser() -> argparse.ArgumentParser:
 def _explain_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="/explain", add_help=False)
     parser.add_argument("problem_id", nargs="?")
-    parser.add_argument("--tone", action="append", choices=[tone.value for tone in ExplainTone])
+    parser.add_argument(
+        "--panel",
+        action="append",
+        choices=[panel.value for panel in ExplainPanel],
+    )
     return parser
 
 
@@ -105,7 +110,10 @@ async def do_explain(session: SessionState, args: list[str]) -> None:
     try:
         ns = _explain_parser().parse_args(args)
     except SystemExit:
-        display.error("用法: /explain [problem_id] [--tone teacher|dense|brief]")
+        display.error(
+            "用法: /explain [problem_id] "
+            "[--panel approach|answer_replacement|alternative_methods]"
+        )
         return
     entry = resolve_problem(session, ns.problem_id)
     if entry is None:
@@ -113,7 +121,19 @@ async def do_explain(session: SessionState, args: list[str]) -> None:
     if session.current_solve_report is None:
         display.warn("尚未运行 /solve；Explain 将使用未校正的原答案上下文。")
     provider, params = provider_and_params(session, "explain")
-    tones = [ExplainTone(value) for value in (ns.tone or [ExplainTone.TEACHER.value])]
+    panels = [
+        ExplainPanel(value)
+        for value in (
+            ns.panel
+            or [ExplainPanel.APPROACH.value, ExplainPanel.ANSWER_REPLACEMENT.value]
+        )
+    ]
+    route = choose_input_route(
+        [path for path in [resolve_workspace_path(session, entry.problem_path)] if path is not None],
+        session.model_capabilities,
+    )
+    if route.warning:
+        display.warn(f"Explain 输入降级: {route.warning}")
     print("▶ explain: generating...")
     result = await run_explain(
         provider=provider,
@@ -122,9 +142,10 @@ async def do_explain(session: SessionState, args: list[str]) -> None:
         answer_text=answer_text(session, entry),
         problem_name=entry.problem_id,
         workspace_path=session.workspace_path,
-        tones=tones,
+        panels=panels,
         solve_report=session.current_solve_report,
         output_dir=session.out_dir,
+        input_modality_used=route.input_modality_used,
     )
     confirmed_tags = await confirm_strings(session, result.candidate_tags, allow_append=True)
     if confirmed_tags:
@@ -182,7 +203,7 @@ def register(registry: dict[str, Command]) -> None:
     registry["/explain"] = Command(
         name="/explain",
         help="讲解当前题目",
-        usage="/explain [problem_id] [--tone teacher|dense|brief]",
+        usage="/explain [problem_id] [--panel approach|answer_replacement|alternative_methods]",
         handler=do_explain,
         category="技能",
     )

@@ -1,0 +1,23 @@
+{
+  "provider": "openrouter",
+  "models": [
+    {
+      "id": "openai/gpt-4o-mini",
+      "name": "GPT-4o mini",
+      "input_modalities": ["text", "image"],
+      "context_length": 128000
+    },
+    {
+      "id": "google/gemini-2.0-flash-lite-001",
+      "name": "Gemini 2.0 Flash Lite",
+      "input_modalities": ["text", "image", "file"],
+      "context_length": 1048576
+    },
+    {
+      "id": "deepseek/deepseek-chat",
+      "name": "DeepSeek Chat",
+      "input_modalities": ["text"],
+      "context_length": 64000
+    }
+  ]
+}
