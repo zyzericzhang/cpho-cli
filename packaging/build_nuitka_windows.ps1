@@ -19,6 +19,7 @@ try {
   $Args = @(
     "run", "--with", "nuitka", "python", "-m", "nuitka",
     "--standalone",
+    "--assume-yes-for-downloads",
     "--output-dir=build/nuitka",
     "--include-package-data=cpho_cli",
     "--include-package=rapidocr",
@@ -36,7 +37,8 @@ try {
   $Elapsed = (Get-Date) - $Started
   $DistDir = Join-Path $OutputDir "cpho_entry.dist"
   if (Test-Path $DistDir) {
-    $SizeBytes = (Get-ChildItem -LiteralPath $DistDir -Recurse -File | Measure-Object -Property Length -Sum).Sum
+    $Measure = Get-ChildItem -LiteralPath $DistDir -Recurse -File | Measure-Object -Property Length -Sum
+    $SizeBytes = if ($null -ne $Measure.Sum) { $Measure.Sum } else { 0 }
   }
   else {
     $SizeBytes = 0
