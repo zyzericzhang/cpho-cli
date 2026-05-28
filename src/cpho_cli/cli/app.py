@@ -1,3 +1,4 @@
+from importlib import metadata, resources
 from pathlib import Path
 from typing import Optional
 
@@ -45,6 +46,59 @@ app.add_typer(compose_app, name="compose")
 app.add_typer(knowledge_app, name="knowledge")
 
 _OCR_STRATEGY_CHOICES = ("prompt", "reuse", "rebuild", "new-only")
+
+
+def _diagnostic_checks() -> list[tuple[str, bool, str]]:
+    checks: list[tuple[str, bool, str]] = []
+
+    try:
+        version = metadata.version("cpho-cli")
+        checks.append(("package version", True, version))
+    except Exception as exc:
+        checks.append(("package version", False, str(exc)))
+
+    resource_checks = [
+        ("package data builtin_skills", "builtin_skills"),
+        ("package data vocabulary YAML", "vocabulary/builtin.yml"),
+        ("package data model catalog JSON", "data/model_catalog/openrouter_fallback.json"),
+    ]
+    for label, resource_path in resource_checks:
+        try:
+            path = resources.files("cpho_cli").joinpath(resource_path)
+            ok = path.is_dir() or path.is_file()
+            checks.append((label, ok, resource_path if ok else f"missing: {resource_path}"))
+        except Exception as exc:
+            checks.append((label, False, str(exc)))
+
+    for label, module_name in [
+        ("fitz import", "fitz"),
+        ("rapidocr import", "rapidocr"),
+        ("onnxruntime import", "onnxruntime"),
+    ]:
+        try:
+            __import__(module_name)
+            checks.append((label, True, module_name))
+        except Exception as exc:
+            checks.append((label, False, str(exc)))
+
+    return checks
+
+
+@app.command()
+def diagnostics(
+    packaging_smoke: bool = typer.Option(
+        False,
+        "--packaging-smoke",
+        help="Exit nonzero if any packaging/runtime diagnostic fails.",
+    ),
+) -> None:
+    """Print local runtime diagnostics for packaging smoke tests."""
+    checks = _diagnostic_checks()
+    for label, ok, detail in checks:
+        status = "OK" if ok else "FAIL"
+        typer.echo(f"{status} {label}: {detail}")
+    if packaging_smoke and any(not ok for _, ok, _ in checks):
+        raise typer.Exit(1)
 
 
 @app.command()
