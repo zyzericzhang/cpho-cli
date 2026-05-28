@@ -54,4 +54,6 @@ Phase 9 context chooses a documented macOS install path rather than a `.dmg`: Ap
 
 The authored scripts are ready for the Windows spike. The source-controlled report is intentionally a template; the authoritative filled report is the `phase9-spike-report` artifact from the `Packaging spike` GitHub Actions workflow.
 
-Recommendation: continue-spike
+Latest decision baseline: GitHub Actions run `26589444663` on `windows-2022` produced a PyInstaller bundle, passed packaged smoke, and uploaded artifacts. Nuitka timed out without producing an executable.
+
+Recommendation: build-installer

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import re
 from pathlib import Path
+from urllib.parse import quote
 
 from cpho_cli.core.index import IndexBuildError
 from cpho_cli.models.index import UserNotebookEntry
@@ -20,7 +21,8 @@ def _validate_problem_id(problem_id: str) -> None:
 
 def _notebook_path(workspace_root: Path, problem_id: str) -> Path:
     _validate_problem_id(problem_id)
-    return workspace_root / ".cpho" / "notebook" / f"{problem_id}.json"
+    filename = quote(problem_id, safe="._-") + ".json"
+    return workspace_root / ".cpho" / "notebook" / filename
 
 
 def get_problem_notes(workspace_root: Path, problem_id: str) -> UserNotebookEntry | None:

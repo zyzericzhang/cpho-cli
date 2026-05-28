@@ -4,11 +4,13 @@ from __future__ import annotations
 
 import logging
 import shlex
+import sys
 import traceback
 from pathlib import Path
 
 from prompt_toolkit import PromptSession
 from prompt_toolkit.history import FileHistory
+from prompt_toolkit.output import DummyOutput
 from prompt_toolkit.styles import Style
 
 from cpho_cli.cli.repl import display
@@ -65,11 +67,16 @@ class ReplApp:
             config = load_config(None)
         self.registry: dict[str, Command] = dict(registry)
         install_builtin_commands(self.registry)
+        prompt_kwargs = {
+            "history": FileHistory(str(history_path())),
+            "completer": CphoCompleter(self.registry),
+            "lexer": CphoLexer(),
+            "style": STYLE,
+        }
+        if not sys.stdin.isatty() or not sys.stdout.isatty():
+            prompt_kwargs["output"] = DummyOutput()
         self.prompt_session = prompt_session or PromptSession(
-            history=FileHistory(str(history_path())),
-            completer=CphoCompleter(self.registry),
-            lexer=CphoLexer(),
-            style=STYLE,
+            **prompt_kwargs,
         )
         self.session = SessionState(
             workspace_path=resolved_workspace,
