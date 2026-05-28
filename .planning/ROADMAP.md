@@ -120,4 +120,4 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 | 6. 知识库地基 + Skill 框架重构 | v1.1 | 5/5 | Complete | 2026-05-27 |
 | 7. Explain v2 + 模型面板 + 输入路由 | v1.1 | 5/5 | Complete | 2026-05-27 |
 | 8. 社区 KB + 错误处理 | v1.1 | 4/4 | Complete | 2026-05-27 |
-| 9. 跨平台 + 安装包 | v1.1 | 0/5 | Planned | - |
+| 9. 跨平台 + 安装包 | v1.1 | 1/5 | In Progress|  |
