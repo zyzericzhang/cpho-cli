@@ -1,5 +1,6 @@
 from importlib import metadata, resources
 from pathlib import Path
+import sys
 from typing import Optional
 
 import click
@@ -20,6 +21,22 @@ from cpho_cli.core.index import (
 from cpho_cli.core.solve import SolveError, solve_problem
 from cpho_cli.core.solve import write_solve_report
 from cpho_cli.models.solve import Discrepancy, SolveReport
+
+
+def _configure_windows_stdio() -> None:
+    if sys.platform != "win32":
+        return
+    for stream in (sys.stdout, sys.stderr):
+        reconfigure = getattr(stream, "reconfigure", None)
+        if reconfigure is None:
+            continue
+        try:
+            reconfigure(encoding="utf-8", errors="replace")
+        except (OSError, ValueError):
+            pass
+
+
+_configure_windows_stdio()
 
 app = typer.Typer(help="CPHO local physics analysis CLI.", rich_markup_mode=None)
 topic_app = typer.Typer(help="主题分类浏览。", rich_markup_mode=None)
