@@ -1,3 +1,7 @@
+param(
+  [int]$TimeoutMinutes = 20
+)
+
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
@@ -16,6 +20,9 @@ app()
 Push-Location $Root
 try {
   $Started = Get-Date
+  $StdoutLog = Join-Path $OutputDir "nuitka.stdout.log"
+  $StderrLog = Join-Path $OutputDir "nuitka.stderr.log"
+  Remove-Item -LiteralPath $StdoutLog, $StderrLog -Force -ErrorAction SilentlyContinue
   $Args = @(
     "run", "--with", "nuitka", "python", "-m", "nuitka",
     "--standalone",
@@ -32,8 +39,16 @@ try {
     "--include-data-dir=src/cpho_cli/data/model_catalog=cpho_cli/data/model_catalog",
     $EntryPoint
   )
-  & uv @Args
-  $ExitCode = $LASTEXITCODE
+  $Process = Start-Process -FilePath "uv" -ArgumentList $Args -RedirectStandardOutput $StdoutLog -RedirectStandardError $StderrLog -PassThru
+  $TimedOut = -not $Process.WaitForExit($TimeoutMinutes * 60 * 1000)
+  if ($TimedOut) {
+    & taskkill.exe /PID $Process.Id /T /F | Out-Null
+    $Process.WaitForExit()
+    $ExitCode = 124
+  }
+  else {
+    $ExitCode = $Process.ExitCode
+  }
   $Elapsed = (Get-Date) - $Started
   $DistDir = Join-Path $OutputDir "cpho_entry.dist"
   if (Test-Path $DistDir) {
@@ -48,11 +63,26 @@ try {
   Add-Content -LiteralPath $Report -Encoding UTF8 -Value ""
   Add-Content -LiteralPath $Report -Encoding UTF8 -Value "## Nuitka result"
   Add-Content -LiteralPath $Report -Encoding UTF8 -Value "- Command: ``uv $($Args -join ' ')``"
+  Add-Content -LiteralPath $Report -Encoding UTF8 -Value "- Timeout: ${TimeoutMinutes} minutes"
   Add-Content -LiteralPath $Report -Encoding UTF8 -Value "- Exit code: $ExitCode"
   Add-Content -LiteralPath $Report -Encoding UTF8 -Value "- Elapsed: $([Math]::Round($Elapsed.TotalSeconds, 1))s"
   Add-Content -LiteralPath $Report -Encoding UTF8 -Value "- Output size: ${SizeMb} MB"
-  if ($ExitCode -ne 0) {
+  if ($TimedOut) {
+    Add-Content -LiteralPath $Report -Encoding UTF8 -Value "- Failure reason: Nuitka trial exceeded the spike timeout; treat as not viable for the current installer path."
+  }
+  elseif ($ExitCode -ne 0) {
     Add-Content -LiteralPath $Report -Encoding UTF8 -Value "- Failure reason: Nuitka trial failed; inspect console output above."
+  }
+
+  if (Test-Path $StdoutLog) {
+    Write-Host "::group::Nuitka stdout tail"
+    Get-Content -LiteralPath $StdoutLog -Tail 80
+    Write-Host "::endgroup::"
+  }
+  if (Test-Path $StderrLog) {
+    Write-Host "::group::Nuitka stderr tail"
+    Get-Content -LiteralPath $StderrLog -Tail 80
+    Write-Host "::endgroup::"
   }
 
   exit 0
