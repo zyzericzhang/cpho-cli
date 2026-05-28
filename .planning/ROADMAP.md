@@ -32,7 +32,7 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 - [x] **Phase 6: 知识库地基 + Skill 框架重构** (5/5 plans) — completed 2026-05-27
 - [x] **Phase 7: Explain v2 + 模型面板 + 输入路由** (5/5 plans) — completed 2026-05-27
 - [x] **Phase 8: 社区 KB + 错误处理** (4/4 plans) — completed 2026-05-27
-- [ ] **Phase 9: 跨平台 + 安装包** (TBD plans)
+- [ ] **Phase 9: 跨平台 + 安装包** (0/5 plans)
 
 ## Phase Details
 
@@ -99,7 +99,7 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 2. 完成 3 天打包方案 spike：输出 `packaging/cpho.spec` 候选 + clean-VM 烟测脚本 + 包体积报告（关注 RapidOCR ONNX ~200MB）+ macOS 签名 / Windows SmartScreen 风险评估（Apple Developer ID $99/yr 决策点向用户上报）+ 明确"做 / 不做"建议。
 3. spike 通过：GitHub Actions macOS+Windows 矩阵构建产出 `.dmg` + `.exe`/`.msi`，clean-VM 烟测通过；spike 不通过：交付 `pipx install cpho-cli` / `uv tool install cpho-cli` 清晰文档化安装路径作为 v1.1 分发兜底。
 
-**Plans**: TBD（见 `/gsd:plan-phase 9` 拆分；spike 阶段建议独立成 plan）
+**Plans**: 5 planned — see `.planning/phases/09-cross-platform-installer/`
 
 ## Progress
 
@@ -120,4 +120,4 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 | 6. 知识库地基 + Skill 框架重构 | v1.1 | 5/5 | Complete | 2026-05-27 |
 | 7. Explain v2 + 模型面板 + 输入路由 | v1.1 | 5/5 | Complete | 2026-05-27 |
 | 8. 社区 KB + 错误处理 | v1.1 | 4/4 | Complete | 2026-05-27 |
-| 9. 跨平台 + 安装包 | v1.1 | 0/TBD | Not started | - |
+| 9. 跨平台 + 安装包 | v1.1 | 0/5 | Planned | - |
