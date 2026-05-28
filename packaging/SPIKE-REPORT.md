@@ -2,11 +2,11 @@
 
 ## PyInstaller result
 
-Status: pending Windows execution.
+Status: populated by the `Packaging spike` GitHub Actions workflow on `windows-2022`.
 
 The candidate spec is `packaging/cpho.spec`. It builds a console `onedir` executable named `cpho`, disables UPX, collects `cpho_cli`, `rapidocr`, and `onnxruntime`, and explicitly includes bundled skills, prompts, vocabulary, and model catalog data.
 
-Run on Windows:
+The CI workflow runs:
 
 ```powershell
 pwsh -NoProfile -File packaging/build_windows.ps1
@@ -14,11 +14,11 @@ pwsh -NoProfile -File packaging/build_windows.ps1
 
 ## Nuitka result
 
-Status: pending Windows execution.
+Status: populated by the `Packaging spike` GitHub Actions workflow on `windows-2022`.
 
 The fallback script attempts a standalone Nuitka build and records elapsed time, output size, exit code, and failure reason without treating "Nuitka unsuitable" as a malformed-script failure.
 
-Run on Windows:
+The CI workflow runs:
 
 ```powershell
 pwsh -NoProfile -File packaging/build_nuitka_windows.ps1
@@ -26,15 +26,15 @@ pwsh -NoProfile -File packaging/build_nuitka_windows.ps1
 
 ## Bundle size
 
-Status: pending Windows execution.
+Status: populated by the `Packaging spike` GitHub Actions workflow on `windows-2022`.
 
 Expected first-pass range remains 300-500 MB because the bundle includes Python, PyMuPDF, ONNX Runtime, RapidOCR, and CPHO package data. The build scripts append measured sizes here after execution.
 
 ## Clean-VM smoke
 
-Status: pending Windows execution.
+Status: populated by the `Packaging spike` GitHub Actions workflow on `windows-2022`.
 
-Run against a produced executable:
+The CI workflow runs this against each produced executable and uploads the filled report as an artifact:
 
 ```powershell
 pwsh -NoProfile -File packaging/smoke_packaged_windows.ps1 -ExecutablePath .\dist\cpho\cpho.exe
@@ -52,6 +52,6 @@ Phase 9 context chooses a documented macOS install path rather than a `.dmg`: Ap
 
 ## Recommendation
 
-The authored scripts are ready for the Windows spike, but this macOS environment cannot execute the required Windows packaging and clean-VM smoke checks. Do not proceed to installer release automation until those results are recorded.
+The authored scripts are ready for the Windows spike. The source-controlled report is intentionally a template; the authoritative filled report is the `phase9-spike-report` artifact from the `Packaging spike` GitHub Actions workflow.
 
 Recommendation: continue-spike
