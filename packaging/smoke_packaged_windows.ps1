@@ -7,6 +7,10 @@ param(
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
+$env:PYTHONUTF8 = "1"
+$env:PYTHONIOENCODING = "utf-8"
+[Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
+& chcp.com 65001 | Out-Null
 
 $Root = Split-Path -Parent $PSScriptRoot
 $Report = Join-Path $PSScriptRoot "SPIKE-REPORT.md"
@@ -29,14 +33,23 @@ function Invoke-SmokeStep {
   }
 }
 
+function Assert-NativeSuccess {
+  param(
+    [string]$Name
+  )
+  if ($LASTEXITCODE -ne 0) {
+    throw "$Name exited $LASTEXITCODE"
+  }
+}
+
 Push-Location $Root
 try {
   uv run python -c "from pathlib import Path; import fitz; p = Path(r'$Workspace') / '第四届芝麻物理联考 理论试题.pdf'; doc = fitz.open(); page = doc.new_page(); page.insert_text((72, 72), 'packaged CPHO smoke'); doc.save(p)"
 
   Add-Content -LiteralPath $Report -Encoding UTF8 -Value ""
   Add-Content -LiteralPath $Report -Encoding UTF8 -Value "## $Label"
-  Invoke-SmokeStep "help" { & $ExecutablePath --help | Out-Null }
-  Invoke-SmokeStep "diagnostics" { & $ExecutablePath diagnostics --packaging-smoke | Out-Null }
+  Invoke-SmokeStep "help" { & $ExecutablePath --help | Out-Null; Assert-NativeSuccess "help" }
+  Invoke-SmokeStep "diagnostics" { & $ExecutablePath diagnostics --packaging-smoke | Out-Null; Assert-NativeSuccess "diagnostics" }
   try {
     $VersionOutput = & $ExecutablePath version 2>$null
     if ($LASTEXITCODE -ne 0 -or -not ($VersionOutput -match "cpho-cli")) {
@@ -49,7 +62,7 @@ try {
   catch {
     Add-Content -LiteralPath $Report -Encoding UTF8 -Value "- PENDING update command"
   }
-  Invoke-SmokeStep "Chinese workspace dry-run" { & $ExecutablePath index $Workspace --dry-run | Out-Null }
+  Invoke-SmokeStep "Chinese workspace dry-run" { & $ExecutablePath index $Workspace --dry-run | Out-Null; Assert-NativeSuccess "Chinese workspace dry-run" }
 }
 finally {
   Pop-Location

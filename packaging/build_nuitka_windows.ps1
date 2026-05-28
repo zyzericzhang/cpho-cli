@@ -1,5 +1,5 @@
 param(
-  [int]$TimeoutMinutes = 20
+  [int]$TimeoutMinutes = 10
 )
 
 Set-StrictMode -Version Latest
@@ -39,7 +39,7 @@ try {
     "--include-data-dir=src/cpho_cli/data/model_catalog=cpho_cli/data/model_catalog",
     $EntryPoint
   )
-  $Process = Start-Process -FilePath "uv" -ArgumentList $Args -RedirectStandardOutput $StdoutLog -RedirectStandardError $StderrLog -PassThru
+  $Process = Start-Process -FilePath "uv" -ArgumentList $Args -WorkingDirectory $Root -RedirectStandardOutput $StdoutLog -RedirectStandardError $StderrLog -PassThru
   $TimedOut = -not $Process.WaitForExit($TimeoutMinutes * 60 * 1000)
   if ($TimedOut) {
     & taskkill.exe /PID $Process.Id /T /F | Out-Null
@@ -52,8 +52,8 @@ try {
   $Elapsed = (Get-Date) - $Started
   $DistDir = Join-Path $OutputDir "cpho_entry.dist"
   if (Test-Path $DistDir) {
-    $Measure = Get-ChildItem -LiteralPath $DistDir -Recurse -File | Measure-Object -Property Length -Sum
-    $SizeBytes = if ($null -ne $Measure.Sum) { $Measure.Sum } else { 0 }
+    $DistFiles = @(Get-ChildItem -LiteralPath $DistDir -Recurse -File)
+    $SizeBytes = if ($DistFiles.Count -gt 0) { ($DistFiles | Measure-Object -Property Length -Sum).Sum } else { 0 }
   }
   else {
     $SizeBytes = 0
