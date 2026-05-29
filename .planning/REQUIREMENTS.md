@@ -49,8 +49,8 @@
 ### 跨平台 + 安装包
 
 - [x] **INSTALLER-01**: CPHO CLI 在 Windows 10/11 上可运行——prompt_toolkit REPL 在 Windows Terminal 中文 / Unicode / 颜色行为正常，PyMuPDF / RapidOCR 在 Windows 烟测通过
-- [ ] **INSTALLER-02**: 完成跨平台打包方案 spike——3 天评估 PyInstaller vs Nuitka vs pipx 文档化路径，输出 `packaging/cpho.spec`（候选方案）+ clean-VM 烟测脚本 + 包体积报告 + macOS 签名 / Windows SmartScreen 风险评估；spike 输出含明确"做 / 不做"建议
-- [ ] **INSTALLER-03**: 若 spike 通过则交付 Mac/Windows 一键安装包（GitHub Actions 矩阵构建）；若 spike 揭示打包成本过高则交付 `pipx install` / `uv tool install` 的清晰文档化路径作为兜底
+- [x] **INSTALLER-02**: 完成跨平台打包方案 spike——3 天评估 PyInstaller vs Nuitka vs pipx 文档化路径，输出 `packaging/cpho.spec`（候选方案）+ clean-VM 烟测脚本 + 包体积报告 + macOS 签名 / Windows SmartScreen 风险评估；spike 输出含明确"做 / 不做"建议
+- [x] **INSTALLER-03**: spike 通过后交付 Windows PyInstaller/Inno Setup release workflow；Mac 交付 Homebrew + `uv tool install` 文档化路径；开发阶段仍为 macOS 本地开发 + 普通测试，release 阶段才由 GitHub Actions Windows runner 构建安装器
 
 ## Future Requirements (Deferred to v1.2+)
 
@@ -100,8 +100,8 @@
 | ERROR-01 | Phase 8 | Pending |
 | ERROR-02 | Phase 8 | Pending |
 | INSTALLER-01 | Phase 9 | Complete |
-| INSTALLER-02 | Phase 9 | Pending |
-| INSTALLER-03 | Phase 9 | Pending |
+| INSTALLER-02 | Phase 9 | Complete |
+| INSTALLER-03 | Phase 9 | Complete |
 
 **Coverage:**
 - v1.1 requirements: 24 total

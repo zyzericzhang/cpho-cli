@@ -20,6 +20,7 @@ from cpho_cli.core.index import (
 )
 from cpho_cli.core.solve import SolveError, solve_problem
 from cpho_cli.core.solve import write_solve_report
+from cpho_cli import get_version
 from cpho_cli.models.solve import Discrepancy, SolveReport
 
 
@@ -100,6 +101,13 @@ def _diagnostic_checks() -> list[tuple[str, bool, str]]:
             checks.append((label, False, str(exc)))
 
     return checks
+
+
+@app.command()
+def version() -> None:
+    """Print the installed CPHO CLI version."""
+    typer.echo(f"cpho-cli {get_version()}")
+    typer.echo("https://github.com/zyzericzhang/cpho-cli")
 
 
 @app.command()

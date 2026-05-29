@@ -32,7 +32,7 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 - [x] **Phase 6: 知识库地基 + Skill 框架重构** (5/5 plans) — completed 2026-05-27
 - [x] **Phase 7: Explain v2 + 模型面板 + 输入路由** (5/5 plans) — completed 2026-05-27
 - [x] **Phase 8: 社区 KB + 错误处理** (4/4 plans) — completed 2026-05-27
-- [ ] **Phase 9: 跨平台 + 安装包** (0/5 plans)
+- [x] **Phase 9: 跨平台 + 安装包** (5/5 plans) — completed 2026-05-29
 
 ## Phase Details
 
@@ -88,7 +88,7 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 
 ### Phase 9: 跨平台 + 安装包
 
-**Goal:** 收尾 v1.1 分发体验：先验证 CPHO CLI 在 Windows 10/11 上完整可运行（prompt_toolkit / PyMuPDF / RapidOCR 烟测），然后用 3 天 spike 评估打包方案（PyInstaller vs Nuitka vs pipx 文档化路径），输出 clean-VM 烟测脚本与签名 / SmartScreen 风险评估；spike 通过则交付 Mac/Windows 一键安装包（GitHub Actions 矩阵），spike 揭示打包成本过高则交付 pipx / uv tool install 清晰文档化路径作为兜底。
+**Goal:** 收尾 v1.1 分发体验：先验证 CPHO CLI 在 Windows 10/11 上完整可运行（prompt_toolkit / PyMuPDF / RapidOCR 烟测），然后用 GitHub Actions `windows-2022` 跑打包方案 spike。spike 选择 PyInstaller 后，Windows 交付 tag-triggered PyInstaller/Inno Setup release workflow；Mac 交付 Homebrew + `uv tool install` 文档化路径。开发阶段仍是 macOS 本地开发 + 普通测试，release 阶段才由 GitHub Actions Windows runner 构建安装器。
 
 **Depends on:** Phase 6 (代码层稳定)；可与 Phase 7/8 完全并行
 
@@ -97,9 +97,9 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 **Success Criteria** (what must be TRUE):
 1. CPHO CLI 在 Windows 10/11 Windows Terminal 中文 / Unicode / 颜色行为正常；PyMuPDF / RapidOCR 在 Windows 烟测通过；现有 Phase 4 boundary 检查在 Windows 路径分隔符与外接盘上行为正确。
 2. 完成 3 天打包方案 spike：输出 `packaging/cpho.spec` 候选 + clean-VM 烟测脚本 + 包体积报告（关注 RapidOCR ONNX ~200MB）+ macOS 签名 / Windows SmartScreen 风险评估（Apple Developer ID $99/yr 决策点向用户上报）+ 明确"做 / 不做"建议。
-3. spike 通过：GitHub Actions macOS+Windows 矩阵构建产出 `.dmg` + `.exe`/`.msi`，clean-VM 烟测通过；spike 不通过：交付 `pipx install cpho-cli` / `uv tool install cpho-cli` 清晰文档化安装路径作为 v1.1 分发兜底。
+3. spike 通过：GitHub Actions 在 `v*` tag 上用 Windows runner 构建 PyInstaller onedir、运行 packaged smoke、编译 Inno Setup 安装器并上传到 GitHub Releases；Mac 使用 Homebrew + `uv tool install` 文档化路径，不做 `.dmg`。
 
-**Plans**: 5 planned — see `.planning/phases/09-cross-platform-installer/`
+**Plans**: 5/5 complete — see `.planning/phases/09-cross-platform-installer/`
 
 ## Progress
 
@@ -120,4 +120,4 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 | 6. 知识库地基 + Skill 框架重构 | v1.1 | 5/5 | Complete | 2026-05-27 |
 | 7. Explain v2 + 模型面板 + 输入路由 | v1.1 | 5/5 | Complete | 2026-05-27 |
 | 8. 社区 KB + 错误处理 | v1.1 | 4/4 | Complete | 2026-05-27 |
-| 9. 跨平台 + 安装包 | v1.1 | 1/5 | In Progress|  |
+| 9. 跨平台 + 安装包 | v1.1 | 5/5 | Complete | 2026-05-29 |

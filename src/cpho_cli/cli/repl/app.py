@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import os
 import shlex
 import sys
 import traceback
@@ -18,7 +19,9 @@ from cpho_cli.cli.repl.commands import Command, install_builtin_commands, regist
 from cpho_cli.cli.repl.completers import CphoCompleter, CphoLexer
 from cpho_cli.cli.repl.persistence import history_path, log_path, read_session, write_session
 from cpho_cli.cli.repl.session import SessionState, load_index_meta
+from cpho_cli import get_version
 from cpho_cli.core.config import ConfigError, load_config
+from cpho_cli.core.update_check import check_for_update
 
 STYLE = Style.from_dict({"cmd": "#5f87ff", "flag": "#ffd700", "arg": "#5fd75f"})
 
@@ -111,6 +114,10 @@ class ReplApp:
 
     async def run(self) -> None:
         print(display.banner(self.session))
+        if os.environ.get("CPHO_DISABLE_UPDATE_CHECK") != "1":
+            result = check_for_update(get_version())
+            if result.available and result.latest_version and result.release_url:
+                display.warn(f"发现新版本 {result.latest_version}: {result.release_url}")
         while True:
             try:
                 line = await self.prompt_session.prompt_async("cpho> ")  # type: ignore[attr-defined]

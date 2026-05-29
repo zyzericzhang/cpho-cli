@@ -2,6 +2,7 @@
 
 按 skill 分章：
 
+- [install](install.md) — Windows 安装器、Mac 命令行安装和 SmartScreen 说明。
 - [solve](solve.md) — 审查标准答案并记录 discrepancy。
 - [explain](explain.md) — Explain v2 板块讲解、知识来源标注和候选标签回写。
 - [probe](probe.md) — 连续主动提问关键物理点。

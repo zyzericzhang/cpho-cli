@@ -58,11 +58,38 @@ def test_lexer_marks_command_flag_and_arg() -> None:
 @pytest.mark.asyncio
 async def test_repl_dispatch_unknown_and_help(tmp_path: Path, monkeypatch) -> None:  # type: ignore[no-untyped-def]
     monkeypatch.setenv("XDG_CONFIG_HOME", str(tmp_path / "xdg"))
+    monkeypatch.setenv("CPHO_DISABLE_UPDATE_CHECK", "1")
     app = ReplApp(workspace=tmp_path, prompt_session=FakePromptSession(["/help", "/missing", "<EOF>"]))
 
     await app.run()
 
     assert (tmp_path / "xdg" / "cpho" / "session.json").exists()
+
+
+@pytest.mark.asyncio
+async def test_repl_prints_update_notice(tmp_path: Path, monkeypatch, capsys) -> None:  # type: ignore[no-untyped-def]
+    from cpho_cli.cli.repl import app as repl_app
+    from cpho_cli.models.update import UpdateCheckResult
+
+    monkeypatch.setenv("XDG_CONFIG_HOME", str(tmp_path / "xdg"))
+    monkeypatch.delenv("CPHO_DISABLE_UPDATE_CHECK", raising=False)
+    monkeypatch.setattr(
+        repl_app,
+        "check_for_update",
+        lambda current_version: UpdateCheckResult(
+            available=True,
+            current_version=current_version,
+            latest_version="0.2.0",
+            release_url="https://github.com/zyzericzhang/cpho-cli/releases/tag/v0.2.0",
+        ),
+    )
+    app = ReplApp(workspace=tmp_path, prompt_session=FakePromptSession(["<EOF>"]))
+
+    await app.run()
+
+    output = capsys.readouterr().out
+    assert "发现新版本 0.2.0" in output
+    assert "https://github.com/zyzericzhang/cpho-cli/releases/tag/v0.2.0" in output
 
 
 def test_importing_typer_app_does_not_import_prompt_toolkit() -> None:

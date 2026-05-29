@@ -10,8 +10,12 @@
 
 ## Quick Start
 
+直接安装请先看：[docs/user/install.md](docs/user/install.md)。Windows 用户下载 GitHub Releases 里的安装器；Mac 用户按 Homebrew + uv 路径安装。
+
+开发者本地运行：
+
 ```bash
-git clone https://github.com/your-org/cpho-cli.git
+git clone https://github.com/zyzericzhang/cpho-cli.git
 cd cpho-cli
 uv sync
 ```
@@ -108,6 +112,7 @@ uv run cpho compose auto --count 5 --topic 力学 --tags free_body_diagram --wor
 
 ## 文档
 
+- 安装说明：[docs/user/install.md](docs/user/install.md)
 - 用户文档索引：[docs/user/README.md](docs/user/README.md)
 - 错误排查索引：[docs/user/errors/README.md](docs/user/errors/README.md)
 - 扩展指南：[docs/user/extensions.md](docs/user/extensions.md)
@@ -138,7 +143,7 @@ export OPENROUTER_API_KEY=...
 
 ## Out of Scope
 
-当前不提供：自然语言生成新 skill、第三方 skill 包安装、托管文档站、跨平台安装器。跨平台/安装包属于 Phase 9。
+当前不提供：自然语言生成新 skill、第三方 skill 包安装、托管文档站、Mac `.dmg` 安装包。
 
 ## License
 
